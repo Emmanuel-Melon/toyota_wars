@@ -1,0 +1,41 @@
+.reticle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26px;
+  height: 26px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0.42;
+}
+
+.reticle::before,
+.reticle::after {
+  content: "";
+  position: absolute;
+  background: #fff4d8;
+}
+
+.reticle::before {
+  left: 12px;
+  top: 0;
+  width: 1px;
+  height: 26px;
+}
+
+.reticle::after {
+  left: 0;
+  top: 12px;
+  width: 26px;
+  height: 1px;
+}
+
+.locked {
+  opacity: 0.9;
+}
+
+.locked::before,
+.locked::after {
+  background: #ff8a68;
+  box-shadow: 0 0 8px rgba(255, 112, 88, 0.7);
+}

@@ -1,0 +1,1 @@
+ALTER TYPE "public"."secure_token_type" ADD VALUE 'ORDER_TRACKING';

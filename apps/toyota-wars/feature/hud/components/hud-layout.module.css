@@ -1,0 +1,129 @@
+.desktopStatsPanel {
+  position: absolute;
+  top: 32px;
+  left: 38px;
+  z-index: 5;
+  display: flex;
+  width: min(248px, calc(100vw - 48px));
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  pointer-events: none;
+}
+
+.desktopOrdersPanel {
+  position: absolute;
+  top: 32px;
+  right: 38px;
+  z-index: 5;
+  display: flex;
+  width: min(320px, calc(100vw - 48px));
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  pointer-events: none;
+}
+
+.desktopMapColumn {
+  position: absolute;
+  bottom: 32px;
+  left: 38px;
+  z-index: 5;
+  display: flex;
+  width: min(210px, calc(100vw - 48px));
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.desktopHealth {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  z-index: 5;
+  width: min(320px, calc(100vw - 48px));
+  padding: 10px 14px;
+  transform: translateX(-50%);
+}
+
+.desktopSpeed {
+  position: absolute;
+  right: 38px;
+  bottom: 32px;
+  z-index: 5;
+  width: min(220px, calc(100vw - 48px));
+  padding: 12px 14px;
+}
+
+.mobileTelemetry {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 10px);
+  left: calc(env(safe-area-inset-left) + 10px);
+  z-index: 5;
+  width: 156px;
+  padding: 6px 8px;
+  pointer-events: none;
+}
+
+.mobileTelemetryInner {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 10px;
+}
+
+.compactRow {
+  font-size: 10px !important;
+  letter-spacing: 0.06em !important;
+}
+
+.mobileMission {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 10px);
+  left: 50%;
+  z-index: 6;
+  width: min(220px, calc(100vw - 300px));
+  padding: 6px 10px;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.mobileHealth {
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom) + 14px);
+  left: 50%;
+  z-index: 5;
+  width: min(260px, calc(100vw - 260px));
+  padding: 6px 10px;
+  transform: translateX(-50%);
+}
+
+.mobileSpeed {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 10px);
+  right: calc(env(safe-area-inset-right) + 10px);
+  z-index: 5;
+  min-width: 76px;
+  padding: 6px 8px;
+  text-align: right;
+}
+
+@media (max-width: 920px), (pointer: coarse) {
+  .desktopStatsPanel,
+  .desktopOrdersPanel,
+  .desktopMapColumn,
+  .desktopHealth,
+  .desktopSpeed {
+    display: none;
+  }
+}
+
+@media (min-width: 921px) and (pointer: fine) {
+  .mobileTelemetry,
+  .mobileMission,
+  .mobileHealth,
+  .mobileSpeed {
+    display: none;
+  }
+}

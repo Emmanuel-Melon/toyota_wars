@@ -1,0 +1,1 @@
+capture stats, how many enemies killed, hours played, missons won, etc.

@@ -1,0 +1,32 @@
+-- One order per gifting process.
+--
+-- PREREQUISITE: this fails if `orders` already contains two or more rows for
+-- the same `process_id`. Find them with:
+--
+--   SELECT process_id, count(*),
+--          array_agg(id ORDER BY (status = 'paid') DESC, created_at) AS order_ids
+--   FROM orders GROUP BY process_id HAVING count(*) > 1;
+--
+-- Keep the paid order (else the oldest) and delete the rest; `order_items` and
+-- `order_timeline` cascade via `order_id`.
+--
+-- Why the index: `confirmOrder` enqueues `CreateOrder` on every POST and
+-- `finalizeOrder` is not idempotent, so a repeated confirmation (React Strict
+-- Mode remount, mutation retry, a re-opened tab) inserted a second order for
+-- the same process. The controller-level `findOrder` guard closes the common
+-- case, but it cannot cover the window between the enqueue and the insert, nor
+-- a pgBoss retry (retry_limit is 5). The index is the durable backstop.
+--
+-- Plain rather than partial, unlike `uq_voucher_orders_active_process` on
+-- voucher_orders: a failed or refunded order is never replaced. Checkout reuses
+-- the existing order, and a confirmed process can no longer be rewound, so no
+-- second order is ever legitimate.
+--
+-- Hand-written on purpose. `drizzle:generate` emits a migration derived from
+-- `meta/0000_snapshot.json`, which has drifted from the live schema and would
+-- re-add columns (`orders.code`, `users.avatar_url`, `order_timeline.updated_at`),
+-- recreate the four `partner_*` tables, and re-create foreign keys that already
+-- exist. `prepareOrder` handles the conflict with
+-- `.onConflictDoNothing({ target: ordersSchema.processId })`, so the insert is
+-- a no-op on the duplicate path instead of throwing.
+CREATE UNIQUE INDEX "uq_orders_process_id" ON "orders" USING btree ("process_id");

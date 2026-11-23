@@ -1,0 +1,42 @@
+.panel {
+  background: linear-gradient(
+    180deg,
+    rgb(var(--ui-panel-rgb) / 0.94),
+    rgb(var(--ui-panel-rgb) / 0.8)
+  );
+  backdrop-filter: blur(10px) saturate(0.9);
+  -webkit-backdrop-filter: blur(10px) saturate(0.9);
+  text-shadow: 0 1px 8px rgb(var(--ui-panel-rgb) / 0.6);
+}
+
+.key {
+  animation: tutorial-key-pulse 1.2s ease-in-out infinite;
+}
+
+.pressed {
+  animation: tutorial-key-press 350ms ease-out;
+}
+
+@keyframes tutorial-key-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    border-color: rgb(var(--ui-secondary-rgb) / 0.55);
+  }
+  50% {
+    transform: scale(1.06);
+    border-color: rgb(var(--ui-primary-rgb) / 0.95);
+  }
+}
+
+@keyframes tutorial-key-press {
+  0% {
+    transform: scale(1.18);
+  }
+  70% {
+    transform: scale(0.96);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

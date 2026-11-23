@@ -1,0 +1,55 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  color-scheme: dark;
+  --ui-panel: #252622;
+  --ui-primary: #d98a3b;
+  --ui-text: #c9c1ad;
+  --ui-secondary: #858276;
+  --ui-panel-rgb: 37 38 34;
+  --ui-primary-rgb: 217 138 59;
+  --ui-text-rgb: 201 193 173;
+  --ui-secondary-rgb: 133 130 118;
+  --background: var(--ui-panel);
+  --foreground: var(--ui-text);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-sand: #f3e9d2;
+  --color-parchment: #f7edda;
+  --color-ink: #1b1a16;
+  --color-gold: #ffd27a;
+  --color-copper: #c8783c;
+  --color-ui-panel: var(--ui-panel);
+  --color-ui-primary: var(--ui-primary);
+  --color-ui-text: var(--ui-text);
+  --color-ui-secondary: var(--ui-secondary);
+  --font-sans: var(--font-barlow-condensed), "Arial Narrow", Arial, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--background);
+}
+
+body {
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+.game-shell {
+  height: 100vh;
+  height: 100dvh;
+}

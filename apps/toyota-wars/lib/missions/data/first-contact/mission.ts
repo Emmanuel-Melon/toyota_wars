@@ -1,0 +1,56 @@
+// apps/toyota-wars/lib/missions/data/first-contact/mission.ts
+import type { MissionInput } from "../../definition/mission.types";
+import { noEffects } from "../../definition/mission.presets";
+import { failConditions } from "./failure";
+import { objectives } from "./success";
+
+export const firstContact: MissionInput = {
+  id: "first-contact",
+  schemaVersion: 2,
+  order: 1,
+  title: "First Contact",
+  briefing:
+    "A small scout patrol has crossed into the plains. Two allied tanks are joining you, so use the rocks for cover and take the scouts down together.",
+  difficulty: 1,
+  requires: [],
+  arena: {
+    seed: 1001,
+    size: 600,
+    obstacleDensity: 0.35,
+    playerSpawn: { x: 0, z: 240 },
+  },
+  squads: [
+    {
+      id: "support",
+      team: "ally",
+      units: [{ template: "medium" }, { template: "medium" }],
+      spawnPoints: [
+        { x: -36, z: 258 },
+        { x: 36, z: 258 },
+      ],
+      personality: { aggression: 0.5, caution: 0.6 },
+      initialOrder: "follow",
+      ...noEffects(),
+    },
+    {
+      id: "scouts",
+      team: "enemy",
+      units: [
+        { template: "light" },
+        { template: "light" },
+        { template: "light" },
+      ],
+      spawnPoints: [
+        { x: -120, z: -180 },
+        { x: 0, z: -210 },
+        { x: 120, z: -180 },
+      ],
+      personality: { aggression: 0.3, caution: 0.6 },
+      initialOrder: "patrol",
+      ...noEffects(),
+    },
+  ],
+  objectives,
+  failConditions,
+  rewards: { xp: 100, unlocks: ["hold-the-line"] },
+};
