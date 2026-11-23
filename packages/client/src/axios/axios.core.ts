@@ -21,8 +21,9 @@ async function doRefresh(client: AxiosApiClient): Promise<void> {
   const { refreshEndpoint } = getApiConfig();
   const cookies = client.context.getSsrCookies();
 
-  // console.log("ssr cookies", cookies);
-  // ssr cookies i18next=en
+  if (!refreshEndpoint) {
+    throw new Error("API refresh endpoint is not configured");
+  }
 
   try {
     await client.request<void>(refreshEndpoint, {

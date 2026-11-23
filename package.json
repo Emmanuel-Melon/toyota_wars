@@ -11,7 +11,8 @@
     "test": "turbo test",
     "test:api": "turbo test --filter=api",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo check-types"
+    "check-types": "turbo check-types",
+    "generate:api": "pnpm --filter api openapi:emit && pnpm --filter @toyota/client generate:types"
   },
   "keywords": [],
   "author": "",
@@ -19,12 +20,6 @@
   "type": "commonjs",
   "devDependencies": {
     "turbo": "^2.11.11"
-  },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "8.5.0"
-    }
   },
   "workspaces": [
     "apps/*",

@@ -36,6 +36,12 @@ export const TankControllers = {
           page: queryOptions.page,
           limit: queryOptions.limit,
           totalPages,
+          availableFilters: {},
+          sortOptions: {
+            fields: TANK_SORTABLE_FIELDS,
+            default: queryOptions.sortBy,
+            direction: queryOptions.sortOrder,
+          },
         },
       },
     );

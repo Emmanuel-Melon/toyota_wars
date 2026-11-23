@@ -1,35 +1,37 @@
 {
   "name": "@toyota/client",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
   "files": [
-    "dist"
+    "src"
   ],
+  "sideEffects": false,
   "scripts": {
-    "generate:types": "openapi-typescript $VITE_API_BASE_URL/api-docs.json -o src/api/generated/api.types.ts || echo 'Type generation failed - check if backend is running'",
-    "generate:types:local": "VITE_API_BASE_URL=http://localhost:3000 pnpm run generate:types",
-    "generate:types:safe": "openapi-typescript $VITE_API_BASE_URL/api-docs.json -o src/api/generated/api.types.ts 2>/dev null || true",
-    "generate:zod": "openapi-zod-client http://localhost:3000/api-docs.json --output src/api/generated/api.schemas.ts",
-    "format": "npx prettier --write src"
+    "generate:types": "openapi-typescript ../../apps/server/openapi.json -o src/api/generated/api.types.ts",
+    "generate:types:remote": "openapi-typescript ${API_BASE_URL:-http://localhost:3000}/api-docs.json -o src/api/generated/api.types.ts",
+    "check-types": "tsc --noEmit",
+    "format": "prettier --write src"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Typed API client for the Toyota Wars server",
   "dependencies": {
     "@sentry/react": "^10.53.1",
-    "@tanstack/react-query": "^5.95.2",
-    "@tanstack/react-query-devtools": "^5.95.2",
-    "@zodios/core": "^10.9.6",
     "axios": "^1.15.0",
-    "date-fns": "^4.1.0",
-    "jose": "^6.1.3",
-    "lucide-react": "^0.575.0",
-    "openapi-typescript": "^7.13.0",
-    "openapi-zod-client": "^1.18.3",
-    "react": "^19.2.4",
-    "react-router": ">=7.7 <9",
-    "sonner": "^2.0.7",
     "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.13.0",
+    "prettier": "^3.9.5",
+    "typescript": "^5.9.3"
   }
 }

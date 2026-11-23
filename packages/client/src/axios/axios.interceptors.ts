@@ -59,19 +59,22 @@ export function createResponseErrorHandler(context: InterceptorContext) {
   return async (error: unknown) => {
     if (!axios.isAxiosError(error)) throw error;
 
-    console.log("Full error", error);
-
     const status = error.response?.status;
     const config = error.config as InternalAxiosRequestConfig;
     const endpoint = config?.url ?? "";
 
     // 1. Refresh endpoint itself failed
-    if (status === 401 && endpoint === refreshEndpoint) {
+    if (refreshEndpoint && status === 401 && endpoint === refreshEndpoint) {
       throw createRefreshFailedError();
     }
 
     // 2. Auto-refresh on 401
-    if (status === 401 && !config?._isRetry && endpoint !== refreshEndpoint) {
+    if (
+      refreshEndpoint &&
+      status === 401 &&
+      !config?._isRetry &&
+      endpoint !== refreshEndpoint
+    ) {
       config._isRetry = true;
       try {
         await context.attemptRefresh();
@@ -85,7 +88,6 @@ export function createResponseErrorHandler(context: InterceptorContext) {
             context.outboundCookies,
           );
 
-          console.log("merged cookies", merged);
           if (config.headers.set) {
             config.headers.set("Cookie", merged);
           } else {

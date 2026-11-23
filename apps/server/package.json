@@ -6,6 +6,7 @@
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "dev": "pnpm run dev:api",
     "dev:api": "nodemon --exec tsx src/server.ts",
+    "openapi:emit": "tsx src/scripts/emit-openapi.ts",
     "build": "tsc -b && tsc-alias",
     "start": "node dist/src/server.js",
     "test": "vitest run",

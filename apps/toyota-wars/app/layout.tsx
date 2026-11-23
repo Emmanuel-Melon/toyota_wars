@@ -1,6 +1,7 @@
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, IBM_Plex_Mono } from "next/font/google";
+import "../lib/api";
 import "./globals.css";
 
 const barlowCondensed = Barlow_Condensed({

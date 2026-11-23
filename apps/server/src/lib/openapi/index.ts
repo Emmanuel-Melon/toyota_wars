@@ -7,13 +7,20 @@ import swaggerUi from "swagger-ui-express";
 import { z } from "zod";
 
 import { apiServers } from "@/config";
+import { catalogRegistry } from "@/feature/catalog/catalog.docs";
 import { missionsRegistry } from "@/feature/missions/missions.docs";
+import { tanksRegistry } from "@/feature/tanks/tanks.docs";
 
 import { expressRegistry } from "../express/express.schema";
 
 extendZodWithOpenApi(z);
 
-const registries = [missionsRegistry, expressRegistry];
+const registries = [
+  missionsRegistry,
+  catalogRegistry,
+  tanksRegistry,
+  expressRegistry,
+];
 
 const definitions = registries.flatMap((r) => r.definitions);
 const generator = new OpenApiGeneratorV3(definitions);
