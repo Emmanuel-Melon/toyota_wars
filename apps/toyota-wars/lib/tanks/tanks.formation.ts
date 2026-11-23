@@ -1,6 +1,10 @@
 import * as THREE from "three";
 import { MOVEMENT_CONFIG } from "../movement/movement.config";
-import { MovementOrders, type MovementOrder } from "../movement/movement.types";
+import {
+  MovementOrders,
+  type MovementOrder,
+  type TankLeader,
+} from "../movement/movement.types";
 import { distanceXZ, offsetFromHeading } from "../movement/movement.math";
 import { SQUAD_DIRECTIVE } from "../squad/squad.types";
 import type { TankContext } from "./tanks.types";
@@ -19,7 +23,7 @@ export function resolveFormationMovement(
   arriveRadius: number = MOVEMENT_CONFIG.follow.arriveRadius,
   slowRadius: number = MOVEMENT_CONFIG.follow.slowRadius,
 ): MovementOrder {
-  const leader = ctx.leader;
+  const leader = ctx.leader as TankLeader | null;
   if (!leader) {
     ctx.formationState.standby = false;
     return IDLE;

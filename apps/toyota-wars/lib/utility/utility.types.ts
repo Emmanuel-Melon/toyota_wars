@@ -1,17 +1,14 @@
-// toyota-wars/lib/utility/utility.types.ts
-import type { TankContext } from "../tanks/tanks.types";
-import type { UtilityOption } from "../selector/types";
+import { AgentIntent } from "@toyota/agents";
 
 export const TANK_INTENT = {
-  ATTACK: "attack",
-  PIN: "pin",
-  RETREAT: "retreat",
-  FLANK: "flank",
-  LOS_REPOSITION: "losReposition",
-  FOLLOW_LEADER: "followLeader",
-  PATROL: "patrol",
+  ATTACK: AgentIntent.Attack,
+  PIN: AgentIntent.Pin,
+  RETREAT: AgentIntent.Retreat,
+  FLANK: AgentIntent.Flank,
+  LOS_REPOSITION: AgentIntent.LoSReposition,
+  FOLLOW_LEADER: AgentIntent.FollowLeader,
+  PATROL: AgentIntent.Patrol,
 } as const;
 
 export type TankIntent = (typeof TANK_INTENT)[keyof typeof TANK_INTENT];
-
-export type TankUtilityOption = UtilityOption<TankContext, TankIntent>;
+export type { AgentUtilityOption as TankUtilityOption } from "@toyota/agents";

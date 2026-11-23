@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@toyota/client"],
+  transpilePackages: ["@toyota/client", "@toyota/ai", "@toyota/agents"],
   typescript: {
     ignoreBuildErrors: true,
   },

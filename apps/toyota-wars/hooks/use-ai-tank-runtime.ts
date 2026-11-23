@@ -1,5 +1,6 @@
 // feature/vehciles/use-ai-tank-runtime.ts
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createAgentDecision } from "@toyota/agents";
 import * as THREE from "three";
 import { Weapon } from "@/lib/weapons/weapon.timer";
 import { WeaponBloomSystem } from "@/lib/weapons/weapon.bloom";
@@ -25,6 +26,7 @@ import {
   resetDecision,
   type WorldMovement,
 } from "@/lib/movement/movement.types";
+import { agentPorts } from "@/lib/agents/agent-ports";
 import { buildUtilityTankTree } from "@/lib/tanks/tanks.trees";
 import { LeaderTracker } from "@/lib/tanks/tanks.leader";
 import type { Team } from "@/lib/combat/combat.types";
@@ -124,6 +126,7 @@ export function useAITankRuntime({
   const retreatTimer = useRef(0);
   const retreatActive = useRef(false);
   const decision = useRef(createDecision());
+  const agentDecision = useRef(createAgentDecision());
   const [home] = useState(
     () => new THREE.Vector3(initialPosition[0], 0, initialPosition[1]),
   );
@@ -161,6 +164,8 @@ export function useAITankRuntime({
     weaponExecutor,
     bloom,
     decision,
+    agentDecision,
+    agentPorts,
     tree,
     world,
     home,

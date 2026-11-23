@@ -2,11 +2,13 @@
 "use client";
 
 import React, { useMemo, useRef } from "react";
+import { resetAgentDecision } from "@toyota/agents";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { TANK_CONFIG } from "@/lib/tanks/tanks.config";
 import { isCombatActive } from "@/lib/combat/combat.activity";
 import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
+import { hasAssignedTarget } from "@/lib/combat/combat.targets";
 import type { FireRequest } from "@/lib/combat/combat.types";
 import { readMuzzleTransform } from "@/lib/aim/aim.muzzle";
 import { findBlockingObstacle } from "@/lib/weapons/weapon.obstacles";
@@ -19,7 +21,8 @@ import {
   type TankThreat,
 } from "@/lib/movement/movement.types";
 import { nearestThreatDistance } from "@/lib/movement/movement.resolver";
-import { resetDecision } from "@/lib/movement/movement.types";
+import { mapAgentDecision } from "@/lib/agents/agent-decision";
+import { AGENT_CONFIG } from "@/lib/agents/agent-runtime.config";
 import { useBattle, useRegisterUnit } from "@/context/battle-context";
 import { useAITankRuntime } from "@/hooks/use-ai-tank-runtime";
 import { WEAPONS } from "@/lib/weapons/weapon.config";
@@ -330,7 +333,7 @@ export function AIVehicle({
     runtime.retreatActive.current =
       retreatOnDamage && runtime.retreatTimer.current > 0;
 
-    resetDecision(runtime.decision.current);
+    resetAgentDecision(runtime.agentDecision.current);
     runtime.tree.evaluate({
       unitId,
       position: runtime.body.position,
@@ -338,6 +341,7 @@ export function AIVehicle({
       speed: runtime.body.speed,
       delta,
       targetPosition: externalTarget,
+      hasAssignedTarget: hasAssignedTarget(externalTarget),
       lastKnownPosition: hasLastKnownPositionRef.current
         ? lastKnownPositionRef.current
         : null,
@@ -349,7 +353,7 @@ export function AIVehicle({
       isSquadLeader,
       formationOffset,
       canFire: runtime.weaponExecutor.ready && ammo.current >= weapon.ammoCost,
-      decision: runtime.decision.current,
+      decision: runtime.agentDecision.current,
       formationState: runtime.formationState.current,
       home: runtime.home,
       threats,
@@ -369,14 +373,16 @@ export function AIVehicle({
       leaderDistance: leader
         ? runtime.body.position.distanceTo(leader.position)
         : Infinity,
-      leaderLeashDistance: TANK_CONFIG.utility.leaderLeashDistance,
       vehicle,
       weapon,
       bound: arena.bound,
       squadOrder: effectiveSquadOrder,
       damagedNeighborsCount: 0,
       retreatingNeighborsCount: 0,
+      config: AGENT_CONFIG,
+      ports: runtime.agentPorts,
     });
+    runtime.decision.current = mapAgentDecision(runtime.agentDecision.current);
 
     if (!combatActive) {
       aimTargetRef.current = null;
