@@ -2,33 +2,6 @@
 
 Overview of the Toyota Wars monorepo: how the apps and packages fit together, how they depend on each other, and how Turborepo orchestrates them.
 
-## Workspace topology
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        pnpm workspace                        │
-│                                                              │
-│   apps/toyota-wars          apps/server        packages/     │
-│   (Next.js game client)     (Express API)      client        │
-│        │                        │              (@toyota/     │
-│        │                        │               client)     │
-│        │                        │                  ▲         │
-│        │                        │                  │ types / │
-│        │                        │                  │ axios / │
-│        │                        │                  │ hooks   │
-│        └──────── HTTP/JSON ──────┴──────────────────┘         │
-│                     ▲                                        │
-│                     │ /api-docs.json (OpenAPI)               │
-└─────────────────────┼────────────────────────────────────────┘
-                      │
-            ┌─────────┴──────────┐
-            │  PostgreSQL        │
-            │  Redis             │
-            │  Stripe            │
-            │  pg-boss queues    │
-            └────────────────────┘
-```
-
 ### `apps/toyota-wars` — game client
 
 Next.js 16 (App Router) + React 19 + React Three Fiber. Self-contained game code under:
