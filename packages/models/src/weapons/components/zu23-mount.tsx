@@ -1,5 +1,12 @@
-// apps/toyota-wars/feature/weapons/components/mounts/zu23-mount.tsx
-import type { MountProps } from "./types";
+// packages/models/src/weapons/components/zu23-mount.tsx
+import type { MountProps } from "../types";
+import {
+  MountAccent,
+  MountBasePlate,
+  MountBody,
+  MountDarkBox,
+  MountRearGrips,
+} from "./mount-shared";
 
 export function Zu23Pedals() {
   return (
@@ -36,18 +43,18 @@ export function Zu23Pedals() {
 export function Zu23Mount({ palette }: MountProps) {
   return (
     <>
-      <mesh position={[0, -0.13, 0]} castShadow>
-        <boxGeometry args={[0.38, 0.12, 0.45]} />
-        <meshStandardMaterial color="#1a1a1a" roughness={0.8} />
-      </mesh>
-      <mesh position={[0.26, -0.04, 0]} castShadow>
-        <boxGeometry args={[0.18, 0.22, 0.3]} />
-        <meshStandardMaterial color={palette.accent} roughness={0.7} />
-      </mesh>
-      <mesh position={[0, 0, 0.12]} castShadow>
-        <boxGeometry args={[0.32, 0.3, 0.82]} />
-        <meshStandardMaterial color="#2a2a2a" roughness={0.6} metalness={0.4} />
-      </mesh>
+      <MountBasePlate size={[0.38, 0.12, 0.45]} />
+      <MountAccent
+        palette={palette}
+        position={[0.26, -0.04, 0]}
+        size={[0.18, 0.22, 0.3]}
+      />
+      <MountBody
+        position={[0, 0, 0.12]}
+        size={[0.32, 0.3, 0.82]}
+        color="#2a2a2a"
+        metalness={0.4}
+      />
       {[-1, 1].map((side) => (
         <group key={side}>
           <mesh
@@ -76,20 +83,8 @@ export function Zu23Mount({ palette }: MountProps) {
           </mesh>
         </group>
       ))}
-      <mesh position={[0, 0.2, 0.08]} castShadow>
-        <boxGeometry args={[0.05, 0.09, 0.18]} />
-        <meshStandardMaterial color="#111" />
-      </mesh>
-      <mesh position={[0, 0.02, -0.45]} castShadow>
-        <boxGeometry args={[0.32, 0.04, 0.04]} />
-        <meshStandardMaterial color="#111" />
-      </mesh>
-      {[-1, 1].map((side) => (
-        <mesh key={side} position={[side * 0.16, 0.02, -0.5]} castShadow>
-          <boxGeometry args={[0.04, 0.04, 0.14]} />
-          <meshStandardMaterial color="#111" />
-        </mesh>
-      ))}
+      <MountDarkBox position={[0, 0.2, 0.08]} size={[0.05, 0.09, 0.18]} />
+      <MountRearGrips span={0.32} z={-0.45} armZ={-0.5} />
       <Zu23Pedals />
     </>
   );

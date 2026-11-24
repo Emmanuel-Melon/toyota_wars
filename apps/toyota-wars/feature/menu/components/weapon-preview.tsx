@@ -1,9 +1,9 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
+import { Weapons } from "@toyota/models";
 import { VehicleProvider } from "@/context/vehicle-context";
 import { VehicleBody } from "@/feature/vehciles/components/vehicle-body";
-import { WeaponMount } from "@/feature/weapons/components/mounts";
 import { PLAYER_PALETTE } from "@/lib/palettes";
 import { VEHICLE_MODELS } from "@/lib/vehicles/vehicle.config";
 import type { VehicleModel } from "@/lib/vehicles/vehicle.types";
@@ -55,7 +55,7 @@ export function VehiclePreview({ model }: { model: VehicleModel }) {
               <meshStandardMaterial color={PLAYER_PALETTE.accent} />
             </mesh>
             <group position={[0, 0.85, 0]}>
-              <WeaponMount
+              <Weapons.WeaponMount
                 kind={weapon.visual.mount}
                 palette={PLAYER_PALETTE}
               />
