@@ -2,7 +2,7 @@
 
 import { useMemo, useRef } from "react";
 import type * as THREE from "three";
-import { BedMount, CrewGunner, MOUNT_MUZZLE_Z } from "@toyota/models";
+import { Vehicle } from "@toyota/models";
 import {
   createTurretAimLimits,
   BASE_TURRET_LIMITS,
@@ -29,7 +29,7 @@ export function BedWeapon({
 
   const { weapon, model } = useVehicleContext();
   const mount = weapon?.visual.mount ?? "autocannon";
-  const muzzleZ = MOUNT_MUZZLE_Z[mount];
+  const muzzleZ = Vehicle.MOUNT_MUZZLE_Z[mount];
   const muzzleOffsets = weapon?.muzzles ?? DEFAULT_MUZZLES;
   const disabled = health <= 0;
   const aimLimits = useMemo(
@@ -57,7 +57,7 @@ export function BedWeapon({
       barPosition={[0, 1.95, 0]}
       showHealthBar={false}
     >
-      <BedMount
+      <Vehicle.BedMount
         palette={palette}
         mount={mount}
         yawRef={yawRef}
@@ -66,7 +66,7 @@ export function BedWeapon({
         muzzleRef={muzzleRef}
         muzzleZ={muzzleZ}
         weapon={<WeaponMount kind={mount} palette={palette} />}
-        gunner={mount !== "rocketPod" ? <CrewGunner /> : null}
+        gunner={mount !== "rocketPod" ? <Vehicle.CrewGunner /> : null}
         effects={
           <MuzzleCluster muzzleZ={muzzleZ} muzzleOffsets={muzzleOffsets} />
         }

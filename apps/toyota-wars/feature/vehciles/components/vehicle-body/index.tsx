@@ -2,7 +2,7 @@
 
 import type { VehiclePalette } from "@/lib/palettes";
 import type { VehicleModelId } from "@/lib/vehicles/vehicle.types";
-import { RadarDish } from "@toyota/models";
+import { Vehicle } from "@toyota/models";
 import { PickupHull } from "../pickup/pickup-hull";
 
 export type VehicleBodyProps = {
@@ -24,7 +24,7 @@ export function VehicleBody({
     <>
       <PickupHull {...props} wrecked={wrecked} />
       {model === "radar" && (
-        <RadarDish palette={props.palette} wrecked={wrecked} />
+        <Vehicle.RadarDish palette={props.palette} wrecked={wrecked} />
       )}
     </>
   );

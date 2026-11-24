@@ -1,8 +1,8 @@
-import { AXLE_Y } from "@toyota/models";
+import { Vehicle } from "@toyota/models";
 import { WHEEL } from "@/feature/vehciles/vehicles.config";
 
 /** Y of the ground plane, derived from the wheel contact point. */
-export const GROUND_Y = AXLE_Y - WHEEL.radius;
+export const GROUND_Y = Vehicle.AXLE_Y - WHEEL.radius;
 
 /** Distance a part at `y` must fall to land on the ground. */
 export function dropToGround(y: number): number {

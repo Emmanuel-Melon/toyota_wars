@@ -1,11 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import {
-  DoorPanelVisual,
-  PICKUP,
-  getVehicleNumberTexture,
-} from "@toyota/models";
+import { Vehicle } from "@toyota/models";
 import { vehicleNumberForUnitId } from "@/lib/vehicle-identity";
 import { useVehicleContext } from "../../../../context/vehicle-context";
 import { FallenPart } from "./fallen-part";
@@ -23,11 +19,11 @@ export function DoorPanel({
   darkMat,
 }: DoorPanelProps) {
   const { palette, team, unitId } = useVehicleContext();
-  const x = side * (PICKUP.width / 2 + 0.025);
+  const x = side * (Vehicle.PICKUP.width / 2 + 0.025);
   const showNumber = part === "doorFL" || part === "doorFR";
   const vehicleNumber = vehicleNumberForUnitId(unitId);
   const numberTexture = useMemo(
-    () => getVehicleNumberTexture(vehicleNumber),
+    () => Vehicle.getVehicleNumberTexture(vehicleNumber),
     [vehicleNumber],
   );
 
@@ -40,7 +36,7 @@ export function DoorPanel({
       debris="door"
       debrisColor={palette.body}
     >
-      <DoorPanelVisual
+      <Vehicle.DoorPanelVisual
         side={side}
         z={z}
         paintMat={paintMat}

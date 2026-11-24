@@ -6,7 +6,7 @@ import { applyTurretAim } from "@/lib/aim/aim.turret";
 import { isMuzzleAimedAt } from "@/lib/aim/aim.muzzle";
 import type { TurretAimLimits } from "@/lib/aim/aim.types";
 import type { WeaponMountKind } from "@/lib/weapons/weapon.types";
-import { BARREL_KICK, MOUNT_PITCH_OFFSET } from "@toyota/models";
+import { Vehicle } from "@toyota/models";
 import { useVehicleContext } from "../../../context/vehicle-context";
 
 type Params = {
@@ -59,7 +59,8 @@ export function useTurretAim({
       pitch.rotation.x +=
         (celebration.pitch - pitch.rotation.x) * Math.min(1, delta * 10);
       if (slideRef.current && recoilRef) {
-        slideRef.current.position.z = -recoilRef.current.barrel * BARREL_KICK;
+        slideRef.current.position.z =
+          -recoilRef.current.barrel * Vehicle.BARREL_KICK;
       }
       return;
     }
@@ -73,7 +74,7 @@ export function useTurretAim({
       aimLimits,
       delta,
       recoilRef?.current.barrel ?? 0,
-      MOUNT_PITCH_OFFSET[mount],
+      Vehicle.MOUNT_PITCH_OFFSET[mount],
       muzzleRef?.current ?? null,
     );
     if (aimAlignedRef) {
@@ -83,7 +84,8 @@ export function useTurretAim({
       );
     }
     if (slideRef.current && recoilRef) {
-      slideRef.current.position.z = -recoilRef.current.barrel * BARREL_KICK;
+      slideRef.current.position.z =
+        -recoilRef.current.barrel * Vehicle.BARREL_KICK;
     }
   });
 }

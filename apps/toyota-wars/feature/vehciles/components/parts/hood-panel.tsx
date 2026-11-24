@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import type * as THREE from "three";
-import { HoodPanelVisual, getVehicleNumberTexture } from "@toyota/models";
+import { Vehicle } from "@toyota/models";
 import { useVehicleContext } from "@/context/vehicle-context";
 import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
 import { partHealthRatio } from "@/lib/combat/combat.parts";
@@ -13,7 +13,7 @@ export function HoodPanel({ paintMat }: { paintMat: THREE.Material }) {
   const { health, maxHealth, partHealth, team, unitId } = useVehicleContext();
   const vehicleNumber = vehicleNumberForUnitId(unitId);
   const numberTexture = useMemo(
-    () => getVehicleNumberTexture(vehicleNumber),
+    () => Vehicle.getVehicleNumberTexture(vehicleNumber),
     [vehicleNumber],
   );
 
@@ -36,7 +36,7 @@ export function HoodPanel({ paintMat }: { paintMat: THREE.Material }) {
       debrisColor="#4a4238"
       scatter={0.3}
     >
-      <HoodPanelVisual
+      <Vehicle.HoodPanelVisual
         paintMat={paintMat}
         damage={damage}
         numberTexture={numberTexture}

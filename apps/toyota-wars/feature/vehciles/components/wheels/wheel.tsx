@@ -1,4 +1,4 @@
-import { WheelVisual } from "@toyota/models";
+import { Vehicle } from "@toyota/models";
 import { isPartDestroyed } from "@/lib/combat/combat.parts";
 import { useVehicleContext } from "@/context/vehicle-context";
 import { useWheelSpin } from "./use-wheel-spin";
@@ -18,7 +18,7 @@ export function Wheel({ part, steers, motionRef }: WheelProps) {
   const side = part.endsWith("L") ? 1 : -1;
 
   return (
-    <WheelVisual
+    <Vehicle.WheelVisual
       side={side}
       steerRef={steerRef}
       spinRef={spinRef}

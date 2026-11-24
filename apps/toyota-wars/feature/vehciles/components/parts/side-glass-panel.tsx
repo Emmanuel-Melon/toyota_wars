@@ -1,4 +1,4 @@
-import { PICKUP } from "@toyota/models";
+import { Vehicle } from "@toyota/models";
 import { GlassPanel } from "./glass-panel";
 import type { SideGlassPanelProps } from "./types";
 
@@ -12,7 +12,7 @@ export function SideGlassPanel({
   return (
     <GlassPanel
       part={part}
-      position={[side * (PICKUP.width / 2 + 0.03), 1.17, z]}
+      position={[side * (Vehicle.PICKUP.width / 2 + 0.03), 1.17, z]}
       size={[0.022, 0.32, 0.78]}
       glassMat={glassMat}
       crackMat={crackMat}

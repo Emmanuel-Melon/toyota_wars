@@ -1,7 +1,6 @@
 "use client";
 
-import type { VehicleMaterials } from "@toyota/models";
-import { PickupCab as PickupCabVisual } from "@toyota/models";
+import { Vehicle } from "@toyota/models";
 import type { VehiclePart } from "@/lib/combat/combat.teams";
 import {
   WindshieldPanel,
@@ -25,7 +24,11 @@ const SIDE_WINDOWS: readonly { part: VehiclePart; side: number; z: number }[] =
     { part: "windowRR", side: -1, z: -0.48 },
   ];
 
-export function PickupCab({ materials }: { materials: VehicleMaterials }) {
+export function PickupCab({
+  materials,
+}: {
+  materials: Vehicle.VehicleMaterials;
+}) {
   const windows = (
     <>
       <WindshieldPanel
@@ -62,6 +65,6 @@ export function PickupCab({ materials }: { materials: VehicleMaterials }) {
   ));
 
   return (
-    <PickupCabVisual materials={materials} windows={windows} doors={doors} />
+    <Vehicle.PickupCab materials={materials} windows={windows} doors={doors} />
   );
 }

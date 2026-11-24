@@ -1,6 +1,6 @@
 "use client";
 
-import { GlassPanelVisual } from "@toyota/models";
+import { Vehicle } from "@toyota/models";
 import { partHealthRatio } from "@/lib/combat/combat.parts";
 import { useVehicleContext } from "../../../../context/vehicle-context";
 import { FallenPart } from "./fallen-part";
@@ -31,7 +31,7 @@ export function GlassPanel({
       spin={GLASS_SPIN}
       debris="glass"
     >
-      <GlassPanelVisual
+      <Vehicle.GlassPanelVisual
         position={ZERO_V3}
         rotation={ZERO_V3}
         size={size}
