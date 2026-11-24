@@ -1,5 +1,6 @@
 import type { MissionInput } from "@toyota/missions";
 import { noEffects } from "@toyota/missions";
+import type { GameMissionBundle } from "../../missions.registry";
 import { failConditions } from "./failure";
 import { objectives } from "./success";
 
@@ -56,4 +57,9 @@ export const tutorial: MissionInput = {
   objectives,
   failConditions,
   rewards: { xp: 0, unlocks: [] },
+};
+
+export const tutorialBundle: GameMissionBundle = {
+  mission: tutorial,
+  tutorial: true,
 };

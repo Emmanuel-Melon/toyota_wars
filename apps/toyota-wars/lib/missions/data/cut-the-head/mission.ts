@@ -1,4 +1,5 @@
 import type { MissionInput } from "@toyota/missions";
+import type { GameMissionBundle } from "../../missions.registry";
 import { failConditions } from "./failure";
 import { objectives } from "./success";
 
@@ -85,4 +86,8 @@ export const cutTheHead: MissionInput = {
   objectives,
   failConditions,
   rewards: { xp: 350, unlocks: [] },
+};
+
+export const cutTheHeadBundle: GameMissionBundle = {
+  mission: cutTheHead,
 };

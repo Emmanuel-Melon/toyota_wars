@@ -1,6 +1,7 @@
 // apps/toyota-wars/lib/missions/data/first-contact/mission.ts
 import type { MissionInput } from "@toyota/missions";
 import { noEffects } from "@toyota/missions";
+import type { GameMissionBundle } from "../../missions.registry";
 import { failConditions } from "./failure";
 import { objectives } from "./success";
 
@@ -62,4 +63,8 @@ export const firstContact: MissionInput = {
   objectives,
   failConditions,
   rewards: { xp: 100, unlocks: ["hold-the-line"] },
+};
+
+export const firstContactBundle: GameMissionBundle = {
+  mission: firstContact,
 };

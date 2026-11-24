@@ -19,6 +19,3 @@ export const evadeQte: FlowQteStep = {
   },
 };
 
-export const qtes = {
-  [EVADE_QTE_ID]: evadeQte,
-} satisfies Record<string, FlowQteStep>;

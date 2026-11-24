@@ -34,10 +34,10 @@
 ## Missions
 
 - See [docs/missions.md](./docs/missions.md) for the current system and [docs/missions-plan.md](./docs/missions-plan.md) for the approved directive architecture roadmap.
-- Mission definitions live in `lib/missions/data/<id>/` with `mission.ts`, `success.ts`, `failure.ts`, `cutscenes.ts`, `qtes.ts`, `flow.ts`, optional `zones.ts`, and `index.ts`. Each folder exports a `GameMissionBundle`; `lib/missions/data/index.ts` re-exports all bundles.
+- Mission definitions live in `lib/missions/data/<id>/`: `mission.ts` owns the `MissionInput`, the `GameMissionBundle` export, and any `FlowScript`; `success.ts` and `failure.ts` hold objectives/fail conditions; `zones.ts` is optional. Do not add placeholder `cutscenes.ts`, `qtes.ts`, `flow.ts`, or per-folder `index.ts`; `lib/missions/data/index.ts` re-exports bundles from `<id>/mission`.
 - `lib/missions/missions.init.ts` validates the catalog, asserts templates, and registers every bundle through `lib/missions/missions.registry.ts`. `game.tsx` imports it for that side effect; do not remove that import.
 - `MissionsRegistry` comes from `@toyota/missions`; the app facade stores `{ mission, flow?, tutorial? }`. Consumers read missions and flow scripts from `lib/missions/missions.registry.ts`, not from a hand-maintained `MISSIONS` array.
-- Pure flow script types live in `lib/mission-flow/mission-flow.types.ts`; `feature/mission-flow/` owns only runtime/store/UI. Cutscene and QTE data belongs beside the mission in `cutscenes.ts` and `qtes.ts`.
+- Pure flow script types live in `lib/mission-flow/mission-flow.types.ts`; `feature/mission-flow/` owns only runtime/store/UI. Add `cutscenes.ts`/`qtes.ts` only when a mission has real camera/QTE steps; `hold-the-line` is the only current example.
 - Canonical mission schema/validation lives in `@toyota/missions`; spatial objectives reference `zones[].id`. `MissionRunner` is an external store in `@toyota/missions`; `MissionSessionProvider` maps missions to roster spawns and arena state. Keep `MissionClock` inside `<Canvas>`.
 - Mission select hides the tutorial and shows every other mission; `requires` and `rewards.unlocks` are not enforced as progression.
 - `MissionSnapshot.activeObjective` is currently consumed by both HUD/navigation and AI. The planned boundary is: objectives are conditions, `MissionState` is the runtime truth, and a pure squad director derives neutral `SquadDirectiveView` data that the AI adapts into tactics.

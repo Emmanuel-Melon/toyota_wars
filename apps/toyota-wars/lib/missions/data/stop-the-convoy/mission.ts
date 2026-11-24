@@ -1,5 +1,6 @@
 import type { MissionInput } from "@toyota/missions";
 import { noEffects } from "@toyota/missions";
+import type { GameMissionBundle } from "../../missions.registry";
 import { failConditions } from "./failure";
 import { objectives } from "./success";
 import { CONVOY_ROUTE, ROAD_WAYPOINTS } from "./zones";
@@ -82,4 +83,8 @@ export const stopTheConvoy: MissionInput = {
   objectives,
   failConditions,
   rewards: { xp: 350, unlocks: [] },
+};
+
+export const stopTheConvoyBundle: GameMissionBundle = {
+  mission: stopTheConvoy,
 };

@@ -1,11 +1,16 @@
 // apps/toyota-wars/lib/missions/data/hold-the-line/mission.ts
 import type { MissionInput } from "@toyota/missions";
 import { waveEffects } from "@toyota/missions";
+import type { FlowScript } from "@/lib/mission-flow/mission-flow.types";
+import type { GameMissionBundle } from "../../missions.registry";
+import { flankCutscene } from "./cutscenes";
 import { failConditions } from "./failure";
+import { evadeQte } from "./qtes";
 import { objectives } from "./success";
 
 export const HOLD_THE_LINE_MISSION_ID = "hold-the-line";
 export const ARTILLERY_SQUAD_ID = "opening-artillery";
+export const HOLD_THE_LINE_FLOW_ID = "hold-the-line-opening";
 
 export const holdTheLine: MissionInput = {
   id: HOLD_THE_LINE_MISSION_ID,
@@ -126,4 +131,14 @@ export const holdTheLine: MissionInput = {
   objectives,
   failConditions,
   rewards: { xp: 200, unlocks: ["cut-the-head"] },
+};
+
+export const flow: FlowScript = {
+  id: HOLD_THE_LINE_FLOW_ID,
+  steps: [flankCutscene, evadeQte],
+};
+
+export const holdTheLineBundle: GameMissionBundle = {
+  mission: holdTheLine,
+  flow,
 };

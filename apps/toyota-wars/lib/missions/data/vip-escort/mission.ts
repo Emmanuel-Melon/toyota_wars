@@ -1,5 +1,6 @@
 import type { MissionInput } from "@toyota/missions";
 import { noEffects } from "@toyota/missions";
+import type { GameMissionBundle } from "../../missions.registry";
 import { failConditions } from "./failure";
 import { objectives } from "./success";
 import { ROAD_WAYPOINTS, VIP_ROUTE } from "./zones";
@@ -99,4 +100,8 @@ export const vipEscort: MissionInput = {
   objectives,
   failConditions,
   rewards: { xp: 350, unlocks: [] },
+};
+
+export const vipEscortBundle: GameMissionBundle = {
+  mission: vipEscort,
 };

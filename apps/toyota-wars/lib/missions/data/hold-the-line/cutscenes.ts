@@ -71,8 +71,4 @@ export const flankCutscene: FlowCutsceneStep = {
   camera: wide,
 };
 
-export const cutscenes = {
-  [FLANK_CUTSCENE_ID]: flankCutscene,
-} satisfies Record<string, FlowCutsceneStep>;
-
 export { evade };
