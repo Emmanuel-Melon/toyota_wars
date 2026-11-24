@@ -45,6 +45,8 @@ export const TeamSchema = z.enum([TEAM.ALLY, TEAM.ENEMY]);
  */
 export const UnitTemplateSchema = z.string().min(1);
 
+export const VehicleModelSchema = z.string().min(1);
+
 export const InitialOrderSchema = z.enum([
   INITIAL_ORDER.ATTACK,
   INITIAL_ORDER.FOLLOW,
@@ -70,6 +72,7 @@ export const SpawnTriggerSchema = z.discriminatedUnion("type", [
 
 export const SquadUnitSchema = z.object({
   template: UnitTemplateSchema,
+  model: VehicleModelSchema.optional(),
   personality: PersonalitySchema.optional(), // falls back to the squad personality
   isLeader: z.boolean().default(false),
 });

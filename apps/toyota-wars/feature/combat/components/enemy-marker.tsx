@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { useGameFrame } from "@/render-loop";
 import { useBattle } from "@/context/battle-context";
 import { usePlayer } from "@/context/player-context";
+import { useRadar } from "@/context/radar-context";
 import { useTargets } from "@/context/targets-context";
 import {
   projectWorldToScreen,
@@ -21,10 +22,12 @@ const screenPosition: ScreenPosition = { x: 0, y: 0, visible: false };
 
 export function EnemyMarkerLayer() {
   const { enemies } = useTargets();
+  const { radarOnline } = useRadar();
+  const visibleEnemies = radarOnline ? enemies : [];
 
   return (
     <div className={styles.layer} aria-hidden="true">
-      {enemies.map((enemy) => (
+      {visibleEnemies.map((enemy) => (
         <div
           key={enemy.id}
           ref={(element) => {
@@ -41,11 +44,12 @@ export function EnemyMarkerLayer() {
 export function EnemyMarkerUpdater() {
   const { camera, size } = useThree();
   const { destroyed } = usePlayer();
+  const { radarOnline } = useRadar();
   const { enemies } = useTargets();
   const { registry } = useBattle();
 
   useGameFrame(() => {
-    if (destroyed) {
+    if (!radarOnline || destroyed) {
       enemyMarkerElements.forEach((element) => {
         element.style.display = "none";
       });

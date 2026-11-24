@@ -487,3 +487,52 @@ export function assertKnownTemplates(
   if (problems.length > 0)
     throw new Error(`Unknown unit templates:\n${problems.join("\n")}`);
 }
+
+export function assertKnownVehicleModels(
+  missions: readonly Mission[],
+  known: Iterable<string>,
+): void {
+  const ids = new Set(known);
+  const problems: string[] = [];
+  for (const m of missions) {
+    for (const s of m.squads) {
+      for (const u of s.units) {
+        if (u.model && !ids.has(u.model))
+          problems.push(`${m.id}/${s.id}: unknown vehicle model "${u.model}"`);
+      }
+    }
+  }
+  if (problems.length > 0)
+    throw new Error(`Unknown vehicle models:\n${problems.join("\n")}`);
+}
+
+export function assertSingleAllyRadar(
+  missions: readonly Mission[],
+  radarTemplateId: string,
+  radarModelId: string,
+): void {
+  const problems: string[] = [];
+  for (const mission of missions) {
+    const radarUnits = mission.squads.flatMap((squad) =>
+      squad.units
+        .filter(
+          (unit) =>
+            unit.template === radarTemplateId || unit.model === radarModelId,
+        )
+        .map(() => squad),
+    );
+    if (radarUnits.length !== 1) {
+      problems.push(
+        `${mission.id}: expected exactly one radar unit, found ${radarUnits.length}`,
+      );
+      continue;
+    }
+    if (radarUnits[0].team !== TEAM.ALLY) {
+      problems.push(
+        `${mission.id}/${radarUnits[0].id}: radar unit must be on team ${TEAM.ALLY}`,
+      );
+    }
+  }
+  if (problems.length > 0)
+    throw new Error(`Invalid radar units:\n${problems.join("\n")}`);
+}

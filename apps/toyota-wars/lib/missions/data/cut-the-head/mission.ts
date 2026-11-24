@@ -30,6 +30,14 @@ export const cutTheHead: MissionInput = {
       initialOrder: "follow",
     },
     {
+      id: "intel",
+      team: "ally",
+      units: [{ template: "radar" }],
+      spawnPoints: [{ x: 0, z: 295 }],
+      personality: { aggression: 0.2, caution: 0.9 },
+      initialOrder: "follow",
+    },
+    {
       id: "warband",
       team: "enemy",
       units: [

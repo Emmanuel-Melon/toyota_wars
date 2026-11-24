@@ -1,4 +1,5 @@
 import type { usePlayer } from "@/context/player-context";
+import type { useRadar } from "@/context/radar-context";
 import type { useTargets } from "@/context/targets-context";
 import type { useCombat } from "@/context/combat-context";
 import type { useArena } from "@/context/arena-context";
@@ -10,6 +11,7 @@ export type MinimapState = {
   playerBody: ReturnType<typeof usePlayer>["playerBody"];
   allyTargets: ReturnType<typeof useTargets>["allyTargets"];
   enemies: ReturnType<typeof useTargets>["enemies"];
+  enemiesVisible: ReturnType<typeof useRadar>["radarOnline"];
   health: ReturnType<typeof useCombat>["health"];
   arena: ReturnType<typeof useArena>;
 };

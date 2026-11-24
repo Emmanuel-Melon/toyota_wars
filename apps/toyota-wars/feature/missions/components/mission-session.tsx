@@ -26,6 +26,7 @@ import {
   type UnitTemplateId,
 } from "@/lib/missions/missions.templates";
 import type { RosterSquadSpawn } from "@/lib/squad/squad.roster";
+import type { VehicleModelId } from "@/lib/vehicles/vehicle.types";
 import { SKIRMISH_SQUADS } from "@/feature/vehciles/spawns";
 import { useArenaControls } from "@/context/arena-context";
 import { useCombat } from "@/context/combat-context";
@@ -53,10 +54,14 @@ function missionSquadSpawn(squad: Squad, playerSpawn: Vec2): RosterSquadSpawn {
     const point = squad.spawnPoints[index % squad.spawnPoints.length];
     const position: [number, number] = [point.x, point.z];
     const rotationY = headingToward(point, playerSpawn);
+    const template = unit.template as UnitTemplateId;
     const spawn: VehicleSpawn = {
       position,
       rotationY,
-      palette: paletteFor(unit.template as UnitTemplateId, squad, index),
+      palette: paletteFor(template, squad, index),
+      model:
+        (unit.model as VehicleModelId | undefined) ??
+        UNIT_TEMPLATES[template].model,
       formationOffset: undefined,
     };
 

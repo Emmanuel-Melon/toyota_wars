@@ -33,6 +33,15 @@ export const firstContact: MissionInput = {
       ...noEffects(),
     },
     {
+      id: "intel",
+      team: "ally",
+      units: [{ template: "radar" }],
+      spawnPoints: [{ x: 0, z: 290 }],
+      personality: { aggression: 0.2, caution: 0.9 },
+      initialOrder: "follow",
+      ...noEffects(),
+    },
+    {
       id: "scouts",
       team: "enemy",
       units: [

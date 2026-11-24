@@ -11,13 +11,15 @@ export function drawUnits({ ctx, state, projection }: DrawContext): void {
     return live ? { x: live.x, z: live.z } : { x: fallback[0], z: fallback[2] };
   };
 
-  ctx.fillStyle = ENEMY_COLOR;
-  for (const enemy of state.enemies) {
-    if ((state.health[enemy.id] ?? 0) <= 0) continue;
-    const p = resolve(enemy.id, enemy.position);
-    ctx.beginPath();
-    ctx.arc(toX(p.x), toY(p.z), 2.8, 0, TAU);
-    ctx.fill();
+  if (state.enemiesVisible) {
+    ctx.fillStyle = ENEMY_COLOR;
+    for (const enemy of state.enemies) {
+      if ((state.health[enemy.id] ?? 0) <= 0) continue;
+      const p = resolve(enemy.id, enemy.position);
+      ctx.beginPath();
+      ctx.arc(toX(p.x), toY(p.z), 2.8, 0, TAU);
+      ctx.fill();
+    }
   }
 
   ctx.fillStyle = ALLY_COLOR;

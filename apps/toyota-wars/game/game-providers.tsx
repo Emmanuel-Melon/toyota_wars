@@ -7,6 +7,7 @@ import { CameraLookProvider } from "@/feature/camera/camera-look.context";
 import { CombatProvider, useCombat } from "@/context/combat-context";
 import { useMission } from "@/context/missions.context";
 import { PlayerProvider } from "@/context/player-context";
+import { RadarProvider } from "@/context/radar-context";
 import { TargetsProvider } from "@/context/targets-context";
 import type { GameMode } from "@/feature/game/game.types";
 import { MissionSessionProvider } from "@/feature/missions/components/mission-session";
@@ -30,16 +31,18 @@ export function GameProviders({
     <ArenaProvider>
       <CombatProvider>
         <MissionSessionProvider>
-          <CameraModeProvider>
-            <GameRuntime
-              mode={mode}
-              loadout={loadout}
-              graphicsReady={graphicsReady}
-              uiBlocked={uiBlocked}
-            >
-              {children}
-            </GameRuntime>
-          </CameraModeProvider>
+          <RadarProvider>
+            <CameraModeProvider>
+              <GameRuntime
+                mode={mode}
+                loadout={loadout}
+                graphicsReady={graphicsReady}
+                uiBlocked={uiBlocked}
+              >
+                {children}
+              </GameRuntime>
+            </CameraModeProvider>
+          </RadarProvider>
         </MissionSessionProvider>
       </CombatProvider>
     </ArenaProvider>

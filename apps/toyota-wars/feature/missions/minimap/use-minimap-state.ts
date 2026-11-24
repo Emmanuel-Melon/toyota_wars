@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { useArena } from "@/context/arena-context";
 import { useCombat } from "@/context/combat-context";
 import { usePlayer } from "@/context/player-context";
+import { useRadar } from "@/context/radar-context";
 import { useTargets } from "@/context/targets-context";
 import { useMission } from "@/context/missions.context";
 import type { MinimapState } from "./types";
@@ -17,6 +18,7 @@ export function useMinimapState() {
   const { playerBody } = usePlayer();
   const { allyTargets, enemies } = useTargets();
   const { health } = useCombat();
+  const { radarOnline } = useRadar();
   const { activeObjective, objectives } = useMission();
 
   const stateRef = useRef<MinimapState>({
@@ -24,6 +26,7 @@ export function useMinimapState() {
     playerBody,
     allyTargets,
     enemies,
+    enemiesVisible: radarOnline,
     health,
     arena,
   });
@@ -32,6 +35,7 @@ export function useMinimapState() {
     playerBody,
     allyTargets,
     enemies,
+    enemiesVisible: radarOnline,
     health,
     arena,
   };
