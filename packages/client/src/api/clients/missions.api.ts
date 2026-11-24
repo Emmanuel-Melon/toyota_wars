@@ -22,7 +22,9 @@ export class MissionsApiClient extends BaseApiClient {
     super(api);
   }
 
-  public async getMissions(params?: GetMissionsParams): Promise<MissionResults> {
+  public async getMissions(
+    params?: GetMissionsParams,
+  ): Promise<MissionResults> {
     const response = await this.api.request<MissionCollectionResponse>(
       this.path,
       { method: "GET", params },

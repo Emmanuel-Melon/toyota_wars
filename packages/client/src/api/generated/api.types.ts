@@ -4,1382 +4,114 @@
  */
 
 export interface paths {
-    "/v1/missions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get all missions
-         * @description Returns a paginated collection of campaign missions, sorted by campaign order by default.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    limit?: number;
-                    page?: number;
-                    search?: string;
-                    sortBy?: "order" | "title" | "difficulty" | "createdAt";
-                    sortOrder?: "asc" | "desc";
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description The request has succeeded. */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            data: {
-                                /** @enum {string} */
-                                type: "mission";
-                                /** Format: uuid */
-                                id: string;
-                                /**
-                                 * Mission
-                                 * @description Campaign mission definition: arena, squads, objectives, fail conditions, and rewards
-                                 */
-                                attributes: {
-                                    id: string;
-                                    schemaVersion: number;
-                                    order: number;
-                                    title: string;
-                                    briefing: string;
-                                    difficulty: number;
-                                    requires: string[];
-                                    arena: {
-                                        levelId?: string;
-                                        seed: number;
-                                        size: number;
-                                        obstacleDensity: number;
-                                        playerSpawn: {
-                                            x: number;
-                                            z: number;
-                                        };
-                                        heading?: number;
-                                        roads?: {
-                                            waypoints: {
-                                                x: number;
-                                                z: number;
-                                            }[];
-                                            /** @default 12 */
-                                            width: number;
-                                        };
-                                    };
-                                    squads: {
-                                        id: string;
-                                        /** @enum {string} */
-                                        team: "ally" | "enemy";
-                                        units: {
-                                            template: string;
-                                            personality?: {
-                                                aggression: number;
-                                                caution: number;
-                                            };
-                                            /** @default false */
-                                            isLeader: boolean;
-                                        }[];
-                                        spawnPoints: {
-                                            x: number;
-                                            z: number;
-                                        }[];
-                                        /**
-                                         * @default {
-                                         *       "type": "start"
-                                         *     }
-                                         */
-                                        trigger: {
-                                            /** @enum {string} */
-                                            type: "start";
-                                        } | {
-                                            /** @enum {string} */
-                                            type: "time";
-                                            atSeconds: number;
-                                        } | {
-                                            /** @enum {string} */
-                                            type: "squadDestroyed";
-                                            squadId: string;
-                                            /** @default 0 */
-                                            delaySeconds: number;
-                                        };
-                                        /**
-                                         * @default {
-                                         *       "aggression": 0.5,
-                                         *       "caution": 0.5
-                                         *     }
-                                         */
-                                        personality: {
-                                            aggression: number;
-                                            caution: number;
-                                        };
-                                        /**
-                                         * @default patrol
-                                         * @enum {string}
-                                         */
-                                        initialOrder: "attack" | "follow" | "flee" | "patrol";
-                                    }[];
-                                    objectives: ({
-                                        id: string;
-                                        title: string;
-                                        /** @default true */
-                                        required: boolean;
-                                        /** @default false */
-                                        hidden: boolean;
-                                        /** @enum {string} */
-                                        type: "destroyCount";
-                                        params: {
-                                            /**
-                                             * @default enemy
-                                             * @enum {string}
-                                             */
-                                            team: "ally" | "enemy";
-                                            count: number;
-                                        };
-                                    } | {
-                                        id: string;
-                                        title: string;
-                                        /** @default true */
-                                        required: boolean;
-                                        /** @default false */
-                                        hidden: boolean;
-                                        /** @enum {string} */
-                                        type: "destroySquad";
-                                        params: {
-                                            squadId: string;
-                                            /** @default false */
-                                            leaderOnly: boolean;
-                                        };
-                                    } | {
-                                        id: string;
-                                        title: string;
-                                        /** @default true */
-                                        required: boolean;
-                                        /** @default false */
-                                        hidden: boolean;
-                                        /** @enum {string} */
-                                        type: "survive";
-                                        params: {
-                                            seconds: number;
-                                        };
-                                    } | {
-                                        id: string;
-                                        title: string;
-                                        /** @default true */
-                                        required: boolean;
-                                        /** @default false */
-                                        hidden: boolean;
-                                        /** @enum {string} */
-                                        type: "keepAlive";
-                                        params: {
-                                            squadId: string;
-                                            minAlive: number;
-                                        };
-                                    })[];
-                                    failConditions: ({
-                                        /** @enum {string} */
-                                        type: "playerDestroyed";
-                                    } | {
-                                        /** @enum {string} */
-                                        type: "timeLimit";
-                                        seconds: number;
-                                    })[];
-                                    rewards: {
-                                        xp: number;
-                                        /** @default [] */
-                                        unlocks: string[];
-                                    };
-                                    /** Format: date-time */
-                                    createdAt: string;
-                                    /** Format: date-time */
-                                    updatedAt: string;
-                                };
-                                relationships?: {
-                                    [key: string]: unknown;
-                                };
-                                meta?: {
-                                    [key: string]: unknown;
-                                };
-                                links?: {
-                                    [key: string]: string;
-                                };
-                            }[];
-                            links: {
-                                self: string;
-                            };
-                            metadata: {
-                                requestId: string;
-                                timestamp: string;
-                                total: number;
-                                page: number;
-                                limit: number;
-                                totalPages: number;
-                                /** @default {} */
-                                availableFilters: {
-                                    [key: string]: unknown;
-                                };
-                                sortOptions: {
-                                    fields: string[];
-                                    default: string;
-                                    /** @enum {string} */
-                                    direction: "asc" | "desc";
-                                };
-                            };
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  "/v1/missions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/missions/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    /**
+     * Get all missions
+     * @description Returns a paginated collection of campaign missions, sorted by campaign order by default.
+     */
+    get: {
+      parameters: {
+        query?: {
+          limit?: number;
+          page?: number;
+          search?: string;
+          sortBy?: "order" | "title" | "difficulty" | "createdAt";
+          sortOrder?: "asc" | "desc";
         };
-        /**
-         * Get mission by ID
-         * @description Returns a single mission by its slug ID (e.g. first-contact).
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description The request has succeeded. */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            data: {
-                                /** @enum {string} */
-                                type: "mission";
-                                /** Format: uuid */
-                                id: string;
-                                /**
-                                 * Mission
-                                 * @description Campaign mission definition: arena, squads, objectives, fail conditions, and rewards
-                                 */
-                                attributes: {
-                                    id: string;
-                                    schemaVersion: number;
-                                    order: number;
-                                    title: string;
-                                    briefing: string;
-                                    difficulty: number;
-                                    requires: string[];
-                                    arena: {
-                                        levelId?: string;
-                                        seed: number;
-                                        size: number;
-                                        obstacleDensity: number;
-                                        playerSpawn: {
-                                            x: number;
-                                            z: number;
-                                        };
-                                        heading?: number;
-                                        roads?: {
-                                            waypoints: {
-                                                x: number;
-                                                z: number;
-                                            }[];
-                                            /** @default 12 */
-                                            width: number;
-                                        };
-                                    };
-                                    squads: {
-                                        id: string;
-                                        /** @enum {string} */
-                                        team: "ally" | "enemy";
-                                        units: {
-                                            template: string;
-                                            personality?: {
-                                                aggression: number;
-                                                caution: number;
-                                            };
-                                            /** @default false */
-                                            isLeader: boolean;
-                                        }[];
-                                        spawnPoints: {
-                                            x: number;
-                                            z: number;
-                                        }[];
-                                        /**
-                                         * @default {
-                                         *       "type": "start"
-                                         *     }
-                                         */
-                                        trigger: {
-                                            /** @enum {string} */
-                                            type: "start";
-                                        } | {
-                                            /** @enum {string} */
-                                            type: "time";
-                                            atSeconds: number;
-                                        } | {
-                                            /** @enum {string} */
-                                            type: "squadDestroyed";
-                                            squadId: string;
-                                            /** @default 0 */
-                                            delaySeconds: number;
-                                        };
-                                        /**
-                                         * @default {
-                                         *       "aggression": 0.5,
-                                         *       "caution": 0.5
-                                         *     }
-                                         */
-                                        personality: {
-                                            aggression: number;
-                                            caution: number;
-                                        };
-                                        /**
-                                         * @default patrol
-                                         * @enum {string}
-                                         */
-                                        initialOrder: "attack" | "follow" | "flee" | "patrol";
-                                    }[];
-                                    objectives: ({
-                                        id: string;
-                                        title: string;
-                                        /** @default true */
-                                        required: boolean;
-                                        /** @default false */
-                                        hidden: boolean;
-                                        /** @enum {string} */
-                                        type: "destroyCount";
-                                        params: {
-                                            /**
-                                             * @default enemy
-                                             * @enum {string}
-                                             */
-                                            team: "ally" | "enemy";
-                                            count: number;
-                                        };
-                                    } | {
-                                        id: string;
-                                        title: string;
-                                        /** @default true */
-                                        required: boolean;
-                                        /** @default false */
-                                        hidden: boolean;
-                                        /** @enum {string} */
-                                        type: "destroySquad";
-                                        params: {
-                                            squadId: string;
-                                            /** @default false */
-                                            leaderOnly: boolean;
-                                        };
-                                    } | {
-                                        id: string;
-                                        title: string;
-                                        /** @default true */
-                                        required: boolean;
-                                        /** @default false */
-                                        hidden: boolean;
-                                        /** @enum {string} */
-                                        type: "survive";
-                                        params: {
-                                            seconds: number;
-                                        };
-                                    } | {
-                                        id: string;
-                                        title: string;
-                                        /** @default true */
-                                        required: boolean;
-                                        /** @default false */
-                                        hidden: boolean;
-                                        /** @enum {string} */
-                                        type: "keepAlive";
-                                        params: {
-                                            squadId: string;
-                                            minAlive: number;
-                                        };
-                                    })[];
-                                    failConditions: ({
-                                        /** @enum {string} */
-                                        type: "playerDestroyed";
-                                    } | {
-                                        /** @enum {string} */
-                                        type: "timeLimit";
-                                        seconds: number;
-                                    })[];
-                                    rewards: {
-                                        xp: number;
-                                        /** @default [] */
-                                        unlocks: string[];
-                                    };
-                                    /** Format: date-time */
-                                    createdAt: string;
-                                    /** Format: date-time */
-                                    updatedAt: string;
-                                };
-                                relationships?: {
-                                    [key: string]: unknown;
-                                };
-                                meta?: {
-                                    [key: string]: unknown;
-                                };
-                                links?: {
-                                    [key: string]: string;
-                                };
-                            };
-                            links: {
-                                self: string;
-                            };
-                            metadata: {
-                                requestId: string;
-                                timestamp: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        };
-                    };
-                };
-                /** @description The requested resource could not be found on the server. */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["JsonApiErrorResponse"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/catalog": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get the full game catalog
-         * @description Returns missions, weapon configs, and unit templates in a single response.
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description The request has succeeded. */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            data: {
-                                /** @enum {string} */
-                                type: "catalog";
-                                /** Format: uuid */
-                                id: string;
-                                attributes: {
-                                    version: string;
-                                    missions: {
-                                        id: string;
-                                        schemaVersion: number;
-                                        order: number;
-                                        title: string;
-                                        briefing: string;
-                                        difficulty: number;
-                                        requires: string[];
-                                        arena: {
-                                            levelId?: string;
-                                            seed: number;
-                                            size: number;
-                                            obstacleDensity: number;
-                                            playerSpawn: {
-                                                x: number;
-                                                z: number;
-                                            };
-                                            heading?: number;
-                                            roads?: {
-                                                waypoints: {
-                                                    x: number;
-                                                    z: number;
-                                                }[];
-                                                /** @default 12 */
-                                                width: number;
-                                            };
-                                        };
-                                        squads: {
-                                            id: string;
-                                            /** @enum {string} */
-                                            team: "ally" | "enemy";
-                                            units: {
-                                                template: string;
-                                                personality?: {
-                                                    aggression: number;
-                                                    caution: number;
-                                                };
-                                                /** @default false */
-                                                isLeader: boolean;
-                                            }[];
-                                            spawnPoints: {
-                                                x: number;
-                                                z: number;
-                                            }[];
-                                            /**
-                                             * @default {
-                                             *       "type": "start"
-                                             *     }
-                                             */
-                                            trigger: {
-                                                /** @enum {string} */
-                                                type: "start";
-                                            } | {
-                                                /** @enum {string} */
-                                                type: "time";
-                                                atSeconds: number;
-                                            } | {
-                                                /** @enum {string} */
-                                                type: "squadDestroyed";
-                                                squadId: string;
-                                                /** @default 0 */
-                                                delaySeconds: number;
-                                            };
-                                            /**
-                                             * @default {
-                                             *       "aggression": 0.5,
-                                             *       "caution": 0.5
-                                             *     }
-                                             */
-                                            personality: {
-                                                aggression: number;
-                                                caution: number;
-                                            };
-                                            /**
-                                             * @default patrol
-                                             * @enum {string}
-                                             */
-                                            initialOrder: "attack" | "follow" | "flee" | "patrol";
-                                        }[];
-                                        objectives: ({
-                                            id: string;
-                                            title: string;
-                                            /** @default true */
-                                            required: boolean;
-                                            /** @default false */
-                                            hidden: boolean;
-                                            /** @enum {string} */
-                                            type: "destroyCount";
-                                            params: {
-                                                /**
-                                                 * @default enemy
-                                                 * @enum {string}
-                                                 */
-                                                team: "ally" | "enemy";
-                                                count: number;
-                                            };
-                                        } | {
-                                            id: string;
-                                            title: string;
-                                            /** @default true */
-                                            required: boolean;
-                                            /** @default false */
-                                            hidden: boolean;
-                                            /** @enum {string} */
-                                            type: "destroySquad";
-                                            params: {
-                                                squadId: string;
-                                                /** @default false */
-                                                leaderOnly: boolean;
-                                            };
-                                        } | {
-                                            id: string;
-                                            title: string;
-                                            /** @default true */
-                                            required: boolean;
-                                            /** @default false */
-                                            hidden: boolean;
-                                            /** @enum {string} */
-                                            type: "survive";
-                                            params: {
-                                                seconds: number;
-                                            };
-                                        } | {
-                                            id: string;
-                                            title: string;
-                                            /** @default true */
-                                            required: boolean;
-                                            /** @default false */
-                                            hidden: boolean;
-                                            /** @enum {string} */
-                                            type: "keepAlive";
-                                            params: {
-                                                squadId: string;
-                                                minAlive: number;
-                                            };
-                                        })[];
-                                        failConditions: ({
-                                            /** @enum {string} */
-                                            type: "playerDestroyed";
-                                        } | {
-                                            /** @enum {string} */
-                                            type: "timeLimit";
-                                            seconds: number;
-                                        })[];
-                                        rewards: {
-                                            xp: number;
-                                            /** @default [] */
-                                            unlocks: string[];
-                                        };
-                                        /** Format: date-time */
-                                        createdAt: string;
-                                        /** Format: date-time */
-                                        updatedAt: string;
-                                    }[];
-                                    weapons: {
-                                        [key: string]: {
-                                            id: string;
-                                            label: string;
-                                            /** @enum {string} */
-                                            mechanism: "projectile" | "rocket";
-                                            directSuppression: number;
-                                            indirectFirepower: number;
-                                            preferredRange: number;
-                                            engagementRange: number;
-                                            cooldown: number;
-                                            spread: number;
-                                            recoil: number;
-                                            ammoCost: number;
-                                            muzzle: {
-                                                height: number;
-                                                forwardOffset: number;
-                                            };
-                                            muzzles?: {
-                                                right: number;
-                                            }[] | null;
-                                            projectile: {
-                                                speed: number;
-                                                life: number;
-                                                gravity: number;
-                                                drag: number;
-                                                hitRadius: number;
-                                                damage: number;
-                                            };
-                                            audio: {
-                                                kind: string;
-                                            };
-                                            visual: {
-                                                mount: string;
-                                                projectile: {
-                                                    size: number;
-                                                    color: string;
-                                                    emissive: string;
-                                                };
-                                                muzzleFlash: {
-                                                    color: string;
-                                                    size: number;
-                                                    duration: number;
-                                                };
-                                            };
-                                            explosion?: {
-                                                radius: number;
-                                                triggerRadius: number;
-                                                damage: number;
-                                                minDamageRatio: number;
-                                                duration: number;
-                                                fireColor: string;
-                                                shockwaveColor: string;
-                                                friendlyFire: boolean;
-                                            } | null;
-                                            /** Format: date-time */
-                                            createdAt: string;
-                                            /** Format: date-time */
-                                            updatedAt: string;
-                                        };
-                                    };
-                                    unitTemplates: {
-                                        [key: string]: {
-                                            id: string;
-                                            label: string;
-                                            maxHealth: number;
-                                            damageScale: number;
-                                            palettes: {
-                                                ally: {
-                                                    primary: string;
-                                                    secondary?: string;
-                                                    accent?: string;
-                                                }[];
-                                                enemy: {
-                                                    primary: string;
-                                                    secondary?: string;
-                                                    accent?: string;
-                                                }[];
-                                            };
-                                            /** Format: date-time */
-                                            createdAt: string;
-                                            /** Format: date-time */
-                                            updatedAt: string;
-                                        };
-                                    };
-                                };
-                                relationships?: {
-                                    [key: string]: unknown;
-                                };
-                                meta?: {
-                                    [key: string]: unknown;
-                                };
-                                links?: {
-                                    [key: string]: string;
-                                };
-                            };
-                            links: {
-                                self: string;
-                            };
-                            metadata: {
-                                requestId: string;
-                                timestamp: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/tanks": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get all tanks
-         * @description Returns a paginated collection of tank blueprints, sorted by name by default.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    limit?: number;
-                    page?: number;
-                    search?: string;
-                    sortBy?: "name" | "health" | "speed" | "createdAt";
-                    sortOrder?: "asc" | "desc";
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description The request has succeeded. */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            data: {
-                                /** @enum {string} */
-                                type: "tank";
-                                /** Format: uuid */
-                                id: string;
-                                /**
-                                 * Tank
-                                 * @description AI tank blueprint: combat stats, traits, and behavior tree
-                                 */
-                                attributes: {
-                                    id: string;
-                                    name: string;
-                                    personality: string;
-                                    traits: {
-                                        aggression: number;
-                                        caution: number;
-                                    };
-                                    health: number;
-                                    speed: number;
-                                    fireRange: number;
-                                    fightingDistance: number;
-                                    behaviorTree: {
-                                        [key: string]: unknown;
-                                    };
-                                    /** Format: date-time */
-                                    createdAt: string;
-                                    /** Format: date-time */
-                                    updatedAt: string;
-                                };
-                                relationships?: {
-                                    [key: string]: unknown;
-                                };
-                                meta?: {
-                                    [key: string]: unknown;
-                                };
-                                links?: {
-                                    [key: string]: string;
-                                };
-                            }[];
-                            links: {
-                                self: string;
-                            };
-                            metadata: {
-                                requestId: string;
-                                timestamp: string;
-                                total: number;
-                                page: number;
-                                limit: number;
-                                totalPages: number;
-                                /** @default {} */
-                                availableFilters: {
-                                    [key: string]: unknown;
-                                };
-                                sortOptions: {
-                                    fields: string[];
-                                    default: string;
-                                    /** @enum {string} */
-                                    direction: "asc" | "desc";
-                                };
-                            };
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/tanks/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get tank by ID
-         * @description Returns a single tank blueprint by its slug ID.
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description The request has succeeded. */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            data: {
-                                /** @enum {string} */
-                                type: "tank";
-                                /** Format: uuid */
-                                id: string;
-                                /**
-                                 * Tank
-                                 * @description AI tank blueprint: combat stats, traits, and behavior tree
-                                 */
-                                attributes: {
-                                    id: string;
-                                    name: string;
-                                    personality: string;
-                                    traits: {
-                                        aggression: number;
-                                        caution: number;
-                                    };
-                                    health: number;
-                                    speed: number;
-                                    fireRange: number;
-                                    fightingDistance: number;
-                                    behaviorTree: {
-                                        [key: string]: unknown;
-                                    };
-                                    /** Format: date-time */
-                                    createdAt: string;
-                                    /** Format: date-time */
-                                    updatedAt: string;
-                                };
-                                relationships?: {
-                                    [key: string]: unknown;
-                                };
-                                meta?: {
-                                    [key: string]: unknown;
-                                };
-                                links?: {
-                                    [key: string]: string;
-                                };
-                            };
-                            links: {
-                                self: string;
-                            };
-                            metadata: {
-                                requestId: string;
-                                timestamp: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        };
-                    };
-                };
-                /** @description The requested resource could not be found on the server. */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["JsonApiErrorResponse"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-}
-export type webhooks = Record<string, never>;
-export interface components {
-    schemas: {
-        /**
-         * Mission
-         * @description Campaign mission definition: arena, squads, objectives, fail conditions, and rewards
-         */
-        Mission: {
-            id: string;
-            schemaVersion: number;
-            order: number;
-            title: string;
-            briefing: string;
-            difficulty: number;
-            requires: string[];
-            arena: {
-                levelId?: string;
-                seed: number;
-                size: number;
-                obstacleDensity: number;
-                playerSpawn: {
-                    x: number;
-                    z: number;
-                };
-                heading?: number;
-                roads?: {
-                    waypoints: {
-                        x: number;
-                        z: number;
-                    }[];
-                    /** @default 12 */
-                    width: number;
-                };
-            };
-            squads: {
-                id: string;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description The request has succeeded. */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
                 /** @enum {string} */
-                team: "ally" | "enemy";
-                units: {
-                    template: string;
-                    personality?: {
-                        aggression: number;
-                        caution: number;
-                    };
-                    /** @default false */
-                    isLeader: boolean;
-                }[];
-                spawnPoints: {
-                    x: number;
-                    z: number;
-                }[];
+                type: "mission";
+                /** Format: uuid */
+                id: string;
                 /**
-                 * @default {
-                 *       "type": "start"
-                 *     }
+                 * Mission
+                 * @description Campaign mission definition: arena, squads, objectives, fail conditions, and rewards
                  */
-                trigger: {
-                    /** @enum {string} */
-                    type: "start";
-                } | {
-                    /** @enum {string} */
-                    type: "time";
-                    atSeconds: number;
-                } | {
-                    /** @enum {string} */
-                    type: "squadDestroyed";
-                    squadId: string;
-                    /** @default 0 */
-                    delaySeconds: number;
-                };
-                /**
-                 * @default {
-                 *       "aggression": 0.5,
-                 *       "caution": 0.5
-                 *     }
-                 */
-                personality: {
-                    aggression: number;
-                    caution: number;
-                };
-                /**
-                 * @default patrol
-                 * @enum {string}
-                 */
-                initialOrder: "attack" | "follow" | "flee" | "patrol";
-            }[];
-            objectives: ({
-                id: string;
-                title: string;
-                /** @default true */
-                required: boolean;
-                /** @default false */
-                hidden: boolean;
-                /** @enum {string} */
-                type: "destroyCount";
-                params: {
-                    /**
-                     * @default enemy
-                     * @enum {string}
-                     */
-                    team: "ally" | "enemy";
-                    count: number;
-                };
-            } | {
-                id: string;
-                title: string;
-                /** @default true */
-                required: boolean;
-                /** @default false */
-                hidden: boolean;
-                /** @enum {string} */
-                type: "destroySquad";
-                params: {
-                    squadId: string;
-                    /** @default false */
-                    leaderOnly: boolean;
-                };
-            } | {
-                id: string;
-                title: string;
-                /** @default true */
-                required: boolean;
-                /** @default false */
-                hidden: boolean;
-                /** @enum {string} */
-                type: "survive";
-                params: {
-                    seconds: number;
-                };
-            } | {
-                id: string;
-                title: string;
-                /** @default true */
-                required: boolean;
-                /** @default false */
-                hidden: boolean;
-                /** @enum {string} */
-                type: "keepAlive";
-                params: {
-                    squadId: string;
-                    minAlive: number;
-                };
-            })[];
-            failConditions: ({
-                /** @enum {string} */
-                type: "playerDestroyed";
-            } | {
-                /** @enum {string} */
-                type: "timeLimit";
-                seconds: number;
-            })[];
-            rewards: {
-                xp: number;
-                /** @default [] */
-                unlocks: string[];
-            };
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        /**
-         * CreateMissionRequest
-         * @description Request schema for creating a new mission
-         */
-        NewMission: {
-            id: string;
-            schemaVersion?: number;
-            order: number;
-            title: string;
-            briefing: string;
-            difficulty: number;
-            requires: string[];
-            arena: {
-                levelId?: string;
-                seed: number;
-                size: number;
-                obstacleDensity: number;
-                playerSpawn: {
-                    x: number;
-                    z: number;
-                };
-                heading?: number;
-                roads?: {
-                    waypoints: {
-                        x: number;
-                        z: number;
-                    }[];
-                    /** @default 12 */
-                    width: number;
-                };
-            };
-            squads: {
-                id: string;
-                /** @enum {string} */
-                team: "ally" | "enemy";
-                units: {
-                    template: string;
-                    personality?: {
-                        aggression: number;
-                        caution: number;
-                    };
-                    /** @default false */
-                    isLeader: boolean;
-                }[];
-                spawnPoints: {
-                    x: number;
-                    z: number;
-                }[];
-                /**
-                 * @default {
-                 *       "type": "start"
-                 *     }
-                 */
-                trigger: {
-                    /** @enum {string} */
-                    type: "start";
-                } | {
-                    /** @enum {string} */
-                    type: "time";
-                    atSeconds: number;
-                } | {
-                    /** @enum {string} */
-                    type: "squadDestroyed";
-                    squadId: string;
-                    /** @default 0 */
-                    delaySeconds: number;
-                };
-                /**
-                 * @default {
-                 *       "aggression": 0.5,
-                 *       "caution": 0.5
-                 *     }
-                 */
-                personality: {
-                    aggression: number;
-                    caution: number;
-                };
-                /**
-                 * @default patrol
-                 * @enum {string}
-                 */
-                initialOrder: "attack" | "follow" | "flee" | "patrol";
-            }[];
-            objectives: ({
-                id: string;
-                title: string;
-                /** @default true */
-                required: boolean;
-                /** @default false */
-                hidden: boolean;
-                /** @enum {string} */
-                type: "destroyCount";
-                params: {
-                    /**
-                     * @default enemy
-                     * @enum {string}
-                     */
-                    team: "ally" | "enemy";
-                    count: number;
-                };
-            } | {
-                id: string;
-                title: string;
-                /** @default true */
-                required: boolean;
-                /** @default false */
-                hidden: boolean;
-                /** @enum {string} */
-                type: "destroySquad";
-                params: {
-                    squadId: string;
-                    /** @default false */
-                    leaderOnly: boolean;
-                };
-            } | {
-                id: string;
-                title: string;
-                /** @default true */
-                required: boolean;
-                /** @default false */
-                hidden: boolean;
-                /** @enum {string} */
-                type: "survive";
-                params: {
-                    seconds: number;
-                };
-            } | {
-                id: string;
-                title: string;
-                /** @default true */
-                required: boolean;
-                /** @default false */
-                hidden: boolean;
-                /** @enum {string} */
-                type: "keepAlive";
-                params: {
-                    squadId: string;
-                    minAlive: number;
-                };
-            })[];
-            failConditions: ({
-                /** @enum {string} */
-                type: "playerDestroyed";
-            } | {
-                /** @enum {string} */
-                type: "timeLimit";
-                seconds: number;
-            })[];
-            rewards: {
-                xp: number;
-                /** @default [] */
-                unlocks: string[];
-            };
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
-        };
-        MissionResource: {
-            /** @enum {string} */
-            type: "mission";
-            /** Format: uuid */
-            id: string;
-            /**
-             * Mission
-             * @description Campaign mission definition: arena, squads, objectives, fail conditions, and rewards
-             */
-            attributes: {
-                id: string;
-                schemaVersion: number;
-                order: number;
-                title: string;
-                briefing: string;
-                difficulty: number;
-                requires: string[];
-                arena: {
+                attributes: {
+                  id: string;
+                  schemaVersion: number;
+                  order: number;
+                  title: string;
+                  briefing: string;
+                  difficulty: number;
+                  requires: string[];
+                  arena: {
                     levelId?: string;
                     seed: number;
                     size: number;
                     obstacleDensity: number;
                     playerSpawn: {
-                        x: number;
-                        z: number;
+                      x: number;
+                      z: number;
                     };
                     heading?: number;
                     roads?: {
-                        waypoints: {
-                            x: number;
-                            z: number;
-                        }[];
-                        /** @default 12 */
-                        width: number;
+                      waypoints: {
+                        x: number;
+                        z: number;
+                      }[];
+                      /** @default 12 */
+                      width: number;
                     };
-                };
-                squads: {
+                  };
+                  squads: {
                     id: string;
                     /** @enum {string} */
                     team: "ally" | "enemy";
                     units: {
-                        template: string;
-                        personality?: {
-                            aggression: number;
-                            caution: number;
-                        };
-                        /** @default false */
-                        isLeader: boolean;
+                      template: string;
+                      personality?: {
+                        aggression: number;
+                        caution: number;
+                      };
+                      /** @default false */
+                      isLeader: boolean;
                     }[];
                     spawnPoints: {
-                        x: number;
-                        z: number;
+                      x: number;
+                      z: number;
                     }[];
                     /**
                      * @default {
                      *       "type": "start"
                      *     }
                      */
-                    trigger: {
-                        /** @enum {string} */
-                        type: "start";
-                    } | {
-                        /** @enum {string} */
-                        type: "time";
-                        atSeconds: number;
-                    } | {
-                        /** @enum {string} */
-                        type: "squadDestroyed";
-                        squadId: string;
-                        /** @default 0 */
-                        delaySeconds: number;
-                    };
+                    trigger:
+                      | {
+                          /** @enum {string} */
+                          type: "start";
+                        }
+                      | {
+                          /** @enum {string} */
+                          type: "time";
+                          atSeconds: number;
+                        }
+                      | {
+                          /** @enum {string} */
+                          type: "squadDestroyed";
+                          squadId: string;
+                          /** @default 0 */
+                          delaySeconds: number;
+                        };
                     /**
                      * @default {
                      *       "aggression": 0.5,
@@ -1387,462 +119,112 @@ export interface components {
                      *     }
                      */
                     personality: {
-                        aggression: number;
-                        caution: number;
+                      aggression: number;
+                      caution: number;
                     };
                     /**
                      * @default patrol
                      * @enum {string}
                      */
                     initialOrder: "attack" | "follow" | "flee" | "patrol";
-                }[];
-                objectives: ({
-                    id: string;
-                    title: string;
-                    /** @default true */
-                    required: boolean;
-                    /** @default false */
-                    hidden: boolean;
-                    /** @enum {string} */
-                    type: "destroyCount";
-                    params: {
-                        /**
-                         * @default enemy
-                         * @enum {string}
-                         */
-                        team: "ally" | "enemy";
-                        count: number;
-                    };
-                } | {
-                    id: string;
-                    title: string;
-                    /** @default true */
-                    required: boolean;
-                    /** @default false */
-                    hidden: boolean;
-                    /** @enum {string} */
-                    type: "destroySquad";
-                    params: {
-                        squadId: string;
+                  }[];
+                  objectives: (
+                    | {
+                        id: string;
+                        title: string;
+                        /** @default true */
+                        required: boolean;
                         /** @default false */
-                        leaderOnly: boolean;
-                    };
-                } | {
-                    id: string;
-                    title: string;
-                    /** @default true */
-                    required: boolean;
-                    /** @default false */
-                    hidden: boolean;
-                    /** @enum {string} */
-                    type: "survive";
-                    params: {
+                        hidden: boolean;
+                        /** @enum {string} */
+                        type: "destroyCount";
+                        params: {
+                          /**
+                           * @default enemy
+                           * @enum {string}
+                           */
+                          team: "ally" | "enemy";
+                          count: number;
+                        };
+                      }
+                    | {
+                        id: string;
+                        title: string;
+                        /** @default true */
+                        required: boolean;
+                        /** @default false */
+                        hidden: boolean;
+                        /** @enum {string} */
+                        type: "destroySquad";
+                        params: {
+                          squadId: string;
+                          /** @default false */
+                          leaderOnly: boolean;
+                        };
+                      }
+                    | {
+                        id: string;
+                        title: string;
+                        /** @default true */
+                        required: boolean;
+                        /** @default false */
+                        hidden: boolean;
+                        /** @enum {string} */
+                        type: "survive";
+                        params: {
+                          seconds: number;
+                        };
+                      }
+                    | {
+                        id: string;
+                        title: string;
+                        /** @default true */
+                        required: boolean;
+                        /** @default false */
+                        hidden: boolean;
+                        /** @enum {string} */
+                        type: "keepAlive";
+                        params: {
+                          squadId: string;
+                          minAlive: number;
+                        };
+                      }
+                  )[];
+                  failConditions: (
+                    | {
+                        /** @enum {string} */
+                        type: "playerDestroyed";
+                      }
+                    | {
+                        /** @enum {string} */
+                        type: "timeLimit";
                         seconds: number;
-                    };
-                } | {
-                    id: string;
-                    title: string;
-                    /** @default true */
-                    required: boolean;
-                    /** @default false */
-                    hidden: boolean;
-                    /** @enum {string} */
-                    type: "keepAlive";
-                    params: {
-                        squadId: string;
-                        minAlive: number;
-                    };
-                })[];
-                failConditions: ({
-                    /** @enum {string} */
-                    type: "playerDestroyed";
-                } | {
-                    /** @enum {string} */
-                    type: "timeLimit";
-                    seconds: number;
-                })[];
-                rewards: {
+                      }
+                  )[];
+                  rewards: {
                     xp: number;
                     /** @default [] */
                     unlocks: string[];
-                };
-                /** Format: date-time */
-                createdAt: string;
-                /** Format: date-time */
-                updatedAt: string;
-            };
-            relationships?: {
-                [key: string]: unknown;
-            };
-            meta?: {
-                [key: string]: unknown;
-            };
-            links?: {
-                [key: string]: string;
-            };
-        };
-        MissionSingleResponse: {
-            data: {
-                /** @enum {string} */
-                type: "mission";
-                /** Format: uuid */
-                id: string;
-                /**
-                 * Mission
-                 * @description Campaign mission definition: arena, squads, objectives, fail conditions, and rewards
-                 */
-                attributes: {
-                    id: string;
-                    schemaVersion: number;
-                    order: number;
-                    title: string;
-                    briefing: string;
-                    difficulty: number;
-                    requires: string[];
-                    arena: {
-                        levelId?: string;
-                        seed: number;
-                        size: number;
-                        obstacleDensity: number;
-                        playerSpawn: {
-                            x: number;
-                            z: number;
-                        };
-                        heading?: number;
-                        roads?: {
-                            waypoints: {
-                                x: number;
-                                z: number;
-                            }[];
-                            /** @default 12 */
-                            width: number;
-                        };
-                    };
-                    squads: {
-                        id: string;
-                        /** @enum {string} */
-                        team: "ally" | "enemy";
-                        units: {
-                            template: string;
-                            personality?: {
-                                aggression: number;
-                                caution: number;
-                            };
-                            /** @default false */
-                            isLeader: boolean;
-                        }[];
-                        spawnPoints: {
-                            x: number;
-                            z: number;
-                        }[];
-                        /**
-                         * @default {
-                         *       "type": "start"
-                         *     }
-                         */
-                        trigger: {
-                            /** @enum {string} */
-                            type: "start";
-                        } | {
-                            /** @enum {string} */
-                            type: "time";
-                            atSeconds: number;
-                        } | {
-                            /** @enum {string} */
-                            type: "squadDestroyed";
-                            squadId: string;
-                            /** @default 0 */
-                            delaySeconds: number;
-                        };
-                        /**
-                         * @default {
-                         *       "aggression": 0.5,
-                         *       "caution": 0.5
-                         *     }
-                         */
-                        personality: {
-                            aggression: number;
-                            caution: number;
-                        };
-                        /**
-                         * @default patrol
-                         * @enum {string}
-                         */
-                        initialOrder: "attack" | "follow" | "flee" | "patrol";
-                    }[];
-                    objectives: ({
-                        id: string;
-                        title: string;
-                        /** @default true */
-                        required: boolean;
-                        /** @default false */
-                        hidden: boolean;
-                        /** @enum {string} */
-                        type: "destroyCount";
-                        params: {
-                            /**
-                             * @default enemy
-                             * @enum {string}
-                             */
-                            team: "ally" | "enemy";
-                            count: number;
-                        };
-                    } | {
-                        id: string;
-                        title: string;
-                        /** @default true */
-                        required: boolean;
-                        /** @default false */
-                        hidden: boolean;
-                        /** @enum {string} */
-                        type: "destroySquad";
-                        params: {
-                            squadId: string;
-                            /** @default false */
-                            leaderOnly: boolean;
-                        };
-                    } | {
-                        id: string;
-                        title: string;
-                        /** @default true */
-                        required: boolean;
-                        /** @default false */
-                        hidden: boolean;
-                        /** @enum {string} */
-                        type: "survive";
-                        params: {
-                            seconds: number;
-                        };
-                    } | {
-                        id: string;
-                        title: string;
-                        /** @default true */
-                        required: boolean;
-                        /** @default false */
-                        hidden: boolean;
-                        /** @enum {string} */
-                        type: "keepAlive";
-                        params: {
-                            squadId: string;
-                            minAlive: number;
-                        };
-                    })[];
-                    failConditions: ({
-                        /** @enum {string} */
-                        type: "playerDestroyed";
-                    } | {
-                        /** @enum {string} */
-                        type: "timeLimit";
-                        seconds: number;
-                    })[];
-                    rewards: {
-                        xp: number;
-                        /** @default [] */
-                        unlocks: string[];
-                    };
-                    /** Format: date-time */
-                    createdAt: string;
-                    /** Format: date-time */
-                    updatedAt: string;
+                  };
+                  /** Format: date-time */
+                  createdAt: string;
+                  /** Format: date-time */
+                  updatedAt: string;
                 };
                 relationships?: {
-                    [key: string]: unknown;
+                  [key: string]: unknown;
                 };
                 meta?: {
-                    [key: string]: unknown;
+                  [key: string]: unknown;
                 };
                 links?: {
-                    [key: string]: string;
+                  [key: string]: string;
                 };
-            };
-            links: {
+              }[];
+              links: {
                 self: string;
-            };
-            metadata: {
-                requestId: string;
-                timestamp: string;
-            } & {
-                [key: string]: unknown;
-            };
-        };
-        MissionCollectionResponse: {
-            data: {
-                /** @enum {string} */
-                type: "mission";
-                /** Format: uuid */
-                id: string;
-                /**
-                 * Mission
-                 * @description Campaign mission definition: arena, squads, objectives, fail conditions, and rewards
-                 */
-                attributes: {
-                    id: string;
-                    schemaVersion: number;
-                    order: number;
-                    title: string;
-                    briefing: string;
-                    difficulty: number;
-                    requires: string[];
-                    arena: {
-                        levelId?: string;
-                        seed: number;
-                        size: number;
-                        obstacleDensity: number;
-                        playerSpawn: {
-                            x: number;
-                            z: number;
-                        };
-                        heading?: number;
-                        roads?: {
-                            waypoints: {
-                                x: number;
-                                z: number;
-                            }[];
-                            /** @default 12 */
-                            width: number;
-                        };
-                    };
-                    squads: {
-                        id: string;
-                        /** @enum {string} */
-                        team: "ally" | "enemy";
-                        units: {
-                            template: string;
-                            personality?: {
-                                aggression: number;
-                                caution: number;
-                            };
-                            /** @default false */
-                            isLeader: boolean;
-                        }[];
-                        spawnPoints: {
-                            x: number;
-                            z: number;
-                        }[];
-                        /**
-                         * @default {
-                         *       "type": "start"
-                         *     }
-                         */
-                        trigger: {
-                            /** @enum {string} */
-                            type: "start";
-                        } | {
-                            /** @enum {string} */
-                            type: "time";
-                            atSeconds: number;
-                        } | {
-                            /** @enum {string} */
-                            type: "squadDestroyed";
-                            squadId: string;
-                            /** @default 0 */
-                            delaySeconds: number;
-                        };
-                        /**
-                         * @default {
-                         *       "aggression": 0.5,
-                         *       "caution": 0.5
-                         *     }
-                         */
-                        personality: {
-                            aggression: number;
-                            caution: number;
-                        };
-                        /**
-                         * @default patrol
-                         * @enum {string}
-                         */
-                        initialOrder: "attack" | "follow" | "flee" | "patrol";
-                    }[];
-                    objectives: ({
-                        id: string;
-                        title: string;
-                        /** @default true */
-                        required: boolean;
-                        /** @default false */
-                        hidden: boolean;
-                        /** @enum {string} */
-                        type: "destroyCount";
-                        params: {
-                            /**
-                             * @default enemy
-                             * @enum {string}
-                             */
-                            team: "ally" | "enemy";
-                            count: number;
-                        };
-                    } | {
-                        id: string;
-                        title: string;
-                        /** @default true */
-                        required: boolean;
-                        /** @default false */
-                        hidden: boolean;
-                        /** @enum {string} */
-                        type: "destroySquad";
-                        params: {
-                            squadId: string;
-                            /** @default false */
-                            leaderOnly: boolean;
-                        };
-                    } | {
-                        id: string;
-                        title: string;
-                        /** @default true */
-                        required: boolean;
-                        /** @default false */
-                        hidden: boolean;
-                        /** @enum {string} */
-                        type: "survive";
-                        params: {
-                            seconds: number;
-                        };
-                    } | {
-                        id: string;
-                        title: string;
-                        /** @default true */
-                        required: boolean;
-                        /** @default false */
-                        hidden: boolean;
-                        /** @enum {string} */
-                        type: "keepAlive";
-                        params: {
-                            squadId: string;
-                            minAlive: number;
-                        };
-                    })[];
-                    failConditions: ({
-                        /** @enum {string} */
-                        type: "playerDestroyed";
-                    } | {
-                        /** @enum {string} */
-                        type: "timeLimit";
-                        seconds: number;
-                    })[];
-                    rewards: {
-                        xp: number;
-                        /** @default [] */
-                        unlocks: string[];
-                    };
-                    /** Format: date-time */
-                    createdAt: string;
-                    /** Format: date-time */
-                    updatedAt: string;
-                };
-                relationships?: {
-                    [key: string]: unknown;
-                };
-                meta?: {
-                    [key: string]: unknown;
-                };
-                links?: {
-                    [key: string]: string;
-                };
-            }[];
-            links: {
-                self: string;
-            };
-            metadata: {
+              };
+              metadata: {
                 requestId: string;
                 timestamp: string;
                 total: number;
@@ -1851,98 +233,132 @@ export interface components {
                 totalPages: number;
                 /** @default {} */
                 availableFilters: {
-                    [key: string]: unknown;
+                  [key: string]: unknown;
                 };
                 sortOptions: {
-                    fields: string[];
-                    default: string;
-                    /** @enum {string} */
-                    direction: "asc" | "desc";
+                  fields: string[];
+                  default: string;
+                  /** @enum {string} */
+                  direction: "asc" | "desc";
                 };
+              };
             };
+          };
         };
-        GetMissionsParams: {
-            /** @default 10 */
-            limit: number;
-            /** @default 1 */
-            page: number;
-            search?: string;
-            /**
-             * @default order
-             * @enum {string}
-             */
-            sortBy: "order" | "title" | "difficulty" | "createdAt";
-            /**
-             * @default desc
-             * @enum {string}
-             */
-            sortOrder: "asc" | "desc";
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/missions/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get mission by ID
+     * @description Returns a single mission by its slug ID (e.g. first-contact).
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: string;
         };
-        Catalog: {
-            version: string;
-            missions: {
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description The request has succeeded. */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                /** @enum {string} */
+                type: "mission";
+                /** Format: uuid */
                 id: string;
-                schemaVersion: number;
-                order: number;
-                title: string;
-                briefing: string;
-                difficulty: number;
-                requires: string[];
-                arena: {
+                /**
+                 * Mission
+                 * @description Campaign mission definition: arena, squads, objectives, fail conditions, and rewards
+                 */
+                attributes: {
+                  id: string;
+                  schemaVersion: number;
+                  order: number;
+                  title: string;
+                  briefing: string;
+                  difficulty: number;
+                  requires: string[];
+                  arena: {
                     levelId?: string;
                     seed: number;
                     size: number;
                     obstacleDensity: number;
                     playerSpawn: {
-                        x: number;
-                        z: number;
+                      x: number;
+                      z: number;
                     };
                     heading?: number;
                     roads?: {
-                        waypoints: {
-                            x: number;
-                            z: number;
-                        }[];
-                        /** @default 12 */
-                        width: number;
+                      waypoints: {
+                        x: number;
+                        z: number;
+                      }[];
+                      /** @default 12 */
+                      width: number;
                     };
-                };
-                squads: {
+                  };
+                  squads: {
                     id: string;
                     /** @enum {string} */
                     team: "ally" | "enemy";
                     units: {
-                        template: string;
-                        personality?: {
-                            aggression: number;
-                            caution: number;
-                        };
-                        /** @default false */
-                        isLeader: boolean;
+                      template: string;
+                      personality?: {
+                        aggression: number;
+                        caution: number;
+                      };
+                      /** @default false */
+                      isLeader: boolean;
                     }[];
                     spawnPoints: {
-                        x: number;
-                        z: number;
+                      x: number;
+                      z: number;
                     }[];
                     /**
                      * @default {
                      *       "type": "start"
                      *     }
                      */
-                    trigger: {
-                        /** @enum {string} */
-                        type: "start";
-                    } | {
-                        /** @enum {string} */
-                        type: "time";
-                        atSeconds: number;
-                    } | {
-                        /** @enum {string} */
-                        type: "squadDestroyed";
-                        squadId: string;
-                        /** @default 0 */
-                        delaySeconds: number;
-                    };
+                    trigger:
+                      | {
+                          /** @enum {string} */
+                          type: "start";
+                        }
+                      | {
+                          /** @enum {string} */
+                          type: "time";
+                          atSeconds: number;
+                        }
+                      | {
+                          /** @enum {string} */
+                          type: "squadDestroyed";
+                          squadId: string;
+                          /** @default 0 */
+                          delaySeconds: number;
+                        };
                     /**
                      * @default {
                      *       "aggression": 0.5,
@@ -1950,136 +366,386 @@ export interface components {
                      *     }
                      */
                     personality: {
-                        aggression: number;
-                        caution: number;
+                      aggression: number;
+                      caution: number;
                     };
                     /**
                      * @default patrol
                      * @enum {string}
                      */
                     initialOrder: "attack" | "follow" | "flee" | "patrol";
-                }[];
-                objectives: ({
-                    id: string;
-                    title: string;
-                    /** @default true */
-                    required: boolean;
-                    /** @default false */
-                    hidden: boolean;
-                    /** @enum {string} */
-                    type: "destroyCount";
-                    params: {
-                        /**
-                         * @default enemy
-                         * @enum {string}
-                         */
-                        team: "ally" | "enemy";
-                        count: number;
-                    };
-                } | {
-                    id: string;
-                    title: string;
-                    /** @default true */
-                    required: boolean;
-                    /** @default false */
-                    hidden: boolean;
-                    /** @enum {string} */
-                    type: "destroySquad";
-                    params: {
-                        squadId: string;
+                  }[];
+                  objectives: (
+                    | {
+                        id: string;
+                        title: string;
+                        /** @default true */
+                        required: boolean;
                         /** @default false */
-                        leaderOnly: boolean;
-                    };
-                } | {
-                    id: string;
-                    title: string;
-                    /** @default true */
-                    required: boolean;
-                    /** @default false */
-                    hidden: boolean;
-                    /** @enum {string} */
-                    type: "survive";
-                    params: {
+                        hidden: boolean;
+                        /** @enum {string} */
+                        type: "destroyCount";
+                        params: {
+                          /**
+                           * @default enemy
+                           * @enum {string}
+                           */
+                          team: "ally" | "enemy";
+                          count: number;
+                        };
+                      }
+                    | {
+                        id: string;
+                        title: string;
+                        /** @default true */
+                        required: boolean;
+                        /** @default false */
+                        hidden: boolean;
+                        /** @enum {string} */
+                        type: "destroySquad";
+                        params: {
+                          squadId: string;
+                          /** @default false */
+                          leaderOnly: boolean;
+                        };
+                      }
+                    | {
+                        id: string;
+                        title: string;
+                        /** @default true */
+                        required: boolean;
+                        /** @default false */
+                        hidden: boolean;
+                        /** @enum {string} */
+                        type: "survive";
+                        params: {
+                          seconds: number;
+                        };
+                      }
+                    | {
+                        id: string;
+                        title: string;
+                        /** @default true */
+                        required: boolean;
+                        /** @default false */
+                        hidden: boolean;
+                        /** @enum {string} */
+                        type: "keepAlive";
+                        params: {
+                          squadId: string;
+                          minAlive: number;
+                        };
+                      }
+                  )[];
+                  failConditions: (
+                    | {
+                        /** @enum {string} */
+                        type: "playerDestroyed";
+                      }
+                    | {
+                        /** @enum {string} */
+                        type: "timeLimit";
                         seconds: number;
-                    };
-                } | {
-                    id: string;
-                    title: string;
-                    /** @default true */
-                    required: boolean;
-                    /** @default false */
-                    hidden: boolean;
-                    /** @enum {string} */
-                    type: "keepAlive";
-                    params: {
-                        squadId: string;
-                        minAlive: number;
-                    };
-                })[];
-                failConditions: ({
-                    /** @enum {string} */
-                    type: "playerDestroyed";
-                } | {
-                    /** @enum {string} */
-                    type: "timeLimit";
-                    seconds: number;
-                })[];
-                rewards: {
+                      }
+                  )[];
+                  rewards: {
                     xp: number;
                     /** @default [] */
                     unlocks: string[];
+                  };
+                  /** Format: date-time */
+                  createdAt: string;
+                  /** Format: date-time */
+                  updatedAt: string;
                 };
-                /** Format: date-time */
-                createdAt: string;
-                /** Format: date-time */
-                updatedAt: string;
-            }[];
-            weapons: {
-                [key: string]: {
+                relationships?: {
+                  [key: string]: unknown;
+                };
+                meta?: {
+                  [key: string]: unknown;
+                };
+                links?: {
+                  [key: string]: string;
+                };
+              };
+              links: {
+                self: string;
+              };
+              metadata: {
+                requestId: string;
+                timestamp: string;
+              } & {
+                [key: string]: unknown;
+              };
+            };
+          };
+        };
+        /** @description The requested resource could not be found on the server. */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["JsonApiErrorResponse"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/catalog": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get the full game catalog
+     * @description Returns missions, weapon configs, and unit templates in a single response.
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description The request has succeeded. */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                /** @enum {string} */
+                type: "catalog";
+                /** Format: uuid */
+                id: string;
+                attributes: {
+                  version: string;
+                  missions: {
                     id: string;
-                    label: string;
-                    /** @enum {string} */
-                    mechanism: "projectile" | "rocket";
-                    directSuppression: number;
-                    indirectFirepower: number;
-                    preferredRange: number;
-                    engagementRange: number;
-                    cooldown: number;
-                    spread: number;
-                    recoil: number;
-                    ammoCost: number;
-                    muzzle: {
+                    schemaVersion: number;
+                    order: number;
+                    title: string;
+                    briefing: string;
+                    difficulty: number;
+                    requires: string[];
+                    arena: {
+                      levelId?: string;
+                      seed: number;
+                      size: number;
+                      obstacleDensity: number;
+                      playerSpawn: {
+                        x: number;
+                        z: number;
+                      };
+                      heading?: number;
+                      roads?: {
+                        waypoints: {
+                          x: number;
+                          z: number;
+                        }[];
+                        /** @default 12 */
+                        width: number;
+                      };
+                    };
+                    squads: {
+                      id: string;
+                      /** @enum {string} */
+                      team: "ally" | "enemy";
+                      units: {
+                        template: string;
+                        personality?: {
+                          aggression: number;
+                          caution: number;
+                        };
+                        /** @default false */
+                        isLeader: boolean;
+                      }[];
+                      spawnPoints: {
+                        x: number;
+                        z: number;
+                      }[];
+                      /**
+                       * @default {
+                       *       "type": "start"
+                       *     }
+                       */
+                      trigger:
+                        | {
+                            /** @enum {string} */
+                            type: "start";
+                          }
+                        | {
+                            /** @enum {string} */
+                            type: "time";
+                            atSeconds: number;
+                          }
+                        | {
+                            /** @enum {string} */
+                            type: "squadDestroyed";
+                            squadId: string;
+                            /** @default 0 */
+                            delaySeconds: number;
+                          };
+                      /**
+                       * @default {
+                       *       "aggression": 0.5,
+                       *       "caution": 0.5
+                       *     }
+                       */
+                      personality: {
+                        aggression: number;
+                        caution: number;
+                      };
+                      /**
+                       * @default patrol
+                       * @enum {string}
+                       */
+                      initialOrder: "attack" | "follow" | "flee" | "patrol";
+                    }[];
+                    objectives: (
+                      | {
+                          id: string;
+                          title: string;
+                          /** @default true */
+                          required: boolean;
+                          /** @default false */
+                          hidden: boolean;
+                          /** @enum {string} */
+                          type: "destroyCount";
+                          params: {
+                            /**
+                             * @default enemy
+                             * @enum {string}
+                             */
+                            team: "ally" | "enemy";
+                            count: number;
+                          };
+                        }
+                      | {
+                          id: string;
+                          title: string;
+                          /** @default true */
+                          required: boolean;
+                          /** @default false */
+                          hidden: boolean;
+                          /** @enum {string} */
+                          type: "destroySquad";
+                          params: {
+                            squadId: string;
+                            /** @default false */
+                            leaderOnly: boolean;
+                          };
+                        }
+                      | {
+                          id: string;
+                          title: string;
+                          /** @default true */
+                          required: boolean;
+                          /** @default false */
+                          hidden: boolean;
+                          /** @enum {string} */
+                          type: "survive";
+                          params: {
+                            seconds: number;
+                          };
+                        }
+                      | {
+                          id: string;
+                          title: string;
+                          /** @default true */
+                          required: boolean;
+                          /** @default false */
+                          hidden: boolean;
+                          /** @enum {string} */
+                          type: "keepAlive";
+                          params: {
+                            squadId: string;
+                            minAlive: number;
+                          };
+                        }
+                    )[];
+                    failConditions: (
+                      | {
+                          /** @enum {string} */
+                          type: "playerDestroyed";
+                        }
+                      | {
+                          /** @enum {string} */
+                          type: "timeLimit";
+                          seconds: number;
+                        }
+                    )[];
+                    rewards: {
+                      xp: number;
+                      /** @default [] */
+                      unlocks: string[];
+                    };
+                    /** Format: date-time */
+                    createdAt: string;
+                    /** Format: date-time */
+                    updatedAt: string;
+                  }[];
+                  weapons: {
+                    [key: string]: {
+                      id: string;
+                      label: string;
+                      /** @enum {string} */
+                      mechanism: "projectile" | "rocket";
+                      directSuppression: number;
+                      indirectFirepower: number;
+                      preferredRange: number;
+                      engagementRange: number;
+                      cooldown: number;
+                      spread: number;
+                      recoil: number;
+                      ammoCost: number;
+                      muzzle: {
                         height: number;
                         forwardOffset: number;
-                    };
-                    muzzles?: {
-                        right: number;
-                    }[] | null;
-                    projectile: {
+                      };
+                      muzzles?:
+                        | {
+                            right: number;
+                          }[]
+                        | null;
+                      projectile: {
                         speed: number;
                         life: number;
                         gravity: number;
                         drag: number;
                         hitRadius: number;
                         damage: number;
-                    };
-                    audio: {
+                      };
+                      audio: {
                         kind: string;
-                    };
-                    visual: {
+                      };
+                      visual: {
                         mount: string;
                         projectile: {
-                            size: number;
-                            color: string;
-                            emissive: string;
+                          size: number;
+                          color: string;
+                          emissive: string;
                         };
                         muzzleFlash: {
-                            color: string;
-                            size: number;
-                            duration: number;
+                          color: string;
+                          size: number;
+                          duration: number;
                         };
-                    };
-                    explosion?: {
+                      };
+                      explosion?: {
                         radius: number;
                         triggerRadius: number;
                         damage: number;
@@ -2088,825 +754,146 @@ export interface components {
                         fireColor: string;
                         shockwaveColor: string;
                         friendlyFire: boolean;
-                    } | null;
-                    /** Format: date-time */
-                    createdAt: string;
-                    /** Format: date-time */
-                    updatedAt: string;
-                };
-            };
-            unitTemplates: {
-                [key: string]: {
-                    id: string;
-                    label: string;
-                    maxHealth: number;
-                    damageScale: number;
-                    palettes: {
+                      } | null;
+                      /** Format: date-time */
+                      createdAt: string;
+                      /** Format: date-time */
+                      updatedAt: string;
+                    };
+                  };
+                  unitTemplates: {
+                    [key: string]: {
+                      id: string;
+                      label: string;
+                      maxHealth: number;
+                      damageScale: number;
+                      palettes: {
                         ally: {
-                            primary: string;
-                            secondary?: string;
-                            accent?: string;
+                          primary: string;
+                          secondary?: string;
+                          accent?: string;
                         }[];
                         enemy: {
-                            primary: string;
-                            secondary?: string;
-                            accent?: string;
+                          primary: string;
+                          secondary?: string;
+                          accent?: string;
                         }[];
+                      };
+                      /** Format: date-time */
+                      createdAt: string;
+                      /** Format: date-time */
+                      updatedAt: string;
                     };
-                    /** Format: date-time */
-                    createdAt: string;
-                    /** Format: date-time */
-                    updatedAt: string;
-                };
-            };
-        };
-        CatalogResource: {
-            /** @enum {string} */
-            type: "catalog";
-            /** Format: uuid */
-            id: string;
-            attributes: {
-                version: string;
-                missions: {
-                    id: string;
-                    schemaVersion: number;
-                    order: number;
-                    title: string;
-                    briefing: string;
-                    difficulty: number;
-                    requires: string[];
-                    arena: {
-                        levelId?: string;
-                        seed: number;
-                        size: number;
-                        obstacleDensity: number;
-                        playerSpawn: {
-                            x: number;
-                            z: number;
-                        };
-                        heading?: number;
-                        roads?: {
-                            waypoints: {
-                                x: number;
-                                z: number;
-                            }[];
-                            /** @default 12 */
-                            width: number;
-                        };
-                    };
-                    squads: {
-                        id: string;
-                        /** @enum {string} */
-                        team: "ally" | "enemy";
-                        units: {
-                            template: string;
-                            personality?: {
-                                aggression: number;
-                                caution: number;
-                            };
-                            /** @default false */
-                            isLeader: boolean;
-                        }[];
-                        spawnPoints: {
-                            x: number;
-                            z: number;
-                        }[];
-                        /**
-                         * @default {
-                         *       "type": "start"
-                         *     }
-                         */
-                        trigger: {
-                            /** @enum {string} */
-                            type: "start";
-                        } | {
-                            /** @enum {string} */
-                            type: "time";
-                            atSeconds: number;
-                        } | {
-                            /** @enum {string} */
-                            type: "squadDestroyed";
-                            squadId: string;
-                            /** @default 0 */
-                            delaySeconds: number;
-                        };
-                        /**
-                         * @default {
-                         *       "aggression": 0.5,
-                         *       "caution": 0.5
-                         *     }
-                         */
-                        personality: {
-                            aggression: number;
-                            caution: number;
-                        };
-                        /**
-                         * @default patrol
-                         * @enum {string}
-                         */
-                        initialOrder: "attack" | "follow" | "flee" | "patrol";
-                    }[];
-                    objectives: ({
-                        id: string;
-                        title: string;
-                        /** @default true */
-                        required: boolean;
-                        /** @default false */
-                        hidden: boolean;
-                        /** @enum {string} */
-                        type: "destroyCount";
-                        params: {
-                            /**
-                             * @default enemy
-                             * @enum {string}
-                             */
-                            team: "ally" | "enemy";
-                            count: number;
-                        };
-                    } | {
-                        id: string;
-                        title: string;
-                        /** @default true */
-                        required: boolean;
-                        /** @default false */
-                        hidden: boolean;
-                        /** @enum {string} */
-                        type: "destroySquad";
-                        params: {
-                            squadId: string;
-                            /** @default false */
-                            leaderOnly: boolean;
-                        };
-                    } | {
-                        id: string;
-                        title: string;
-                        /** @default true */
-                        required: boolean;
-                        /** @default false */
-                        hidden: boolean;
-                        /** @enum {string} */
-                        type: "survive";
-                        params: {
-                            seconds: number;
-                        };
-                    } | {
-                        id: string;
-                        title: string;
-                        /** @default true */
-                        required: boolean;
-                        /** @default false */
-                        hidden: boolean;
-                        /** @enum {string} */
-                        type: "keepAlive";
-                        params: {
-                            squadId: string;
-                            minAlive: number;
-                        };
-                    })[];
-                    failConditions: ({
-                        /** @enum {string} */
-                        type: "playerDestroyed";
-                    } | {
-                        /** @enum {string} */
-                        type: "timeLimit";
-                        seconds: number;
-                    })[];
-                    rewards: {
-                        xp: number;
-                        /** @default [] */
-                        unlocks: string[];
-                    };
-                    /** Format: date-time */
-                    createdAt: string;
-                    /** Format: date-time */
-                    updatedAt: string;
-                }[];
-                weapons: {
-                    [key: string]: {
-                        id: string;
-                        label: string;
-                        /** @enum {string} */
-                        mechanism: "projectile" | "rocket";
-                        directSuppression: number;
-                        indirectFirepower: number;
-                        preferredRange: number;
-                        engagementRange: number;
-                        cooldown: number;
-                        spread: number;
-                        recoil: number;
-                        ammoCost: number;
-                        muzzle: {
-                            height: number;
-                            forwardOffset: number;
-                        };
-                        muzzles?: {
-                            right: number;
-                        }[] | null;
-                        projectile: {
-                            speed: number;
-                            life: number;
-                            gravity: number;
-                            drag: number;
-                            hitRadius: number;
-                            damage: number;
-                        };
-                        audio: {
-                            kind: string;
-                        };
-                        visual: {
-                            mount: string;
-                            projectile: {
-                                size: number;
-                                color: string;
-                                emissive: string;
-                            };
-                            muzzleFlash: {
-                                color: string;
-                                size: number;
-                                duration: number;
-                            };
-                        };
-                        explosion?: {
-                            radius: number;
-                            triggerRadius: number;
-                            damage: number;
-                            minDamageRatio: number;
-                            duration: number;
-                            fireColor: string;
-                            shockwaveColor: string;
-                            friendlyFire: boolean;
-                        } | null;
-                        /** Format: date-time */
-                        createdAt: string;
-                        /** Format: date-time */
-                        updatedAt: string;
-                    };
-                };
-                unitTemplates: {
-                    [key: string]: {
-                        id: string;
-                        label: string;
-                        maxHealth: number;
-                        damageScale: number;
-                        palettes: {
-                            ally: {
-                                primary: string;
-                                secondary?: string;
-                                accent?: string;
-                            }[];
-                            enemy: {
-                                primary: string;
-                                secondary?: string;
-                                accent?: string;
-                            }[];
-                        };
-                        /** Format: date-time */
-                        createdAt: string;
-                        /** Format: date-time */
-                        updatedAt: string;
-                    };
-                };
-            };
-            relationships?: {
-                [key: string]: unknown;
-            };
-            meta?: {
-                [key: string]: unknown;
-            };
-            links?: {
-                [key: string]: string;
-            };
-        };
-        CatalogSingleResponse: {
-            data: {
-                /** @enum {string} */
-                type: "catalog";
-                /** Format: uuid */
-                id: string;
-                attributes: {
-                    version: string;
-                    missions: {
-                        id: string;
-                        schemaVersion: number;
-                        order: number;
-                        title: string;
-                        briefing: string;
-                        difficulty: number;
-                        requires: string[];
-                        arena: {
-                            levelId?: string;
-                            seed: number;
-                            size: number;
-                            obstacleDensity: number;
-                            playerSpawn: {
-                                x: number;
-                                z: number;
-                            };
-                            heading?: number;
-                            roads?: {
-                                waypoints: {
-                                    x: number;
-                                    z: number;
-                                }[];
-                                /** @default 12 */
-                                width: number;
-                            };
-                        };
-                        squads: {
-                            id: string;
-                            /** @enum {string} */
-                            team: "ally" | "enemy";
-                            units: {
-                                template: string;
-                                personality?: {
-                                    aggression: number;
-                                    caution: number;
-                                };
-                                /** @default false */
-                                isLeader: boolean;
-                            }[];
-                            spawnPoints: {
-                                x: number;
-                                z: number;
-                            }[];
-                            /**
-                             * @default {
-                             *       "type": "start"
-                             *     }
-                             */
-                            trigger: {
-                                /** @enum {string} */
-                                type: "start";
-                            } | {
-                                /** @enum {string} */
-                                type: "time";
-                                atSeconds: number;
-                            } | {
-                                /** @enum {string} */
-                                type: "squadDestroyed";
-                                squadId: string;
-                                /** @default 0 */
-                                delaySeconds: number;
-                            };
-                            /**
-                             * @default {
-                             *       "aggression": 0.5,
-                             *       "caution": 0.5
-                             *     }
-                             */
-                            personality: {
-                                aggression: number;
-                                caution: number;
-                            };
-                            /**
-                             * @default patrol
-                             * @enum {string}
-                             */
-                            initialOrder: "attack" | "follow" | "flee" | "patrol";
-                        }[];
-                        objectives: ({
-                            id: string;
-                            title: string;
-                            /** @default true */
-                            required: boolean;
-                            /** @default false */
-                            hidden: boolean;
-                            /** @enum {string} */
-                            type: "destroyCount";
-                            params: {
-                                /**
-                                 * @default enemy
-                                 * @enum {string}
-                                 */
-                                team: "ally" | "enemy";
-                                count: number;
-                            };
-                        } | {
-                            id: string;
-                            title: string;
-                            /** @default true */
-                            required: boolean;
-                            /** @default false */
-                            hidden: boolean;
-                            /** @enum {string} */
-                            type: "destroySquad";
-                            params: {
-                                squadId: string;
-                                /** @default false */
-                                leaderOnly: boolean;
-                            };
-                        } | {
-                            id: string;
-                            title: string;
-                            /** @default true */
-                            required: boolean;
-                            /** @default false */
-                            hidden: boolean;
-                            /** @enum {string} */
-                            type: "survive";
-                            params: {
-                                seconds: number;
-                            };
-                        } | {
-                            id: string;
-                            title: string;
-                            /** @default true */
-                            required: boolean;
-                            /** @default false */
-                            hidden: boolean;
-                            /** @enum {string} */
-                            type: "keepAlive";
-                            params: {
-                                squadId: string;
-                                minAlive: number;
-                            };
-                        })[];
-                        failConditions: ({
-                            /** @enum {string} */
-                            type: "playerDestroyed";
-                        } | {
-                            /** @enum {string} */
-                            type: "timeLimit";
-                            seconds: number;
-                        })[];
-                        rewards: {
-                            xp: number;
-                            /** @default [] */
-                            unlocks: string[];
-                        };
-                        /** Format: date-time */
-                        createdAt: string;
-                        /** Format: date-time */
-                        updatedAt: string;
-                    }[];
-                    weapons: {
-                        [key: string]: {
-                            id: string;
-                            label: string;
-                            /** @enum {string} */
-                            mechanism: "projectile" | "rocket";
-                            directSuppression: number;
-                            indirectFirepower: number;
-                            preferredRange: number;
-                            engagementRange: number;
-                            cooldown: number;
-                            spread: number;
-                            recoil: number;
-                            ammoCost: number;
-                            muzzle: {
-                                height: number;
-                                forwardOffset: number;
-                            };
-                            muzzles?: {
-                                right: number;
-                            }[] | null;
-                            projectile: {
-                                speed: number;
-                                life: number;
-                                gravity: number;
-                                drag: number;
-                                hitRadius: number;
-                                damage: number;
-                            };
-                            audio: {
-                                kind: string;
-                            };
-                            visual: {
-                                mount: string;
-                                projectile: {
-                                    size: number;
-                                    color: string;
-                                    emissive: string;
-                                };
-                                muzzleFlash: {
-                                    color: string;
-                                    size: number;
-                                    duration: number;
-                                };
-                            };
-                            explosion?: {
-                                radius: number;
-                                triggerRadius: number;
-                                damage: number;
-                                minDamageRatio: number;
-                                duration: number;
-                                fireColor: string;
-                                shockwaveColor: string;
-                                friendlyFire: boolean;
-                            } | null;
-                            /** Format: date-time */
-                            createdAt: string;
-                            /** Format: date-time */
-                            updatedAt: string;
-                        };
-                    };
-                    unitTemplates: {
-                        [key: string]: {
-                            id: string;
-                            label: string;
-                            maxHealth: number;
-                            damageScale: number;
-                            palettes: {
-                                ally: {
-                                    primary: string;
-                                    secondary?: string;
-                                    accent?: string;
-                                }[];
-                                enemy: {
-                                    primary: string;
-                                    secondary?: string;
-                                    accent?: string;
-                                }[];
-                            };
-                            /** Format: date-time */
-                            createdAt: string;
-                            /** Format: date-time */
-                            updatedAt: string;
-                        };
-                    };
+                  };
                 };
                 relationships?: {
-                    [key: string]: unknown;
+                  [key: string]: unknown;
                 };
                 meta?: {
-                    [key: string]: unknown;
+                  [key: string]: unknown;
                 };
                 links?: {
-                    [key: string]: string;
+                  [key: string]: string;
                 };
-            };
-            links: {
+              };
+              links: {
                 self: string;
-            };
-            metadata: {
+              };
+              metadata: {
                 requestId: string;
                 timestamp: string;
-            } & {
+              } & {
                 [key: string]: unknown;
+              };
             };
+          };
         };
-        CatalogCollectionResponse: {
-            data: {
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/tanks": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get all tanks
+     * @description Returns a paginated collection of tank blueprints, sorted by name by default.
+     */
+    get: {
+      parameters: {
+        query?: {
+          limit?: number;
+          page?: number;
+          search?: string;
+          sortBy?: "name" | "health" | "speed" | "createdAt";
+          sortOrder?: "asc" | "desc";
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description The request has succeeded. */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
                 /** @enum {string} */
-                type: "catalog";
+                type: "tank";
                 /** Format: uuid */
                 id: string;
+                /**
+                 * Tank
+                 * @description AI tank blueprint: combat stats, traits, and behavior tree
+                 */
                 attributes: {
-                    version: string;
-                    missions: {
-                        id: string;
-                        schemaVersion: number;
-                        order: number;
-                        title: string;
-                        briefing: string;
-                        difficulty: number;
-                        requires: string[];
-                        arena: {
-                            levelId?: string;
-                            seed: number;
-                            size: number;
-                            obstacleDensity: number;
-                            playerSpawn: {
-                                x: number;
-                                z: number;
-                            };
-                            heading?: number;
-                            roads?: {
-                                waypoints: {
-                                    x: number;
-                                    z: number;
-                                }[];
-                                /** @default 12 */
-                                width: number;
-                            };
-                        };
-                        squads: {
-                            id: string;
-                            /** @enum {string} */
-                            team: "ally" | "enemy";
-                            units: {
-                                template: string;
-                                personality?: {
-                                    aggression: number;
-                                    caution: number;
-                                };
-                                /** @default false */
-                                isLeader: boolean;
-                            }[];
-                            spawnPoints: {
-                                x: number;
-                                z: number;
-                            }[];
-                            /**
-                             * @default {
-                             *       "type": "start"
-                             *     }
-                             */
-                            trigger: {
-                                /** @enum {string} */
-                                type: "start";
-                            } | {
-                                /** @enum {string} */
-                                type: "time";
-                                atSeconds: number;
-                            } | {
-                                /** @enum {string} */
-                                type: "squadDestroyed";
-                                squadId: string;
-                                /** @default 0 */
-                                delaySeconds: number;
-                            };
-                            /**
-                             * @default {
-                             *       "aggression": 0.5,
-                             *       "caution": 0.5
-                             *     }
-                             */
-                            personality: {
-                                aggression: number;
-                                caution: number;
-                            };
-                            /**
-                             * @default patrol
-                             * @enum {string}
-                             */
-                            initialOrder: "attack" | "follow" | "flee" | "patrol";
-                        }[];
-                        objectives: ({
-                            id: string;
-                            title: string;
-                            /** @default true */
-                            required: boolean;
-                            /** @default false */
-                            hidden: boolean;
-                            /** @enum {string} */
-                            type: "destroyCount";
-                            params: {
-                                /**
-                                 * @default enemy
-                                 * @enum {string}
-                                 */
-                                team: "ally" | "enemy";
-                                count: number;
-                            };
-                        } | {
-                            id: string;
-                            title: string;
-                            /** @default true */
-                            required: boolean;
-                            /** @default false */
-                            hidden: boolean;
-                            /** @enum {string} */
-                            type: "destroySquad";
-                            params: {
-                                squadId: string;
-                                /** @default false */
-                                leaderOnly: boolean;
-                            };
-                        } | {
-                            id: string;
-                            title: string;
-                            /** @default true */
-                            required: boolean;
-                            /** @default false */
-                            hidden: boolean;
-                            /** @enum {string} */
-                            type: "survive";
-                            params: {
-                                seconds: number;
-                            };
-                        } | {
-                            id: string;
-                            title: string;
-                            /** @default true */
-                            required: boolean;
-                            /** @default false */
-                            hidden: boolean;
-                            /** @enum {string} */
-                            type: "keepAlive";
-                            params: {
-                                squadId: string;
-                                minAlive: number;
-                            };
-                        })[];
-                        failConditions: ({
-                            /** @enum {string} */
-                            type: "playerDestroyed";
-                        } | {
-                            /** @enum {string} */
-                            type: "timeLimit";
-                            seconds: number;
-                        })[];
-                        rewards: {
-                            xp: number;
-                            /** @default [] */
-                            unlocks: string[];
-                        };
-                        /** Format: date-time */
-                        createdAt: string;
-                        /** Format: date-time */
-                        updatedAt: string;
-                    }[];
-                    weapons: {
-                        [key: string]: {
-                            id: string;
-                            label: string;
-                            /** @enum {string} */
-                            mechanism: "projectile" | "rocket";
-                            directSuppression: number;
-                            indirectFirepower: number;
-                            preferredRange: number;
-                            engagementRange: number;
-                            cooldown: number;
-                            spread: number;
-                            recoil: number;
-                            ammoCost: number;
-                            muzzle: {
-                                height: number;
-                                forwardOffset: number;
-                            };
-                            muzzles?: {
-                                right: number;
-                            }[] | null;
-                            projectile: {
-                                speed: number;
-                                life: number;
-                                gravity: number;
-                                drag: number;
-                                hitRadius: number;
-                                damage: number;
-                            };
-                            audio: {
-                                kind: string;
-                            };
-                            visual: {
-                                mount: string;
-                                projectile: {
-                                    size: number;
-                                    color: string;
-                                    emissive: string;
-                                };
-                                muzzleFlash: {
-                                    color: string;
-                                    size: number;
-                                    duration: number;
-                                };
-                            };
-                            explosion?: {
-                                radius: number;
-                                triggerRadius: number;
-                                damage: number;
-                                minDamageRatio: number;
-                                duration: number;
-                                fireColor: string;
-                                shockwaveColor: string;
-                                friendlyFire: boolean;
-                            } | null;
-                            /** Format: date-time */
-                            createdAt: string;
-                            /** Format: date-time */
-                            updatedAt: string;
-                        };
-                    };
-                    unitTemplates: {
-                        [key: string]: {
-                            id: string;
-                            label: string;
-                            maxHealth: number;
-                            damageScale: number;
-                            palettes: {
-                                ally: {
-                                    primary: string;
-                                    secondary?: string;
-                                    accent?: string;
-                                }[];
-                                enemy: {
-                                    primary: string;
-                                    secondary?: string;
-                                    accent?: string;
-                                }[];
-                            };
-                            /** Format: date-time */
-                            createdAt: string;
-                            /** Format: date-time */
-                            updatedAt: string;
-                        };
-                    };
+                  id: string;
+                  name: string;
+                  personality: string;
+                  traits: {
+                    aggression: number;
+                    caution: number;
+                  };
+                  health: number;
+                  speed: number;
+                  fireRange: number;
+                  fightingDistance: number;
+                  behaviorTree: {
+                    [key: string]: unknown;
+                  };
+                  /** Format: date-time */
+                  createdAt: string;
+                  /** Format: date-time */
+                  updatedAt: string;
                 };
                 relationships?: {
-                    [key: string]: unknown;
+                  [key: string]: unknown;
                 };
                 meta?: {
-                    [key: string]: unknown;
+                  [key: string]: unknown;
                 };
                 links?: {
-                    [key: string]: string;
+                  [key: string]: string;
                 };
-            }[];
-            links: {
+              }[];
+              links: {
                 self: string;
-            };
-            metadata: {
+              };
+              metadata: {
                 requestId: string;
                 timestamp: string;
                 total: number;
@@ -2915,449 +902,2606 @@ export interface components {
                 totalPages: number;
                 /** @default {} */
                 availableFilters: {
-                    [key: string]: unknown;
+                  [key: string]: unknown;
                 };
                 sortOptions: {
-                    fields: string[];
-                    default: string;
-                    /** @enum {string} */
-                    direction: "asc" | "desc";
+                  fields: string[];
+                  default: string;
+                  /** @enum {string} */
+                  direction: "asc" | "desc";
                 };
+              };
             };
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/tanks/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get tank by ID
+     * @description Returns a single tank blueprint by its slug ID.
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description The request has succeeded. */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                /** @enum {string} */
+                type: "tank";
+                /** Format: uuid */
+                id: string;
+                /**
+                 * Tank
+                 * @description AI tank blueprint: combat stats, traits, and behavior tree
+                 */
+                attributes: {
+                  id: string;
+                  name: string;
+                  personality: string;
+                  traits: {
+                    aggression: number;
+                    caution: number;
+                  };
+                  health: number;
+                  speed: number;
+                  fireRange: number;
+                  fightingDistance: number;
+                  behaviorTree: {
+                    [key: string]: unknown;
+                  };
+                  /** Format: date-time */
+                  createdAt: string;
+                  /** Format: date-time */
+                  updatedAt: string;
+                };
+                relationships?: {
+                  [key: string]: unknown;
+                };
+                meta?: {
+                  [key: string]: unknown;
+                };
+                links?: {
+                  [key: string]: string;
+                };
+              };
+              links: {
+                self: string;
+              };
+              metadata: {
+                requestId: string;
+                timestamp: string;
+              } & {
+                [key: string]: unknown;
+              };
+            };
+          };
+        };
+        /** @description The requested resource could not be found on the server. */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["JsonApiErrorResponse"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+}
+export type webhooks = Record<string, never>;
+export interface components {
+  schemas: {
+    /**
+     * Mission
+     * @description Campaign mission definition: arena, squads, objectives, fail conditions, and rewards
+     */
+    Mission: {
+      id: string;
+      schemaVersion: number;
+      order: number;
+      title: string;
+      briefing: string;
+      difficulty: number;
+      requires: string[];
+      arena: {
+        levelId?: string;
+        seed: number;
+        size: number;
+        obstacleDensity: number;
+        playerSpawn: {
+          x: number;
+          z: number;
+        };
+        heading?: number;
+        roads?: {
+          waypoints: {
+            x: number;
+            z: number;
+          }[];
+          /** @default 12 */
+          width: number;
+        };
+      };
+      squads: {
+        id: string;
+        /** @enum {string} */
+        team: "ally" | "enemy";
+        units: {
+          template: string;
+          personality?: {
+            aggression: number;
+            caution: number;
+          };
+          /** @default false */
+          isLeader: boolean;
+        }[];
+        spawnPoints: {
+          x: number;
+          z: number;
+        }[];
+        /**
+         * @default {
+         *       "type": "start"
+         *     }
+         */
+        trigger:
+          | {
+              /** @enum {string} */
+              type: "start";
+            }
+          | {
+              /** @enum {string} */
+              type: "time";
+              atSeconds: number;
+            }
+          | {
+              /** @enum {string} */
+              type: "squadDestroyed";
+              squadId: string;
+              /** @default 0 */
+              delaySeconds: number;
+            };
+        /**
+         * @default {
+         *       "aggression": 0.5,
+         *       "caution": 0.5
+         *     }
+         */
+        personality: {
+          aggression: number;
+          caution: number;
         };
         /**
-         * Tank
-         * @description AI tank blueprint: combat stats, traits, and behavior tree
+         * @default patrol
+         * @enum {string}
          */
-        Tank: {
+        initialOrder: "attack" | "follow" | "flee" | "patrol";
+      }[];
+      objectives: (
+        | {
             id: string;
-            name: string;
-            personality: string;
-            traits: {
+            title: string;
+            /** @default true */
+            required: boolean;
+            /** @default false */
+            hidden: boolean;
+            /** @enum {string} */
+            type: "destroyCount";
+            params: {
+              /**
+               * @default enemy
+               * @enum {string}
+               */
+              team: "ally" | "enemy";
+              count: number;
+            };
+          }
+        | {
+            id: string;
+            title: string;
+            /** @default true */
+            required: boolean;
+            /** @default false */
+            hidden: boolean;
+            /** @enum {string} */
+            type: "destroySquad";
+            params: {
+              squadId: string;
+              /** @default false */
+              leaderOnly: boolean;
+            };
+          }
+        | {
+            id: string;
+            title: string;
+            /** @default true */
+            required: boolean;
+            /** @default false */
+            hidden: boolean;
+            /** @enum {string} */
+            type: "survive";
+            params: {
+              seconds: number;
+            };
+          }
+        | {
+            id: string;
+            title: string;
+            /** @default true */
+            required: boolean;
+            /** @default false */
+            hidden: boolean;
+            /** @enum {string} */
+            type: "keepAlive";
+            params: {
+              squadId: string;
+              minAlive: number;
+            };
+          }
+      )[];
+      failConditions: (
+        | {
+            /** @enum {string} */
+            type: "playerDestroyed";
+          }
+        | {
+            /** @enum {string} */
+            type: "timeLimit";
+            seconds: number;
+          }
+      )[];
+      rewards: {
+        xp: number;
+        /** @default [] */
+        unlocks: string[];
+      };
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    /**
+     * CreateMissionRequest
+     * @description Request schema for creating a new mission
+     */
+    NewMission: {
+      id: string;
+      schemaVersion?: number;
+      order: number;
+      title: string;
+      briefing: string;
+      difficulty: number;
+      requires: string[];
+      arena: {
+        levelId?: string;
+        seed: number;
+        size: number;
+        obstacleDensity: number;
+        playerSpawn: {
+          x: number;
+          z: number;
+        };
+        heading?: number;
+        roads?: {
+          waypoints: {
+            x: number;
+            z: number;
+          }[];
+          /** @default 12 */
+          width: number;
+        };
+      };
+      squads: {
+        id: string;
+        /** @enum {string} */
+        team: "ally" | "enemy";
+        units: {
+          template: string;
+          personality?: {
+            aggression: number;
+            caution: number;
+          };
+          /** @default false */
+          isLeader: boolean;
+        }[];
+        spawnPoints: {
+          x: number;
+          z: number;
+        }[];
+        /**
+         * @default {
+         *       "type": "start"
+         *     }
+         */
+        trigger:
+          | {
+              /** @enum {string} */
+              type: "start";
+            }
+          | {
+              /** @enum {string} */
+              type: "time";
+              atSeconds: number;
+            }
+          | {
+              /** @enum {string} */
+              type: "squadDestroyed";
+              squadId: string;
+              /** @default 0 */
+              delaySeconds: number;
+            };
+        /**
+         * @default {
+         *       "aggression": 0.5,
+         *       "caution": 0.5
+         *     }
+         */
+        personality: {
+          aggression: number;
+          caution: number;
+        };
+        /**
+         * @default patrol
+         * @enum {string}
+         */
+        initialOrder: "attack" | "follow" | "flee" | "patrol";
+      }[];
+      objectives: (
+        | {
+            id: string;
+            title: string;
+            /** @default true */
+            required: boolean;
+            /** @default false */
+            hidden: boolean;
+            /** @enum {string} */
+            type: "destroyCount";
+            params: {
+              /**
+               * @default enemy
+               * @enum {string}
+               */
+              team: "ally" | "enemy";
+              count: number;
+            };
+          }
+        | {
+            id: string;
+            title: string;
+            /** @default true */
+            required: boolean;
+            /** @default false */
+            hidden: boolean;
+            /** @enum {string} */
+            type: "destroySquad";
+            params: {
+              squadId: string;
+              /** @default false */
+              leaderOnly: boolean;
+            };
+          }
+        | {
+            id: string;
+            title: string;
+            /** @default true */
+            required: boolean;
+            /** @default false */
+            hidden: boolean;
+            /** @enum {string} */
+            type: "survive";
+            params: {
+              seconds: number;
+            };
+          }
+        | {
+            id: string;
+            title: string;
+            /** @default true */
+            required: boolean;
+            /** @default false */
+            hidden: boolean;
+            /** @enum {string} */
+            type: "keepAlive";
+            params: {
+              squadId: string;
+              minAlive: number;
+            };
+          }
+      )[];
+      failConditions: (
+        | {
+            /** @enum {string} */
+            type: "playerDestroyed";
+          }
+        | {
+            /** @enum {string} */
+            type: "timeLimit";
+            seconds: number;
+          }
+      )[];
+      rewards: {
+        xp: number;
+        /** @default [] */
+        unlocks: string[];
+      };
+      /** Format: date-time */
+      createdAt?: string;
+      /** Format: date-time */
+      updatedAt?: string;
+    };
+    MissionResource: {
+      /** @enum {string} */
+      type: "mission";
+      /** Format: uuid */
+      id: string;
+      /**
+       * Mission
+       * @description Campaign mission definition: arena, squads, objectives, fail conditions, and rewards
+       */
+      attributes: {
+        id: string;
+        schemaVersion: number;
+        order: number;
+        title: string;
+        briefing: string;
+        difficulty: number;
+        requires: string[];
+        arena: {
+          levelId?: string;
+          seed: number;
+          size: number;
+          obstacleDensity: number;
+          playerSpawn: {
+            x: number;
+            z: number;
+          };
+          heading?: number;
+          roads?: {
+            waypoints: {
+              x: number;
+              z: number;
+            }[];
+            /** @default 12 */
+            width: number;
+          };
+        };
+        squads: {
+          id: string;
+          /** @enum {string} */
+          team: "ally" | "enemy";
+          units: {
+            template: string;
+            personality?: {
+              aggression: number;
+              caution: number;
+            };
+            /** @default false */
+            isLeader: boolean;
+          }[];
+          spawnPoints: {
+            x: number;
+            z: number;
+          }[];
+          /**
+           * @default {
+           *       "type": "start"
+           *     }
+           */
+          trigger:
+            | {
+                /** @enum {string} */
+                type: "start";
+              }
+            | {
+                /** @enum {string} */
+                type: "time";
+                atSeconds: number;
+              }
+            | {
+                /** @enum {string} */
+                type: "squadDestroyed";
+                squadId: string;
+                /** @default 0 */
+                delaySeconds: number;
+              };
+          /**
+           * @default {
+           *       "aggression": 0.5,
+           *       "caution": 0.5
+           *     }
+           */
+          personality: {
+            aggression: number;
+            caution: number;
+          };
+          /**
+           * @default patrol
+           * @enum {string}
+           */
+          initialOrder: "attack" | "follow" | "flee" | "patrol";
+        }[];
+        objectives: (
+          | {
+              id: string;
+              title: string;
+              /** @default true */
+              required: boolean;
+              /** @default false */
+              hidden: boolean;
+              /** @enum {string} */
+              type: "destroyCount";
+              params: {
+                /**
+                 * @default enemy
+                 * @enum {string}
+                 */
+                team: "ally" | "enemy";
+                count: number;
+              };
+            }
+          | {
+              id: string;
+              title: string;
+              /** @default true */
+              required: boolean;
+              /** @default false */
+              hidden: boolean;
+              /** @enum {string} */
+              type: "destroySquad";
+              params: {
+                squadId: string;
+                /** @default false */
+                leaderOnly: boolean;
+              };
+            }
+          | {
+              id: string;
+              title: string;
+              /** @default true */
+              required: boolean;
+              /** @default false */
+              hidden: boolean;
+              /** @enum {string} */
+              type: "survive";
+              params: {
+                seconds: number;
+              };
+            }
+          | {
+              id: string;
+              title: string;
+              /** @default true */
+              required: boolean;
+              /** @default false */
+              hidden: boolean;
+              /** @enum {string} */
+              type: "keepAlive";
+              params: {
+                squadId: string;
+                minAlive: number;
+              };
+            }
+        )[];
+        failConditions: (
+          | {
+              /** @enum {string} */
+              type: "playerDestroyed";
+            }
+          | {
+              /** @enum {string} */
+              type: "timeLimit";
+              seconds: number;
+            }
+        )[];
+        rewards: {
+          xp: number;
+          /** @default [] */
+          unlocks: string[];
+        };
+        /** Format: date-time */
+        createdAt: string;
+        /** Format: date-time */
+        updatedAt: string;
+      };
+      relationships?: {
+        [key: string]: unknown;
+      };
+      meta?: {
+        [key: string]: unknown;
+      };
+      links?: {
+        [key: string]: string;
+      };
+    };
+    MissionSingleResponse: {
+      data: {
+        /** @enum {string} */
+        type: "mission";
+        /** Format: uuid */
+        id: string;
+        /**
+         * Mission
+         * @description Campaign mission definition: arena, squads, objectives, fail conditions, and rewards
+         */
+        attributes: {
+          id: string;
+          schemaVersion: number;
+          order: number;
+          title: string;
+          briefing: string;
+          difficulty: number;
+          requires: string[];
+          arena: {
+            levelId?: string;
+            seed: number;
+            size: number;
+            obstacleDensity: number;
+            playerSpawn: {
+              x: number;
+              z: number;
+            };
+            heading?: number;
+            roads?: {
+              waypoints: {
+                x: number;
+                z: number;
+              }[];
+              /** @default 12 */
+              width: number;
+            };
+          };
+          squads: {
+            id: string;
+            /** @enum {string} */
+            team: "ally" | "enemy";
+            units: {
+              template: string;
+              personality?: {
                 aggression: number;
                 caution: number;
+              };
+              /** @default false */
+              isLeader: boolean;
+            }[];
+            spawnPoints: {
+              x: number;
+              z: number;
+            }[];
+            /**
+             * @default {
+             *       "type": "start"
+             *     }
+             */
+            trigger:
+              | {
+                  /** @enum {string} */
+                  type: "start";
+                }
+              | {
+                  /** @enum {string} */
+                  type: "time";
+                  atSeconds: number;
+                }
+              | {
+                  /** @enum {string} */
+                  type: "squadDestroyed";
+                  squadId: string;
+                  /** @default 0 */
+                  delaySeconds: number;
+                };
+            /**
+             * @default {
+             *       "aggression": 0.5,
+             *       "caution": 0.5
+             *     }
+             */
+            personality: {
+              aggression: number;
+              caution: number;
             };
-            health: number;
+            /**
+             * @default patrol
+             * @enum {string}
+             */
+            initialOrder: "attack" | "follow" | "flee" | "patrol";
+          }[];
+          objectives: (
+            | {
+                id: string;
+                title: string;
+                /** @default true */
+                required: boolean;
+                /** @default false */
+                hidden: boolean;
+                /** @enum {string} */
+                type: "destroyCount";
+                params: {
+                  /**
+                   * @default enemy
+                   * @enum {string}
+                   */
+                  team: "ally" | "enemy";
+                  count: number;
+                };
+              }
+            | {
+                id: string;
+                title: string;
+                /** @default true */
+                required: boolean;
+                /** @default false */
+                hidden: boolean;
+                /** @enum {string} */
+                type: "destroySquad";
+                params: {
+                  squadId: string;
+                  /** @default false */
+                  leaderOnly: boolean;
+                };
+              }
+            | {
+                id: string;
+                title: string;
+                /** @default true */
+                required: boolean;
+                /** @default false */
+                hidden: boolean;
+                /** @enum {string} */
+                type: "survive";
+                params: {
+                  seconds: number;
+                };
+              }
+            | {
+                id: string;
+                title: string;
+                /** @default true */
+                required: boolean;
+                /** @default false */
+                hidden: boolean;
+                /** @enum {string} */
+                type: "keepAlive";
+                params: {
+                  squadId: string;
+                  minAlive: number;
+                };
+              }
+          )[];
+          failConditions: (
+            | {
+                /** @enum {string} */
+                type: "playerDestroyed";
+              }
+            | {
+                /** @enum {string} */
+                type: "timeLimit";
+                seconds: number;
+              }
+          )[];
+          rewards: {
+            xp: number;
+            /** @default [] */
+            unlocks: string[];
+          };
+          /** Format: date-time */
+          createdAt: string;
+          /** Format: date-time */
+          updatedAt: string;
+        };
+        relationships?: {
+          [key: string]: unknown;
+        };
+        meta?: {
+          [key: string]: unknown;
+        };
+        links?: {
+          [key: string]: string;
+        };
+      };
+      links: {
+        self: string;
+      };
+      metadata: {
+        requestId: string;
+        timestamp: string;
+      } & {
+        [key: string]: unknown;
+      };
+    };
+    MissionCollectionResponse: {
+      data: {
+        /** @enum {string} */
+        type: "mission";
+        /** Format: uuid */
+        id: string;
+        /**
+         * Mission
+         * @description Campaign mission definition: arena, squads, objectives, fail conditions, and rewards
+         */
+        attributes: {
+          id: string;
+          schemaVersion: number;
+          order: number;
+          title: string;
+          briefing: string;
+          difficulty: number;
+          requires: string[];
+          arena: {
+            levelId?: string;
+            seed: number;
+            size: number;
+            obstacleDensity: number;
+            playerSpawn: {
+              x: number;
+              z: number;
+            };
+            heading?: number;
+            roads?: {
+              waypoints: {
+                x: number;
+                z: number;
+              }[];
+              /** @default 12 */
+              width: number;
+            };
+          };
+          squads: {
+            id: string;
+            /** @enum {string} */
+            team: "ally" | "enemy";
+            units: {
+              template: string;
+              personality?: {
+                aggression: number;
+                caution: number;
+              };
+              /** @default false */
+              isLeader: boolean;
+            }[];
+            spawnPoints: {
+              x: number;
+              z: number;
+            }[];
+            /**
+             * @default {
+             *       "type": "start"
+             *     }
+             */
+            trigger:
+              | {
+                  /** @enum {string} */
+                  type: "start";
+                }
+              | {
+                  /** @enum {string} */
+                  type: "time";
+                  atSeconds: number;
+                }
+              | {
+                  /** @enum {string} */
+                  type: "squadDestroyed";
+                  squadId: string;
+                  /** @default 0 */
+                  delaySeconds: number;
+                };
+            /**
+             * @default {
+             *       "aggression": 0.5,
+             *       "caution": 0.5
+             *     }
+             */
+            personality: {
+              aggression: number;
+              caution: number;
+            };
+            /**
+             * @default patrol
+             * @enum {string}
+             */
+            initialOrder: "attack" | "follow" | "flee" | "patrol";
+          }[];
+          objectives: (
+            | {
+                id: string;
+                title: string;
+                /** @default true */
+                required: boolean;
+                /** @default false */
+                hidden: boolean;
+                /** @enum {string} */
+                type: "destroyCount";
+                params: {
+                  /**
+                   * @default enemy
+                   * @enum {string}
+                   */
+                  team: "ally" | "enemy";
+                  count: number;
+                };
+              }
+            | {
+                id: string;
+                title: string;
+                /** @default true */
+                required: boolean;
+                /** @default false */
+                hidden: boolean;
+                /** @enum {string} */
+                type: "destroySquad";
+                params: {
+                  squadId: string;
+                  /** @default false */
+                  leaderOnly: boolean;
+                };
+              }
+            | {
+                id: string;
+                title: string;
+                /** @default true */
+                required: boolean;
+                /** @default false */
+                hidden: boolean;
+                /** @enum {string} */
+                type: "survive";
+                params: {
+                  seconds: number;
+                };
+              }
+            | {
+                id: string;
+                title: string;
+                /** @default true */
+                required: boolean;
+                /** @default false */
+                hidden: boolean;
+                /** @enum {string} */
+                type: "keepAlive";
+                params: {
+                  squadId: string;
+                  minAlive: number;
+                };
+              }
+          )[];
+          failConditions: (
+            | {
+                /** @enum {string} */
+                type: "playerDestroyed";
+              }
+            | {
+                /** @enum {string} */
+                type: "timeLimit";
+                seconds: number;
+              }
+          )[];
+          rewards: {
+            xp: number;
+            /** @default [] */
+            unlocks: string[];
+          };
+          /** Format: date-time */
+          createdAt: string;
+          /** Format: date-time */
+          updatedAt: string;
+        };
+        relationships?: {
+          [key: string]: unknown;
+        };
+        meta?: {
+          [key: string]: unknown;
+        };
+        links?: {
+          [key: string]: string;
+        };
+      }[];
+      links: {
+        self: string;
+      };
+      metadata: {
+        requestId: string;
+        timestamp: string;
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+        /** @default {} */
+        availableFilters: {
+          [key: string]: unknown;
+        };
+        sortOptions: {
+          fields: string[];
+          default: string;
+          /** @enum {string} */
+          direction: "asc" | "desc";
+        };
+      };
+    };
+    GetMissionsParams: {
+      /** @default 10 */
+      limit: number;
+      /** @default 1 */
+      page: number;
+      search?: string;
+      /**
+       * @default order
+       * @enum {string}
+       */
+      sortBy: "order" | "title" | "difficulty" | "createdAt";
+      /**
+       * @default desc
+       * @enum {string}
+       */
+      sortOrder: "asc" | "desc";
+    };
+    Catalog: {
+      version: string;
+      missions: {
+        id: string;
+        schemaVersion: number;
+        order: number;
+        title: string;
+        briefing: string;
+        difficulty: number;
+        requires: string[];
+        arena: {
+          levelId?: string;
+          seed: number;
+          size: number;
+          obstacleDensity: number;
+          playerSpawn: {
+            x: number;
+            z: number;
+          };
+          heading?: number;
+          roads?: {
+            waypoints: {
+              x: number;
+              z: number;
+            }[];
+            /** @default 12 */
+            width: number;
+          };
+        };
+        squads: {
+          id: string;
+          /** @enum {string} */
+          team: "ally" | "enemy";
+          units: {
+            template: string;
+            personality?: {
+              aggression: number;
+              caution: number;
+            };
+            /** @default false */
+            isLeader: boolean;
+          }[];
+          spawnPoints: {
+            x: number;
+            z: number;
+          }[];
+          /**
+           * @default {
+           *       "type": "start"
+           *     }
+           */
+          trigger:
+            | {
+                /** @enum {string} */
+                type: "start";
+              }
+            | {
+                /** @enum {string} */
+                type: "time";
+                atSeconds: number;
+              }
+            | {
+                /** @enum {string} */
+                type: "squadDestroyed";
+                squadId: string;
+                /** @default 0 */
+                delaySeconds: number;
+              };
+          /**
+           * @default {
+           *       "aggression": 0.5,
+           *       "caution": 0.5
+           *     }
+           */
+          personality: {
+            aggression: number;
+            caution: number;
+          };
+          /**
+           * @default patrol
+           * @enum {string}
+           */
+          initialOrder: "attack" | "follow" | "flee" | "patrol";
+        }[];
+        objectives: (
+          | {
+              id: string;
+              title: string;
+              /** @default true */
+              required: boolean;
+              /** @default false */
+              hidden: boolean;
+              /** @enum {string} */
+              type: "destroyCount";
+              params: {
+                /**
+                 * @default enemy
+                 * @enum {string}
+                 */
+                team: "ally" | "enemy";
+                count: number;
+              };
+            }
+          | {
+              id: string;
+              title: string;
+              /** @default true */
+              required: boolean;
+              /** @default false */
+              hidden: boolean;
+              /** @enum {string} */
+              type: "destroySquad";
+              params: {
+                squadId: string;
+                /** @default false */
+                leaderOnly: boolean;
+              };
+            }
+          | {
+              id: string;
+              title: string;
+              /** @default true */
+              required: boolean;
+              /** @default false */
+              hidden: boolean;
+              /** @enum {string} */
+              type: "survive";
+              params: {
+                seconds: number;
+              };
+            }
+          | {
+              id: string;
+              title: string;
+              /** @default true */
+              required: boolean;
+              /** @default false */
+              hidden: boolean;
+              /** @enum {string} */
+              type: "keepAlive";
+              params: {
+                squadId: string;
+                minAlive: number;
+              };
+            }
+        )[];
+        failConditions: (
+          | {
+              /** @enum {string} */
+              type: "playerDestroyed";
+            }
+          | {
+              /** @enum {string} */
+              type: "timeLimit";
+              seconds: number;
+            }
+        )[];
+        rewards: {
+          xp: number;
+          /** @default [] */
+          unlocks: string[];
+        };
+        /** Format: date-time */
+        createdAt: string;
+        /** Format: date-time */
+        updatedAt: string;
+      }[];
+      weapons: {
+        [key: string]: {
+          id: string;
+          label: string;
+          /** @enum {string} */
+          mechanism: "projectile" | "rocket";
+          directSuppression: number;
+          indirectFirepower: number;
+          preferredRange: number;
+          engagementRange: number;
+          cooldown: number;
+          spread: number;
+          recoil: number;
+          ammoCost: number;
+          muzzle: {
+            height: number;
+            forwardOffset: number;
+          };
+          muzzles?:
+            | {
+                right: number;
+              }[]
+            | null;
+          projectile: {
             speed: number;
-            fireRange: number;
-            fightingDistance: number;
-            behaviorTree: {
-                [key: string]: unknown;
+            life: number;
+            gravity: number;
+            drag: number;
+            hitRadius: number;
+            damage: number;
+          };
+          audio: {
+            kind: string;
+          };
+          visual: {
+            mount: string;
+            projectile: {
+              size: number;
+              color: string;
+              emissive: string;
+            };
+            muzzleFlash: {
+              color: string;
+              size: number;
+              duration: number;
+            };
+          };
+          explosion?: {
+            radius: number;
+            triggerRadius: number;
+            damage: number;
+            minDamageRatio: number;
+            duration: number;
+            fireColor: string;
+            shockwaveColor: string;
+            friendlyFire: boolean;
+          } | null;
+          /** Format: date-time */
+          createdAt: string;
+          /** Format: date-time */
+          updatedAt: string;
+        };
+      };
+      unitTemplates: {
+        [key: string]: {
+          id: string;
+          label: string;
+          maxHealth: number;
+          damageScale: number;
+          palettes: {
+            ally: {
+              primary: string;
+              secondary?: string;
+              accent?: string;
+            }[];
+            enemy: {
+              primary: string;
+              secondary?: string;
+              accent?: string;
+            }[];
+          };
+          /** Format: date-time */
+          createdAt: string;
+          /** Format: date-time */
+          updatedAt: string;
+        };
+      };
+    };
+    CatalogResource: {
+      /** @enum {string} */
+      type: "catalog";
+      /** Format: uuid */
+      id: string;
+      attributes: {
+        version: string;
+        missions: {
+          id: string;
+          schemaVersion: number;
+          order: number;
+          title: string;
+          briefing: string;
+          difficulty: number;
+          requires: string[];
+          arena: {
+            levelId?: string;
+            seed: number;
+            size: number;
+            obstacleDensity: number;
+            playerSpawn: {
+              x: number;
+              z: number;
+            };
+            heading?: number;
+            roads?: {
+              waypoints: {
+                x: number;
+                z: number;
+              }[];
+              /** @default 12 */
+              width: number;
+            };
+          };
+          squads: {
+            id: string;
+            /** @enum {string} */
+            team: "ally" | "enemy";
+            units: {
+              template: string;
+              personality?: {
+                aggression: number;
+                caution: number;
+              };
+              /** @default false */
+              isLeader: boolean;
+            }[];
+            spawnPoints: {
+              x: number;
+              z: number;
+            }[];
+            /**
+             * @default {
+             *       "type": "start"
+             *     }
+             */
+            trigger:
+              | {
+                  /** @enum {string} */
+                  type: "start";
+                }
+              | {
+                  /** @enum {string} */
+                  type: "time";
+                  atSeconds: number;
+                }
+              | {
+                  /** @enum {string} */
+                  type: "squadDestroyed";
+                  squadId: string;
+                  /** @default 0 */
+                  delaySeconds: number;
+                };
+            /**
+             * @default {
+             *       "aggression": 0.5,
+             *       "caution": 0.5
+             *     }
+             */
+            personality: {
+              aggression: number;
+              caution: number;
+            };
+            /**
+             * @default patrol
+             * @enum {string}
+             */
+            initialOrder: "attack" | "follow" | "flee" | "patrol";
+          }[];
+          objectives: (
+            | {
+                id: string;
+                title: string;
+                /** @default true */
+                required: boolean;
+                /** @default false */
+                hidden: boolean;
+                /** @enum {string} */
+                type: "destroyCount";
+                params: {
+                  /**
+                   * @default enemy
+                   * @enum {string}
+                   */
+                  team: "ally" | "enemy";
+                  count: number;
+                };
+              }
+            | {
+                id: string;
+                title: string;
+                /** @default true */
+                required: boolean;
+                /** @default false */
+                hidden: boolean;
+                /** @enum {string} */
+                type: "destroySquad";
+                params: {
+                  squadId: string;
+                  /** @default false */
+                  leaderOnly: boolean;
+                };
+              }
+            | {
+                id: string;
+                title: string;
+                /** @default true */
+                required: boolean;
+                /** @default false */
+                hidden: boolean;
+                /** @enum {string} */
+                type: "survive";
+                params: {
+                  seconds: number;
+                };
+              }
+            | {
+                id: string;
+                title: string;
+                /** @default true */
+                required: boolean;
+                /** @default false */
+                hidden: boolean;
+                /** @enum {string} */
+                type: "keepAlive";
+                params: {
+                  squadId: string;
+                  minAlive: number;
+                };
+              }
+          )[];
+          failConditions: (
+            | {
+                /** @enum {string} */
+                type: "playerDestroyed";
+              }
+            | {
+                /** @enum {string} */
+                type: "timeLimit";
+                seconds: number;
+              }
+          )[];
+          rewards: {
+            xp: number;
+            /** @default [] */
+            unlocks: string[];
+          };
+          /** Format: date-time */
+          createdAt: string;
+          /** Format: date-time */
+          updatedAt: string;
+        }[];
+        weapons: {
+          [key: string]: {
+            id: string;
+            label: string;
+            /** @enum {string} */
+            mechanism: "projectile" | "rocket";
+            directSuppression: number;
+            indirectFirepower: number;
+            preferredRange: number;
+            engagementRange: number;
+            cooldown: number;
+            spread: number;
+            recoil: number;
+            ammoCost: number;
+            muzzle: {
+              height: number;
+              forwardOffset: number;
+            };
+            muzzles?:
+              | {
+                  right: number;
+                }[]
+              | null;
+            projectile: {
+              speed: number;
+              life: number;
+              gravity: number;
+              drag: number;
+              hitRadius: number;
+              damage: number;
+            };
+            audio: {
+              kind: string;
+            };
+            visual: {
+              mount: string;
+              projectile: {
+                size: number;
+                color: string;
+                emissive: string;
+              };
+              muzzleFlash: {
+                color: string;
+                size: number;
+                duration: number;
+              };
+            };
+            explosion?: {
+              radius: number;
+              triggerRadius: number;
+              damage: number;
+              minDamageRatio: number;
+              duration: number;
+              fireColor: string;
+              shockwaveColor: string;
+              friendlyFire: boolean;
+            } | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+          };
+        };
+        unitTemplates: {
+          [key: string]: {
+            id: string;
+            label: string;
+            maxHealth: number;
+            damageScale: number;
+            palettes: {
+              ally: {
+                primary: string;
+                secondary?: string;
+                accent?: string;
+              }[];
+              enemy: {
+                primary: string;
+                secondary?: string;
+                accent?: string;
+              }[];
             };
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+          };
         };
-        /** CreateTankRequest */
-        NewTank: {
+      };
+      relationships?: {
+        [key: string]: unknown;
+      };
+      meta?: {
+        [key: string]: unknown;
+      };
+      links?: {
+        [key: string]: string;
+      };
+    };
+    CatalogSingleResponse: {
+      data: {
+        /** @enum {string} */
+        type: "catalog";
+        /** Format: uuid */
+        id: string;
+        attributes: {
+          version: string;
+          missions: {
             id: string;
-            name: string;
-            personality: string;
-            traits: {
+            schemaVersion: number;
+            order: number;
+            title: string;
+            briefing: string;
+            difficulty: number;
+            requires: string[];
+            arena: {
+              levelId?: string;
+              seed: number;
+              size: number;
+              obstacleDensity: number;
+              playerSpawn: {
+                x: number;
+                z: number;
+              };
+              heading?: number;
+              roads?: {
+                waypoints: {
+                  x: number;
+                  z: number;
+                }[];
+                /** @default 12 */
+                width: number;
+              };
+            };
+            squads: {
+              id: string;
+              /** @enum {string} */
+              team: "ally" | "enemy";
+              units: {
+                template: string;
+                personality?: {
+                  aggression: number;
+                  caution: number;
+                };
+                /** @default false */
+                isLeader: boolean;
+              }[];
+              spawnPoints: {
+                x: number;
+                z: number;
+              }[];
+              /**
+               * @default {
+               *       "type": "start"
+               *     }
+               */
+              trigger:
+                | {
+                    /** @enum {string} */
+                    type: "start";
+                  }
+                | {
+                    /** @enum {string} */
+                    type: "time";
+                    atSeconds: number;
+                  }
+                | {
+                    /** @enum {string} */
+                    type: "squadDestroyed";
+                    squadId: string;
+                    /** @default 0 */
+                    delaySeconds: number;
+                  };
+              /**
+               * @default {
+               *       "aggression": 0.5,
+               *       "caution": 0.5
+               *     }
+               */
+              personality: {
                 aggression: number;
                 caution: number;
-            };
-            health: number;
-            speed: number;
-            fireRange: number;
-            fightingDistance: number;
-            behaviorTree: {
-                [key: string]: unknown;
-            };
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
-        };
-        TankResource: {
-            /** @enum {string} */
-            type: "tank";
-            /** Format: uuid */
-            id: string;
-            /**
-             * Tank
-             * @description AI tank blueprint: combat stats, traits, and behavior tree
-             */
-            attributes: {
-                id: string;
-                name: string;
-                personality: string;
-                traits: {
-                    aggression: number;
-                    caution: number;
-                };
-                health: number;
-                speed: number;
-                fireRange: number;
-                fightingDistance: number;
-                behaviorTree: {
-                    [key: string]: unknown;
-                };
-                /** Format: date-time */
-                createdAt: string;
-                /** Format: date-time */
-                updatedAt: string;
-            };
-            relationships?: {
-                [key: string]: unknown;
-            };
-            meta?: {
-                [key: string]: unknown;
-            };
-            links?: {
-                [key: string]: string;
-            };
-        };
-        TankSingleResponse: {
-            data: {
-                /** @enum {string} */
-                type: "tank";
-                /** Format: uuid */
-                id: string;
-                /**
-                 * Tank
-                 * @description AI tank blueprint: combat stats, traits, and behavior tree
-                 */
-                attributes: {
-                    id: string;
-                    name: string;
-                    personality: string;
-                    traits: {
-                        aggression: number;
-                        caution: number;
-                    };
-                    health: number;
-                    speed: number;
-                    fireRange: number;
-                    fightingDistance: number;
-                    behaviorTree: {
-                        [key: string]: unknown;
-                    };
-                    /** Format: date-time */
-                    createdAt: string;
-                    /** Format: date-time */
-                    updatedAt: string;
-                };
-                relationships?: {
-                    [key: string]: unknown;
-                };
-                meta?: {
-                    [key: string]: unknown;
-                };
-                links?: {
-                    [key: string]: string;
-                };
-            };
-            links: {
-                self: string;
-            };
-            metadata: {
-                requestId: string;
-                timestamp: string;
-            } & {
-                [key: string]: unknown;
-            };
-        };
-        TankCollectionResponse: {
-            data: {
-                /** @enum {string} */
-                type: "tank";
-                /** Format: uuid */
-                id: string;
-                /**
-                 * Tank
-                 * @description AI tank blueprint: combat stats, traits, and behavior tree
-                 */
-                attributes: {
-                    id: string;
-                    name: string;
-                    personality: string;
-                    traits: {
-                        aggression: number;
-                        caution: number;
-                    };
-                    health: number;
-                    speed: number;
-                    fireRange: number;
-                    fightingDistance: number;
-                    behaviorTree: {
-                        [key: string]: unknown;
-                    };
-                    /** Format: date-time */
-                    createdAt: string;
-                    /** Format: date-time */
-                    updatedAt: string;
-                };
-                relationships?: {
-                    [key: string]: unknown;
-                };
-                meta?: {
-                    [key: string]: unknown;
-                };
-                links?: {
-                    [key: string]: string;
-                };
+              };
+              /**
+               * @default patrol
+               * @enum {string}
+               */
+              initialOrder: "attack" | "follow" | "flee" | "patrol";
             }[];
-            links: {
-                self: string;
+            objectives: (
+              | {
+                  id: string;
+                  title: string;
+                  /** @default true */
+                  required: boolean;
+                  /** @default false */
+                  hidden: boolean;
+                  /** @enum {string} */
+                  type: "destroyCount";
+                  params: {
+                    /**
+                     * @default enemy
+                     * @enum {string}
+                     */
+                    team: "ally" | "enemy";
+                    count: number;
+                  };
+                }
+              | {
+                  id: string;
+                  title: string;
+                  /** @default true */
+                  required: boolean;
+                  /** @default false */
+                  hidden: boolean;
+                  /** @enum {string} */
+                  type: "destroySquad";
+                  params: {
+                    squadId: string;
+                    /** @default false */
+                    leaderOnly: boolean;
+                  };
+                }
+              | {
+                  id: string;
+                  title: string;
+                  /** @default true */
+                  required: boolean;
+                  /** @default false */
+                  hidden: boolean;
+                  /** @enum {string} */
+                  type: "survive";
+                  params: {
+                    seconds: number;
+                  };
+                }
+              | {
+                  id: string;
+                  title: string;
+                  /** @default true */
+                  required: boolean;
+                  /** @default false */
+                  hidden: boolean;
+                  /** @enum {string} */
+                  type: "keepAlive";
+                  params: {
+                    squadId: string;
+                    minAlive: number;
+                  };
+                }
+            )[];
+            failConditions: (
+              | {
+                  /** @enum {string} */
+                  type: "playerDestroyed";
+                }
+              | {
+                  /** @enum {string} */
+                  type: "timeLimit";
+                  seconds: number;
+                }
+            )[];
+            rewards: {
+              xp: number;
+              /** @default [] */
+              unlocks: string[];
             };
-            metadata: {
-                requestId: string;
-                timestamp: string;
-                total: number;
-                page: number;
-                limit: number;
-                totalPages: number;
-                /** @default {} */
-                availableFilters: {
-                    [key: string]: unknown;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+          }[];
+          weapons: {
+            [key: string]: {
+              id: string;
+              label: string;
+              /** @enum {string} */
+              mechanism: "projectile" | "rocket";
+              directSuppression: number;
+              indirectFirepower: number;
+              preferredRange: number;
+              engagementRange: number;
+              cooldown: number;
+              spread: number;
+              recoil: number;
+              ammoCost: number;
+              muzzle: {
+                height: number;
+                forwardOffset: number;
+              };
+              muzzles?:
+                | {
+                    right: number;
+                  }[]
+                | null;
+              projectile: {
+                speed: number;
+                life: number;
+                gravity: number;
+                drag: number;
+                hitRadius: number;
+                damage: number;
+              };
+              audio: {
+                kind: string;
+              };
+              visual: {
+                mount: string;
+                projectile: {
+                  size: number;
+                  color: string;
+                  emissive: string;
                 };
-                sortOptions: {
-                    fields: string[];
-                    default: string;
-                    /** @enum {string} */
-                    direction: "asc" | "desc";
+                muzzleFlash: {
+                  color: string;
+                  size: number;
+                  duration: number;
                 };
+              };
+              explosion?: {
+                radius: number;
+                triggerRadius: number;
+                damage: number;
+                minDamageRatio: number;
+                duration: number;
+                fireColor: string;
+                shockwaveColor: string;
+                friendlyFire: boolean;
+              } | null;
+              /** Format: date-time */
+              createdAt: string;
+              /** Format: date-time */
+              updatedAt: string;
             };
+          };
+          unitTemplates: {
+            [key: string]: {
+              id: string;
+              label: string;
+              maxHealth: number;
+              damageScale: number;
+              palettes: {
+                ally: {
+                  primary: string;
+                  secondary?: string;
+                  accent?: string;
+                }[];
+                enemy: {
+                  primary: string;
+                  secondary?: string;
+                  accent?: string;
+                }[];
+              };
+              /** Format: date-time */
+              createdAt: string;
+              /** Format: date-time */
+              updatedAt: string;
+            };
+          };
         };
-        GetTanksParams: {
-            /** @default 10 */
-            limit: number;
-            /** @default 1 */
-            page: number;
-            search?: string;
-            /**
-             * @default name
-             * @enum {string}
-             */
-            sortBy: "name" | "health" | "speed" | "createdAt";
-            /**
-             * @default desc
-             * @enum {string}
-             */
-            sortOrder: "asc" | "desc";
+        relationships?: {
+          [key: string]: unknown;
         };
-        /**
-         * @description Metadata about the response
-         * @example {
-         *       "timestamp": "2023-12-09T15:39:00Z",
-         *       "requestId": "req_12345",
-         *       "resourceId": "resource_678"
-         *     }
-         */
-        ResponseMetadata: {
-            /**
-             * Format: date-time
-             * @description ISO 8601 timestamp of the response
-             */
-            timestamp?: string;
-            /**
-             * Format: uuid
-             * @description Unique identifier for the request
-             */
-            requestId?: string;
-            /** @description Identifier of the resource */
-            resourceId?: string | number;
-        } & {
-            [key: string]: unknown;
+        meta?: {
+          [key: string]: unknown;
         };
-        JsonApiError: {
-            /**
-             * Format: uuid
-             * @description Unique identifier for this error instance
-             */
+        links?: {
+          [key: string]: string;
+        };
+      };
+      links: {
+        self: string;
+      };
+      metadata: {
+        requestId: string;
+        timestamp: string;
+      } & {
+        [key: string]: unknown;
+      };
+    };
+    CatalogCollectionResponse: {
+      data: {
+        /** @enum {string} */
+        type: "catalog";
+        /** Format: uuid */
+        id: string;
+        attributes: {
+          version: string;
+          missions: {
             id: string;
-            /** @description HTTP status code as string */
-            status: string;
-            /** @description Application-specific error code */
-            code: string;
-            /** @description Short, human-readable summary of the error */
+            schemaVersion: number;
+            order: number;
             title: string;
-            /** @description Human-readable explanation specific to this error */
-            detail: string;
-            /**
-             * @description Metadata about the response
-             * @example {
-             *       "timestamp": "2023-12-09T15:39:00Z",
-             *       "requestId": "req_12345",
-             *       "resourceId": "resource_678"
-             *     }
-             */
-            metadata: {
-                /**
-                 * Format: date-time
-                 * @description ISO 8601 timestamp of the response
-                 */
-                timestamp?: string;
-                /**
-                 * Format: uuid
-                 * @description Unique identifier for the request
-                 */
-                requestId?: string;
-                /** @description Identifier of the resource */
-                resourceId?: string | number;
-            } & {
-                [key: string]: unknown;
+            briefing: string;
+            difficulty: number;
+            requires: string[];
+            arena: {
+              levelId?: string;
+              seed: number;
+              size: number;
+              obstacleDensity: number;
+              playerSpawn: {
+                x: number;
+                z: number;
+              };
+              heading?: number;
+              roads?: {
+                waypoints: {
+                  x: number;
+                  z: number;
+                }[];
+                /** @default 12 */
+                width: number;
+              };
             };
-            source?: {
-                /** @description JSON Pointer to the associated entity in request */
-                pointer?: string;
-                /** @description HTTP method of the request */
-                method?: string;
+            squads: {
+              id: string;
+              /** @enum {string} */
+              team: "ally" | "enemy";
+              units: {
+                template: string;
+                personality?: {
+                  aggression: number;
+                  caution: number;
+                };
+                /** @default false */
+                isLeader: boolean;
+              }[];
+              spawnPoints: {
+                x: number;
+                z: number;
+              }[];
+              /**
+               * @default {
+               *       "type": "start"
+               *     }
+               */
+              trigger:
+                | {
+                    /** @enum {string} */
+                    type: "start";
+                  }
+                | {
+                    /** @enum {string} */
+                    type: "time";
+                    atSeconds: number;
+                  }
+                | {
+                    /** @enum {string} */
+                    type: "squadDestroyed";
+                    squadId: string;
+                    /** @default 0 */
+                    delaySeconds: number;
+                  };
+              /**
+               * @default {
+               *       "aggression": 0.5,
+               *       "caution": 0.5
+               *     }
+               */
+              personality: {
+                aggression: number;
+                caution: number;
+              };
+              /**
+               * @default patrol
+               * @enum {string}
+               */
+              initialOrder: "attack" | "follow" | "flee" | "patrol";
+            }[];
+            objectives: (
+              | {
+                  id: string;
+                  title: string;
+                  /** @default true */
+                  required: boolean;
+                  /** @default false */
+                  hidden: boolean;
+                  /** @enum {string} */
+                  type: "destroyCount";
+                  params: {
+                    /**
+                     * @default enemy
+                     * @enum {string}
+                     */
+                    team: "ally" | "enemy";
+                    count: number;
+                  };
+                }
+              | {
+                  id: string;
+                  title: string;
+                  /** @default true */
+                  required: boolean;
+                  /** @default false */
+                  hidden: boolean;
+                  /** @enum {string} */
+                  type: "destroySquad";
+                  params: {
+                    squadId: string;
+                    /** @default false */
+                    leaderOnly: boolean;
+                  };
+                }
+              | {
+                  id: string;
+                  title: string;
+                  /** @default true */
+                  required: boolean;
+                  /** @default false */
+                  hidden: boolean;
+                  /** @enum {string} */
+                  type: "survive";
+                  params: {
+                    seconds: number;
+                  };
+                }
+              | {
+                  id: string;
+                  title: string;
+                  /** @default true */
+                  required: boolean;
+                  /** @default false */
+                  hidden: boolean;
+                  /** @enum {string} */
+                  type: "keepAlive";
+                  params: {
+                    squadId: string;
+                    minAlive: number;
+                  };
+                }
+            )[];
+            failConditions: (
+              | {
+                  /** @enum {string} */
+                  type: "playerDestroyed";
+                }
+              | {
+                  /** @enum {string} */
+                  type: "timeLimit";
+                  seconds: number;
+                }
+            )[];
+            rewards: {
+              xp: number;
+              /** @default [] */
+              unlocks: string[];
             };
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+          }[];
+          weapons: {
+            [key: string]: {
+              id: string;
+              label: string;
+              /** @enum {string} */
+              mechanism: "projectile" | "rocket";
+              directSuppression: number;
+              indirectFirepower: number;
+              preferredRange: number;
+              engagementRange: number;
+              cooldown: number;
+              spread: number;
+              recoil: number;
+              ammoCost: number;
+              muzzle: {
+                height: number;
+                forwardOffset: number;
+              };
+              muzzles?:
+                | {
+                    right: number;
+                  }[]
+                | null;
+              projectile: {
+                speed: number;
+                life: number;
+                gravity: number;
+                drag: number;
+                hitRadius: number;
+                damage: number;
+              };
+              audio: {
+                kind: string;
+              };
+              visual: {
+                mount: string;
+                projectile: {
+                  size: number;
+                  color: string;
+                  emissive: string;
+                };
+                muzzleFlash: {
+                  color: string;
+                  size: number;
+                  duration: number;
+                };
+              };
+              explosion?: {
+                radius: number;
+                triggerRadius: number;
+                damage: number;
+                minDamageRatio: number;
+                duration: number;
+                fireColor: string;
+                shockwaveColor: string;
+                friendlyFire: boolean;
+              } | null;
+              /** Format: date-time */
+              createdAt: string;
+              /** Format: date-time */
+              updatedAt: string;
+            };
+          };
+          unitTemplates: {
+            [key: string]: {
+              id: string;
+              label: string;
+              maxHealth: number;
+              damageScale: number;
+              palettes: {
+                ally: {
+                  primary: string;
+                  secondary?: string;
+                  accent?: string;
+                }[];
+                enemy: {
+                  primary: string;
+                  secondary?: string;
+                  accent?: string;
+                }[];
+              };
+              /** Format: date-time */
+              createdAt: string;
+              /** Format: date-time */
+              updatedAt: string;
+            };
+          };
         };
-        JsonApiErrorResponse: {
-            errors: components["schemas"]["JsonApiError"][];
+        relationships?: {
+          [key: string]: unknown;
         };
-        /** @description JSON:API resource object */
-        JsonApiResource: {
+        meta?: {
+          [key: string]: unknown;
+        };
+        links?: {
+          [key: string]: string;
+        };
+      }[];
+      links: {
+        self: string;
+      };
+      metadata: {
+        requestId: string;
+        timestamp: string;
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+        /** @default {} */
+        availableFilters: {
+          [key: string]: unknown;
+        };
+        sortOptions: {
+          fields: string[];
+          default: string;
+          /** @enum {string} */
+          direction: "asc" | "desc";
+        };
+      };
+    };
+    /**
+     * Tank
+     * @description AI tank blueprint: combat stats, traits, and behavior tree
+     */
+    Tank: {
+      id: string;
+      name: string;
+      personality: string;
+      traits: {
+        aggression: number;
+        caution: number;
+      };
+      health: number;
+      speed: number;
+      fireRange: number;
+      fightingDistance: number;
+      behaviorTree: {
+        [key: string]: unknown;
+      };
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    /** CreateTankRequest */
+    NewTank: {
+      id: string;
+      name: string;
+      personality: string;
+      traits: {
+        aggression: number;
+        caution: number;
+      };
+      health: number;
+      speed: number;
+      fireRange: number;
+      fightingDistance: number;
+      behaviorTree: {
+        [key: string]: unknown;
+      };
+      /** Format: date-time */
+      createdAt?: string;
+      /** Format: date-time */
+      updatedAt?: string;
+    };
+    TankResource: {
+      /** @enum {string} */
+      type: "tank";
+      /** Format: uuid */
+      id: string;
+      /**
+       * Tank
+       * @description AI tank blueprint: combat stats, traits, and behavior tree
+       */
+      attributes: {
+        id: string;
+        name: string;
+        personality: string;
+        traits: {
+          aggression: number;
+          caution: number;
+        };
+        health: number;
+        speed: number;
+        fireRange: number;
+        fightingDistance: number;
+        behaviorTree: {
+          [key: string]: unknown;
+        };
+        /** Format: date-time */
+        createdAt: string;
+        /** Format: date-time */
+        updatedAt: string;
+      };
+      relationships?: {
+        [key: string]: unknown;
+      };
+      meta?: {
+        [key: string]: unknown;
+      };
+      links?: {
+        [key: string]: string;
+      };
+    };
+    TankSingleResponse: {
+      data: {
+        /** @enum {string} */
+        type: "tank";
+        /** Format: uuid */
+        id: string;
+        /**
+         * Tank
+         * @description AI tank blueprint: combat stats, traits, and behavior tree
+         */
+        attributes: {
+          id: string;
+          name: string;
+          personality: string;
+          traits: {
+            aggression: number;
+            caution: number;
+          };
+          health: number;
+          speed: number;
+          fireRange: number;
+          fightingDistance: number;
+          behaviorTree: {
+            [key: string]: unknown;
+          };
+          /** Format: date-time */
+          createdAt: string;
+          /** Format: date-time */
+          updatedAt: string;
+        };
+        relationships?: {
+          [key: string]: unknown;
+        };
+        meta?: {
+          [key: string]: unknown;
+        };
+        links?: {
+          [key: string]: string;
+        };
+      };
+      links: {
+        self: string;
+      };
+      metadata: {
+        requestId: string;
+        timestamp: string;
+      } & {
+        [key: string]: unknown;
+      };
+    };
+    TankCollectionResponse: {
+      data: {
+        /** @enum {string} */
+        type: "tank";
+        /** Format: uuid */
+        id: string;
+        /**
+         * Tank
+         * @description AI tank blueprint: combat stats, traits, and behavior tree
+         */
+        attributes: {
+          id: string;
+          name: string;
+          personality: string;
+          traits: {
+            aggression: number;
+            caution: number;
+          };
+          health: number;
+          speed: number;
+          fireRange: number;
+          fightingDistance: number;
+          behaviorTree: {
+            [key: string]: unknown;
+          };
+          /** Format: date-time */
+          createdAt: string;
+          /** Format: date-time */
+          updatedAt: string;
+        };
+        relationships?: {
+          [key: string]: unknown;
+        };
+        meta?: {
+          [key: string]: unknown;
+        };
+        links?: {
+          [key: string]: string;
+        };
+      }[];
+      links: {
+        self: string;
+      };
+      metadata: {
+        requestId: string;
+        timestamp: string;
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+        /** @default {} */
+        availableFilters: {
+          [key: string]: unknown;
+        };
+        sortOptions: {
+          fields: string[];
+          default: string;
+          /** @enum {string} */
+          direction: "asc" | "desc";
+        };
+      };
+    };
+    GetTanksParams: {
+      /** @default 10 */
+      limit: number;
+      /** @default 1 */
+      page: number;
+      search?: string;
+      /**
+       * @default name
+       * @enum {string}
+       */
+      sortBy: "name" | "health" | "speed" | "createdAt";
+      /**
+       * @default desc
+       * @enum {string}
+       */
+      sortOrder: "asc" | "desc";
+    };
+    /**
+     * @description Metadata about the response
+     * @example {
+     *       "timestamp": "2023-12-09T15:39:00Z",
+     *       "requestId": "req_12345",
+     *       "resourceId": "resource_678"
+     *     }
+     */
+    ResponseMetadata: {
+      /**
+       * Format: date-time
+       * @description ISO 8601 timestamp of the response
+       */
+      timestamp?: string;
+      /**
+       * Format: uuid
+       * @description Unique identifier for the request
+       */
+      requestId?: string;
+      /** @description Identifier of the resource */
+      resourceId?: string | number;
+    } & {
+      [key: string]: unknown;
+    };
+    JsonApiError: {
+      /**
+       * Format: uuid
+       * @description Unique identifier for this error instance
+       */
+      id: string;
+      /** @description HTTP status code as string */
+      status: string;
+      /** @description Application-specific error code */
+      code: string;
+      /** @description Short, human-readable summary of the error */
+      title: string;
+      /** @description Human-readable explanation specific to this error */
+      detail: string;
+      /**
+       * @description Metadata about the response
+       * @example {
+       *       "timestamp": "2023-12-09T15:39:00Z",
+       *       "requestId": "req_12345",
+       *       "resourceId": "resource_678"
+       *     }
+       */
+      metadata: {
+        /**
+         * Format: date-time
+         * @description ISO 8601 timestamp of the response
+         */
+        timestamp?: string;
+        /**
+         * Format: uuid
+         * @description Unique identifier for the request
+         */
+        requestId?: string;
+        /** @description Identifier of the resource */
+        resourceId?: string | number;
+      } & {
+        [key: string]: unknown;
+      };
+      source?: {
+        /** @description JSON Pointer to the associated entity in request */
+        pointer?: string;
+        /** @description HTTP method of the request */
+        method?: string;
+      };
+    };
+    JsonApiErrorResponse: {
+      errors: components["schemas"]["JsonApiError"][];
+    };
+    /** @description JSON:API resource object */
+    JsonApiResource: {
+      type: string;
+      id: string;
+      attributes: {
+        [key: string]: unknown;
+      };
+      relationships?: {
+        [key: string]: unknown;
+      };
+      metadata?: {
+        [key: string]: unknown;
+      };
+      links?: {
+        [key: string]: string;
+      };
+    };
+    /**
+     * @description JSON:API single resource response
+     * @example {
+     *       "data": {
+     *         "id": "123",
+     *         "type": "user",
+     *         "attributes": {
+     *           "name": "John"
+     *         }
+     *       },
+     *       "meta": {
+     *         "timestamp": "2023-12-09T15:39:00Z",
+     *         "requestId": "req_12345"
+     *       }
+     *     }
+     */
+    JsonApiResponse: {
+      data:
+        | {
             type: string;
             id: string;
             attributes: {
-                [key: string]: unknown;
+              [key: string]: unknown;
             };
             relationships?: {
-                [key: string]: unknown;
+              [key: string]: unknown;
             };
             metadata?: {
-                [key: string]: unknown;
+              [key: string]: unknown;
             };
             links?: {
-                [key: string]: string;
+              [key: string]: string;
             };
-        };
+          }
+        | unknown;
+      /**
+       * @description Metadata about the response
+       * @example {
+       *       "timestamp": "2023-12-09T15:39:00Z",
+       *       "requestId": "req_12345",
+       *       "resourceId": "resource_678"
+       *     }
+       */
+      metadata?: {
         /**
-         * @description JSON:API single resource response
-         * @example {
-         *       "data": {
-         *         "id": "123",
-         *         "type": "user",
-         *         "attributes": {
-         *           "name": "John"
-         *         }
-         *       },
-         *       "meta": {
-         *         "timestamp": "2023-12-09T15:39:00Z",
-         *         "requestId": "req_12345"
-         *       }
-         *     }
+         * Format: date-time
+         * @description ISO 8601 timestamp of the response
          */
-        JsonApiResponse: {
-            data: {
-                type: string;
-                id: string;
-                attributes: {
-                    [key: string]: unknown;
-                };
-                relationships?: {
-                    [key: string]: unknown;
-                };
-                metadata?: {
-                    [key: string]: unknown;
-                };
-                links?: {
-                    [key: string]: string;
-                };
-            } | unknown;
-            /**
-             * @description Metadata about the response
-             * @example {
-             *       "timestamp": "2023-12-09T15:39:00Z",
-             *       "requestId": "req_12345",
-             *       "resourceId": "resource_678"
-             *     }
-             */
-            metadata?: {
-                /**
-                 * Format: date-time
-                 * @description ISO 8601 timestamp of the response
-                 */
-                timestamp?: string;
-                /**
-                 * Format: uuid
-                 * @description Unique identifier for the request
-                 */
-                requestId?: string;
-                /** @description Identifier of the resource */
-                resourceId?: string | number;
-            } & {
-                [key: string]: unknown;
-            };
-        };
+        timestamp?: string;
         /**
-         * @description JSON:API collection response
-         * @example {
-         *       "data": [
-         *         {
-         *           "id": "123",
-         *           "type": "user",
-         *           "attributes": {
-         *             "name": "John"
-         *           }
-         *         },
-         *         {
-         *           "id": "456",
-         *           "type": "user",
-         *           "attributes": {
-         *             "name": "Jane"
-         *           }
-         *         }
-         *       ],
-         *       "meta": {
-         *         "timestamp": "2023-12-09T15:39:00Z",
-         *         "requestId": "req_12345"
-         *       }
-         *     }
+         * Format: uuid
+         * @description Unique identifier for the request
          */
-        JsonApiCollectionResponse: {
-            data: {
-                type: string;
-                id: string;
-                attributes: {
-                    [key: string]: unknown;
-                };
-                relationships?: {
-                    [key: string]: unknown;
-                };
-                metadata?: {
-                    [key: string]: unknown;
-                };
-                links?: {
-                    [key: string]: string;
-                };
-            }[];
-            /**
-             * @description Metadata about the response
-             * @example {
-             *       "timestamp": "2023-12-09T15:39:00Z",
-             *       "requestId": "req_12345",
-             *       "resourceId": "resource_678"
-             *     }
-             */
-            metadata?: {
-                /**
-                 * Format: date-time
-                 * @description ISO 8601 timestamp of the response
-                 */
-                timestamp?: string;
-                /**
-                 * Format: uuid
-                 * @description Unique identifier for the request
-                 */
-                requestId?: string;
-                /** @description Identifier of the resource */
-                resourceId?: string | number;
-            } & {
-                [key: string]: unknown;
-            };
-        };
+        requestId?: string;
+        /** @description Identifier of the resource */
+        resourceId?: string | number;
+      } & {
+        [key: string]: unknown;
+      };
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    /**
+     * @description JSON:API collection response
+     * @example {
+     *       "data": [
+     *         {
+     *           "id": "123",
+     *           "type": "user",
+     *           "attributes": {
+     *             "name": "John"
+     *           }
+     *         },
+     *         {
+     *           "id": "456",
+     *           "type": "user",
+     *           "attributes": {
+     *             "name": "Jane"
+     *           }
+     *         }
+     *       ],
+     *       "meta": {
+     *         "timestamp": "2023-12-09T15:39:00Z",
+     *         "requestId": "req_12345"
+     *       }
+     *     }
+     */
+    JsonApiCollectionResponse: {
+      data: {
+        type: string;
+        id: string;
+        attributes: {
+          [key: string]: unknown;
+        };
+        relationships?: {
+          [key: string]: unknown;
+        };
+        metadata?: {
+          [key: string]: unknown;
+        };
+        links?: {
+          [key: string]: string;
+        };
+      }[];
+      /**
+       * @description Metadata about the response
+       * @example {
+       *       "timestamp": "2023-12-09T15:39:00Z",
+       *       "requestId": "req_12345",
+       *       "resourceId": "resource_678"
+       *     }
+       */
+      metadata?: {
+        /**
+         * Format: date-time
+         * @description ISO 8601 timestamp of the response
+         */
+        timestamp?: string;
+        /**
+         * Format: uuid
+         * @description Unique identifier for the request
+         */
+        requestId?: string;
+        /** @description Identifier of the resource */
+        resourceId?: string | number;
+      } & {
+        [key: string]: unknown;
+      };
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

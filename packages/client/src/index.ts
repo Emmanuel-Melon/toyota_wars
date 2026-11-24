@@ -1,6 +1,10 @@
 export { configureApi, getApiConfig, resetApiConfig } from "./api/api.config";
 export type { ApiConfig } from "./api/api.config";
-export { ApiClientError, TimeoutError, createUnpackError } from "./api/api.errors";
+export {
+  ApiClientError,
+  TimeoutError,
+  createUnpackError,
+} from "./api/api.errors";
 export type {
   ApiCollection,
   ApiResource,
