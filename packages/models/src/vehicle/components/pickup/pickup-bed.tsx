@@ -12,26 +12,42 @@ const bedCenterZ = (PICKUP.cabRearZ + PICKUP.rearZ) / 2;
 const bedLength = PICKUP.cabRearZ - PICKUP.rearZ - 0.1;
 const width = PICKUP.width;
 
-const plateMat = new MeshStandardMaterial({ color: "#bdb9a8", roughness: 0.6 });
-
 const FLOOR_RIBS_X = [-0.6, -0.3, 0, 0.3, 0.6] as const;
 const CAN_ZS = [-2.05, -1.77] as const;
 const CAN_X = -0.76;
 
 export function PickupBed({ materials }: PickupBedProps) {
   const bedSide = useMemo(createBedSideGeometry, []);
-  useEffect(() => () => bedSide.dispose(), [bedSide]);
+  const plateMat = useMemo(
+    () => new MeshStandardMaterial({ color: "#bdb9a8", roughness: 0.6 }),
+    [],
+  );
+
+  useEffect(() => {
+    return () => {
+      bedSide.dispose();
+      plateMat.dispose();
+    };
+  }, [bedSide, plateMat]);
 
   return (
     <>
       {[-1, 1].map((side) => (
-        <mesh
-          key={side}
-          geometry={bedSide}
-          material={materials.paint}
-          position={[side * (width / 2 - 0.035), 0, 0]}
-          castShadow
-        />
+        <group key={side}>
+          <mesh
+            geometry={bedSide}
+            material={materials.paint}
+            position={[side * (width / 2 - 0.035), 0, 0]}
+            castShadow
+          />
+          {/* Bed rail cap trim */}
+          <Box
+            p={[side * (width / 2 - 0.035), 1.03, bedCenterZ]}
+            s={[0.09, 0.025, bedLength + 0.06]}
+            m={materials.trim}
+            shadow={false}
+          />
+        </group>
       ))}
 
       {/* Floor with raised ribs */}
@@ -90,11 +106,17 @@ export function PickupBed({ materials }: PickupBedProps) {
         </group>
       ))}
 
-      {/* Rear bumper, plate, tow hooks */}
+      {/* Rear bumper, step pad, plate, tow hooks */}
       <Box
         p={[0, 0.06, PICKUP.rearZ - 0.12]}
         s={[width, 0.18, 0.2]}
         m={materials.trim}
+      />
+      <Box
+        p={[0, 0.155, PICKUP.rearZ - 0.13]}
+        s={[0.56, 0.015, 0.12]}
+        m={materials.dark}
+        shadow={false}
       />
       <Box
         p={[0, 0.06, PICKUP.rearZ - 0.225]}
@@ -111,12 +133,14 @@ export function PickupBed({ materials }: PickupBedProps) {
         />
       ))}
 
-      {/* Crates, with straps */}
+      {/* Crates with cross-straps */}
       <Box p={[-0.45, 0.62, -2.35]} s={[0.4, 0.24, 0.34]} m={materials.cabin} />
       <Box p={[0.1, 0.62, -2.4]} s={[0.4, 0.24, 0.34]} m={materials.cabin} />
       <Box p={[0.55, 0.66, -2.4]} s={[0.26, 0.32, 0.12]} m={materials.trim} />
       <Box p={[-0.45, 0.62, -2.35]} s={[0.05, 0.25, 0.36]} m={materials.trim} />
+      <Box p={[-0.45, 0.62, -2.35]} s={[0.42, 0.25, 0.035]} m={materials.dark} shadow={false} />
       <Box p={[0.1, 0.62, -2.4]} s={[0.05, 0.25, 0.36]} m={materials.trim} />
+      <Box p={[0.1, 0.62, -2.4]} s={[0.42, 0.25, 0.035]} m={materials.dark} shadow={false} />
 
       {/* Jerry cans against the left wall */}
       {CAN_ZS.map((z) => (
@@ -125,6 +149,13 @@ export function PickupBed({ materials }: PickupBedProps) {
           <Box
             p={[CAN_X, 0.86, z]}
             s={[0.1, 0.05, 0.14]}
+            m={materials.dark}
+            shadow={false}
+          />
+          {/* Top carry handle */}
+          <Box
+            p={[CAN_X, 0.865, z - 0.05]}
+            s={[0.06, 0.02, 0.06]}
             m={materials.dark}
             shadow={false}
           />

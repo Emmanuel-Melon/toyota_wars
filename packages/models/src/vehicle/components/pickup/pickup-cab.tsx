@@ -1,3 +1,4 @@
+// packages/models/src/vehicle/components/pickup/pickup-cab.tsx
 "use client";
 
 import { useEffect, useMemo } from "react";
@@ -25,16 +26,24 @@ export function PickupCab({
 
       {[-1, 1].map((side) => (
         <group key={side}>
+          {/* Mirror stalk & angled housing */}
           <Box
-            p={[side * 0.97, 1.02, 0.72]}
-            s={[0.14, 0.04, 0.04]}
+            p={[side * 0.96, 1.02, 0.72]}
+            s={[0.14, 0.035, 0.035]}
             m={materials.dark}
           />
           <Box
-            p={[side * 1.05, 1.04, 0.72]}
-            s={[0.06, 0.17, 0.13]}
+            p={[side * 1.06, 1.04, 0.71]}
+            s={[0.075, 0.18, 0.14]}
             m={materials.paint}
           />
+          <Box
+            p={[side * 1.095, 1.04, 0.71]}
+            s={[0.012, 0.15, 0.11]}
+            m={materials.glass}
+            shadow={false}
+          />
+          {/* Side rocker / running board */}
           <Box
             p={[side * 0.955, 0.04, 0.1]}
             s={[0.07, 0.05, 1.5]}
@@ -43,6 +52,7 @@ export function PickupCab({
         </group>
       ))}
 
+      {/* Roof marker / visor bar */}
       <Box p={[0, 1.58, 0.12]} s={[1.1, 0.07, 0.16]} m={materials.dark} />
       <Box
         p={[0, 1.58, 0.205]}

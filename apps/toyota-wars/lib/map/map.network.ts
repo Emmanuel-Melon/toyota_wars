@@ -130,41 +130,93 @@ function smoothHeights(src: Float32Array, radius: number, passes: number) {
   return cur;
 }
 
-function buildPath(
-  def: RoadDef,
-  a: PlacedLocation,
-  b: PlacedLocation,
-  base: TerrainSampler,
-): RoadPath {
-  const width = def.width ?? 8;
-  const wobble = def.wobble ?? 60;
-  const anchors: [number, number][] = [
-    [a.x, a.z],
-    ...(def.via ?? []).map(([x, z]): [number, number] => [x, z]),
-    [b.x, b.z],
-  ];
+type OrientedRoad = {
+  def: RoadDef;
+  from: LocationId;
+  to: LocationId;
+  via: readonly (readonly [number, number])[];
+};
 
-  // meander control points; sin(pi*t) pins the offset to 0 at every anchor
-  const ctrl: [number, number][] = [];
-  for (let s = 0; s < anchors.length - 1; s++) {
-    const [x0, z0] = anchors[s];
-    const [x1, z1] = anchors[s + 1];
-    const dx = x1 - x0;
-    const dz = z1 - z0;
-    const len = Math.hypot(dx, dz);
-    const nx = -dz / len;
-    const nz = dx / len;
-    const n = Math.max(1, Math.round(len / CONTROL_SPACING));
-    for (let i = 0; i < n; i++) {
-      const t = i / n;
-      const x = x0 + dx * t;
-      const z = z0 + dz * t;
-      const off =
-        smoothNoise(x * 0.004, z * 0.004) * wobble * Math.sin(Math.PI * t);
-      ctrl.push([x + nx * off, z + nz * off]);
-    }
+function orientRoad(road: RoadDef, from: LocationId): OrientedRoad {
+  const forward = road.from === from;
+  return {
+    def: road,
+    from,
+    to: forward ? road.to : road.from,
+    via: forward ? (road.via ?? []) : [...(road.via ?? [])].reverse(),
+  };
+}
+
+function buildChains(roads: readonly RoadDef[]): OrientedRoad[][] {
+  const degree = new Map<LocationId, number>();
+  for (const road of roads) {
+    degree.set(road.from, (degree.get(road.from) ?? 0) + 1);
+    degree.set(road.to, (degree.get(road.to) ?? 0) + 1);
   }
-  ctrl.push([b.x, b.z]);
+  const used = new Set<number>();
+  const chains: OrientedRoad[][] = [];
+  for (let index = 0; index < roads.length; index++) {
+    if (used.has(index)) continue;
+    const first = roads[index];
+    let current: LocationId =
+      (degree.get(first.from) ?? 0) === 2 ? first.to : first.from;
+    const chain: OrientedRoad[] = [];
+    for (;;) {
+      const nextIndex = roads.findIndex(
+        (road, i) =>
+          !used.has(i) && (road.from === current || road.to === current),
+      );
+      if (nextIndex < 0) break;
+      const road = orientRoad(roads[nextIndex], current);
+      used.add(nextIndex);
+      chain.push(road);
+      current = road.to;
+      if ((degree.get(current) ?? 0) !== 2) break;
+    }
+    if (chain.length > 0) chains.push(chain);
+  }
+  return chains;
+}
+
+function buildChainPaths(
+  chain: readonly OrientedRoad[],
+  locations: ReadonlyMap<LocationId, PlacedLocation>,
+  base: TerrainSampler,
+): RoadPath[] {
+  const ctrl: [number, number][] = [];
+  const boundaries: [number, number][] = [];
+  for (const road of chain) {
+    const a = locations.get(road.from);
+    const b = locations.get(road.to);
+    if (!a || !b) throw new Error(`Road ${road.def.id}: unknown location`);
+    const anchors: [number, number][] = [
+      [a.x, a.z],
+      ...road.via.map(([x, z]): [number, number] => [x, z]),
+      [b.x, b.z],
+    ];
+    const wobble = road.def.wobble ?? 60;
+    for (let s = 0; s < anchors.length - 1; s++) {
+      const [x0, z0] = anchors[s];
+      const [x1, z1] = anchors[s + 1];
+      const dx = x1 - x0;
+      const dz = z1 - z0;
+      const len = Math.hypot(dx, dz);
+      const nx = -dz / len;
+      const nz = dx / len;
+      const n = Math.max(1, Math.round(len / CONTROL_SPACING));
+      for (let i = 0; i < n; i++) {
+        const t = i / n;
+        const x = x0 + dx * t;
+        const z = z0 + dz * t;
+        const off =
+          smoothNoise(x * 0.004, z * 0.004) * wobble * Math.sin(Math.PI * t);
+        ctrl.push([x + nx * off, z + nz * off]);
+      }
+    }
+    boundaries.push([b.x, b.z]);
+  }
+  const endLocation = locations.get(chain[chain.length - 1].to)!;
+  ctrl.push([endLocation.x, endLocation.z]);
 
   const dense: [number, number][] = [];
   for (let i = 0; i < ctrl.length - 1; i++) {
@@ -184,22 +236,58 @@ function buildPath(
 
   const pts = resample(dense, SAMPLE_SPACING);
   const n = pts.length;
+  const boundaryIndices: number[] = [];
+  let cursor = 0;
+  for (let b = 0; b < boundaries.length; b++) {
+    const [bx, bz] = boundaries[b];
+    const remaining = boundaries.length - 1 - b;
+    const minIndex = Math.min(n - 1, cursor + 1);
+    const maxIndex = Math.max(minIndex, n - 1 - remaining);
+    let best = minIndex;
+    let bestD2 = Infinity;
+    for (let i = minIndex; i <= maxIndex; i++) {
+      const dx = pts[i][0] - bx;
+      const dz = pts[i][1] - bz;
+      const d2 = dx * dx + dz * dz;
+      if (d2 < bestD2) {
+        bestD2 = d2;
+        best = i;
+      }
+    }
+    boundaryIndices.push(best);
+    cursor = best;
+  }
+
   const x = new Float32Array(n);
   const z = new Float32Array(n);
   const rawY = new Float32Array(n);
   for (let i = 0; i < n; i++) {
     x[i] = pts[i][0];
     z[i] = pts[i][1];
-    rawY[i] = base.getHeight(x[i], z[i]); // ungraded terrain
+    rawY[i] = base.getHeight(x[i], z[i]);
   }
 
-  // gentle, drivable grade + ease into the location pads at both ends
   const y = smoothHeights(rawY, SMOOTH_RADIUS, SMOOTH_PASSES);
-  const K = Math.min(PIN_SAMPLES, n >> 1);
-  for (let k = 0; k < K; k++) {
-    const f = k / K;
-    y[k] = a.y + (y[k] - a.y) * f;
-    y[n - 1 - k] = b.y + (y[n - 1 - k] - b.y) * f;
+  const pin = (center: number, target: number, radius: number) => {
+    const k = Math.min(radius, center, n - 1 - center);
+    for (let d = 0; d <= k; d++) {
+      const f = 1 - d / (k + 1);
+      const left = center - d;
+      const right = center + d;
+      y[left] += (target - y[left]) * f;
+      if (d > 0) y[right] += (target - y[right]) * f;
+    }
+  };
+  const startLocation = locations.get(chain[0].from)!;
+  const endK = Math.min(PIN_SAMPLES, n >> 1);
+  for (let k = 0; k < endK; k++) {
+    const f = k / endK;
+    y[k] = startLocation.y + (y[k] - startLocation.y) * f;
+    y[n - 1 - k] = endLocation.y + (y[n - 1 - k] - endLocation.y) * f;
+  }
+  for (let b = 0; b < boundaries.length - 1; b++) {
+    const location = locations.get(chain[b].to)!;
+    pin(boundaryIndices[b], location.y, PIN_SAMPLES);
   }
 
   const dx = new Float32Array(n);
@@ -217,20 +305,26 @@ function buildPath(
       dist[i] = dist[i - 1] + Math.hypot(x[i] - x[i - 1], z[i] - z[i - 1]);
   }
 
-  return {
-    id: def.id,
-    from: def.from,
-    to: def.to,
-    width,
-    count: n,
-    length: dist[n - 1],
-    x,
-    z,
-    y,
-    dx,
-    dz,
-    dist,
-  };
+  return chain.map((road, index) => {
+    const start = index === 0 ? 0 : boundaryIndices[index - 1];
+    const end = Math.min(n - 1, Math.max(boundaryIndices[index], start + 1));
+    const count = end - start + 1;
+    const roadDist = dist.slice(start, end + 1);
+    return {
+      id: road.def.id,
+      from: road.from,
+      to: road.to,
+      width: road.def.width ?? 8,
+      count,
+      length: roadDist[count - 1] - roadDist[0],
+      x: x.slice(start, end + 1),
+      z: z.slice(start, end + 1),
+      y: y.slice(start, end + 1),
+      dx: dx.slice(start, end + 1),
+      dz: dz.slice(start, end + 1),
+      dist: roadDist,
+    };
+  });
 }
 
 // ── network ────────────────────────────────────────────────────────────
@@ -243,12 +337,9 @@ export function createRoadNetwork(
   );
   const locArr = [...locations.values()];
 
-  const paths = world.roads.map((def) => {
-    const a = locations.get(def.from);
-    const b = locations.get(def.to);
-    if (!a || !b) throw new Error(`Road ${def.id}: unknown location`);
-    return buildPath(def, a, b, base);
-  });
+  const paths = buildChains(world.roads).flatMap((chain) =>
+    buildChainPaths(chain, locations, base),
+  );
 
   // chunk descriptors for streaming
   const chunks: RoadChunkRef[] = [];
@@ -430,7 +521,7 @@ export function createRoadNetwork(
       return best;
     },
     influence,
-    route(from, to, everyMetres = 40) {
+    route(from, to, everyMetres = 10) {
       if (!locations.has(from) || !locations.has(to)) return null;
       const prev = new Map<LocationId, { via: LocationId; edge: Edge } | null>([
         [from, null],

@@ -1,3 +1,4 @@
+// packages/models/src/vehicle/components/pickup/pickup-shell.tsx
 "use client";
 
 import { useEffect, useMemo } from "react";
@@ -15,6 +16,7 @@ import { Box, Cyl } from "../primitives";
 const width = PICKUP.width;
 const frontZ = PICKUP.frontZ + BEVEL;
 const axles = [FRONT_AXLE_Z, REAR_AXLE_Z];
+const CROSSMEMBER_ZS = [-0.65, 0.75] as const;
 
 export function PickupShell({ materials, children }: PickupShellProps) {
   const flare = useMemo(createFlareGeometry, []);
@@ -22,29 +24,56 @@ export function PickupShell({ materials, children }: PickupShellProps) {
 
   return (
     <>
+      {/* Grille surround, slats & chrome accent bar */}
       <Box
         p={[0, 0.34, frontZ + 0.015]}
         s={[1.0, 0.2, 0.03]}
         m={materials.dark}
       />
+      {[-0.04, 0.04].map((dy) => (
+        <Box
+          key={dy}
+          p={[0, 0.34 + dy, frontZ + 0.025]}
+          s={[0.92, 0.016, 0.02]}
+          m={materials.trim}
+          shadow={false}
+        />
+      ))}
       <Box
         p={[0, 0.34, frontZ + 0.035]}
         s={[1.1, 0.03, 0.02]}
         m={materials.chrome}
       />
+
+      {/* Headlights with dark housing surround */}
       {[-1, 1].map((side) => (
-        <Box
-          key={side}
-          p={[side * 0.66, 0.45, frontZ + 0.01]}
-          s={[0.32, 0.13, 0.04]}
-          m={materials.headlight}
-          shadow={false}
-        />
+        <group key={side}>
+          <Box
+            p={[side * 0.66, 0.45, frontZ + 0.008]}
+            s={[0.35, 0.155, 0.03]}
+            m={materials.dark}
+            shadow={false}
+          />
+          <Box
+            p={[side * 0.66, 0.45, frontZ + 0.014]}
+            s={[0.32, 0.13, 0.035]}
+            m={materials.headlight}
+            shadow={false}
+          />
+        </group>
       ))}
+
+      {/* Front bumper & skid/license plate */}
       <Box
         p={[0, 0.06, frontZ + 0.12]}
         s={[width + 0.06, 0.2, 0.2]}
         m={materials.trim}
+      />
+      <Box
+        p={[0, -0.045, frontZ + 0.13]}
+        s={[0.96, 0.025, 0.16]}
+        m={materials.dark}
+        shadow={false}
       />
       <Box
         p={[0, 0.08, frontZ + 0.225]}
@@ -53,6 +82,7 @@ export function PickupShell({ materials, children }: PickupShellProps) {
         shadow={false}
       />
 
+      {/* Wheel arch flares */}
       {axles.flatMap((z) =>
         [-1, 1].map((side) => (
           <mesh
@@ -66,6 +96,7 @@ export function PickupShell({ materials, children }: PickupShellProps) {
 
       {children}
 
+      {/* Underbody fuel/transfer tank, frame rails & crossmembers */}
       <Box
         p={[0, 0.2, -1.75]}
         s={[1.4, 0.3, 1.7]}
@@ -81,6 +112,17 @@ export function PickupShell({ materials, children }: PickupShellProps) {
           shadow={false}
         />
       ))}
+      {CROSSMEMBER_ZS.map((z) => (
+        <Box
+          key={z}
+          p={[0, 0.06, z]}
+          s={[1.05, 0.1, 0.1]}
+          m={materials.dark}
+          shadow={false}
+        />
+      ))}
+
+      {/* Front and rear axles + differential housings */}
       {axles.map((z) => (
         <group key={z}>
           <Box

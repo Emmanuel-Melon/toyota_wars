@@ -8,10 +8,9 @@ export function drawRoads({ ctx, state, projection }: DrawContext): void {
     ctx.lineWidth = Math.max(1.5, path.width * scale);
     ctx.beginPath();
     ctx.moveTo(toX(path.x[0]), toY(path.z[0]));
-    for (let i = 4; i < path.count; i += 4) {
+    for (let i = 1; i < path.count; i++) {
       ctx.lineTo(toX(path.x[i]), toY(path.z[i]));
     }
-    ctx.lineTo(toX(path.x[path.count - 1]), toY(path.z[path.count - 1]));
     ctx.stroke();
   }
 }

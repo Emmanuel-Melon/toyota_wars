@@ -1,3 +1,4 @@
+// packages/models/src/vehicle/components/pickup/pickup-hull.tsx
 "use client";
 
 import type { PickupHullVisualProps } from "../../types";
