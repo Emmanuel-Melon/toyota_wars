@@ -1,6 +1,6 @@
 import { BTNode, BTSelector, UtilitySelector } from "@toyota/ai";
-import type { AgentContext } from "../contracts/agent";
-import type { AgentConfig } from "../contracts/config";
+import type { AgentContext } from "../agent.types";
+
 import {
   createAgentUtilityDebug,
   type AgentUtilityDebugSink,
@@ -9,6 +9,7 @@ import { createAgentIntentRegistry } from "../intents/registry";
 import type { AgentIntentId } from "../intents/types";
 import { buildAgentTree } from "../nodes/builder";
 import { ROUT_TREE } from "./rout";
+import { AgentConfig } from "../agent.types";
 
 export function buildUtilityAgentTree(
   config: AgentConfig,

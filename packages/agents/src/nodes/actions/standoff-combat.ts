@@ -1,12 +1,9 @@
 import { BTNode, NodeState } from "@toyota/ai";
-import type { AgentContext } from "../../contracts/agent";
-import {
-  AgentMovementOrders,
-  AgentWeaponOrders,
-  type AgentThreat,
-} from "../../contracts/decision";
+import type { AgentContext } from "../../agent.types";
+import { AgentMovementOrders, AgentWeaponOrders } from "../../agents.config";
 import { distanceXZ } from "../../contracts/geometry";
 import { engagementRanges } from "../../intents/utils";
+import { AgentThreat } from "../../agent.types";
 
 export class StandoffCombatAction extends BTNode<AgentContext> {
   constructor(

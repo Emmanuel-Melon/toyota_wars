@@ -1,72 +1,18 @@
-import type { AgentVec3 } from "./geometry";
+// packages/agents/src/contracts/decision.ts
+import { AgentMovementOrders, AgentWeaponOrders } from "../agents.config";
+import type {
+  AgentDecision,
+  AgentMovementOrder,
+  AgentWeaponOrder,
+} from "../agent.types";
 
-export const AgentMovementOrders = {
-  Idle: "idle",
-  Face: "face",
-  MoveTo: "moveTo",
-  Follow: "follow",
-  Flee: "flee",
-} as const;
-
-export type AgentMovementOrderType =
-  (typeof AgentMovementOrders)[keyof typeof AgentMovementOrders];
-
-export const AgentWeaponOrders = {
-  Hold: "hold",
-  FireAt: "fireAt",
-} as const;
-
-export type AgentWeaponOrderType =
-  (typeof AgentWeaponOrders)[keyof typeof AgentWeaponOrders];
-
-export interface AgentThreat {
-  readonly position: AgentVec3;
-  readonly radius?: number;
-  readonly destructible?: boolean;
-}
-
-export interface AgentLeader {
-  readonly position: AgentVec3;
-  readonly heading: number;
-  readonly speed?: number;
-}
-
-export type AgentMovementOrder =
-  | { type: typeof AgentMovementOrders.Idle }
-  | { type: typeof AgentMovementOrders.Face; point: AgentVec3 }
-  | {
-      type: typeof AgentMovementOrders.MoveTo;
-      point: AgentVec3;
-      speed?: number;
-      stopDistance?: number;
-      slowRadius?: number;
-    }
-  | {
-      type: typeof AgentMovementOrders.Follow;
-      leader: AgentLeader;
-      offset: readonly [number, number];
-      arriveRadius?: number;
-      slowRadius?: number;
-    }
-  | {
-      type: typeof AgentMovementOrders.Flee;
-      threats: readonly AgentThreat[];
-      speed?: number;
-    };
-
-export type AgentWeaponOrder =
-  | { type: typeof AgentWeaponOrders.Hold }
-  | {
-      type: typeof AgentWeaponOrders.FireAt;
-      point: AgentVec3;
-      requireAlignment?: boolean;
-    };
-
-export interface AgentDecision {
-  movement: AgentMovementOrder;
-  weapon: AgentWeaponOrder;
-}
-
+/**
+ * ============================================================================
+ * Default Order Singletons & Decision Lifecycle Helpers
+ * ============================================================================
+ * Shared default order objects and allocation-free helpers for creating
+ * and resetting per-tick `AgentDecision` instances.
+ */
 const IDLE_MOVEMENT: AgentMovementOrder = { type: AgentMovementOrders.Idle };
 const HOLD_WEAPON: AgentWeaponOrder = { type: AgentWeaponOrders.Hold };
 

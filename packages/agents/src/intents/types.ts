@@ -1,5 +1,5 @@
 import type { UtilityOption } from "@toyota/ai";
-import type { AgentContext } from "../contracts/agent";
+import type { AgentContext } from "../agent.types";
 import type { AgentTreeDef } from "../nodes/tree-def";
 
 export const AgentIntent = {

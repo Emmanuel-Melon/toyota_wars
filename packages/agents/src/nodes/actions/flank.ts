@@ -1,9 +1,6 @@
 import { BTNode, NodeState } from "@toyota/ai";
-import type { AgentContext } from "../../contracts/agent";
-import {
-  AgentMovementOrders,
-  AgentWeaponOrders,
-} from "../../contracts/decision";
+import type { AgentContext } from "../../agent.types";
+import { AgentMovementOrders, AgentWeaponOrders } from "../../agents.config";
 import { distanceXZ, type Vec3 } from "../../contracts/geometry";
 import { engagementRanges } from "../../intents/utils";
 

@@ -1,54 +1,14 @@
 import type { AgentVec2, AgentVec3 } from "./geometry";
 import type { AgentIntentId } from "../intents/types";
-
-export const AgentSquadDirective = {
-  Advance: "advance",
-  Hold: "hold",
-  Flank: "flank",
-  FightingRetreat: "fightingRetreat",
-  GeneralRetreat: "generalRetreat",
-} as const;
-
-export type AgentSquadDirectiveType =
-  (typeof AgentSquadDirective)[keyof typeof AgentSquadDirective];
-
-export const AgentFireteamTactic = {
-  HoldFormation: "holdFormation",
-  SuppressAnvil: "suppressAnvil",
-  FlankHook: "flankHook",
-  CounterAmbush: "counterAmbush",
-  BoundingRetreat: "boundingRetreat",
-} as const;
-
-export type AgentFireteamTacticType =
-  (typeof AgentFireteamTactic)[keyof typeof AgentFireteamTactic];
+import {
+  AgentAttackModeType,
+  AgentFireDesignationGroupType,
+  AgentSquadDirectiveType,
+  AgentFireteamTacticType,
+  AgentTacticalRole,
+} from "../agents.config";
 
 export type AgentEnemyTacticalRole = "pin" | "flank" | "flankOrReposition";
-
-export type AgentTacticalRole =
-  | "vanguard"
-  | "suppress"
-  | "flank"
-  | "support"
-  | "artillery_support"
-  | AgentEnemyTacticalRole;
-
-export const AgentAttackMode = {
-  Focus: "focus",
-  Seek: "seek",
-} as const;
-
-export type AgentAttackModeType =
-  (typeof AgentAttackMode)[keyof typeof AgentAttackMode];
-
-export const AgentFireDesignationGroup = {
-  Nearby: "nearby",
-  Type63: "type63",
-  Zu23: "zu23",
-} as const;
-
-export type AgentFireDesignationGroupType =
-  (typeof AgentFireDesignationGroup)[keyof typeof AgentFireDesignationGroup];
 
 export interface AgentPointXZ {
   readonly x: number;

@@ -1,5 +1,5 @@
 import { curves } from "@toyota/ai";
-import type { AgentConfig } from "../../contracts/config";
+import { AgentConfig } from "../../agent.types";
 import { AgentNodes } from "../../nodes/node-ids";
 import type { AgentTreeDef } from "../../nodes/tree-def";
 import { defineAgentIntent, AgentIntent, type AgentOptionFor } from "../types";

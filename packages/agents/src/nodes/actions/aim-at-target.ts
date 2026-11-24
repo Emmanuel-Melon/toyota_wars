@@ -1,9 +1,6 @@
 import { BTNode, NodeState } from "@toyota/ai";
-import type { AgentContext } from "../../contracts/agent";
-import {
-  AgentMovementOrders,
-  AgentWeaponOrders,
-} from "../../contracts/decision";
+import type { AgentContext } from "../../agent.types";
+import { AgentMovementOrders, AgentWeaponOrders } from "../../agents.config";
 
 export class AimAtTarget extends BTNode<AgentContext> {
   evaluate(ctx: AgentContext): NodeState {

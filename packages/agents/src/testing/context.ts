@@ -3,10 +3,9 @@ import {
   AgentSquadDirective,
   AgentMovementOrders,
   createAgentDecision,
-  type AgentConfig,
-  type AgentContext,
   type AgentPorts,
 } from "../index";
+import { AgentConfig, AgentContext } from "../agent.types";
 
 export const testConfig: AgentConfig = {
   fireRange: 60,

@@ -1,5 +1,4 @@
-import type { AgentContext } from "./agent";
-import type { AgentMovementOrder } from "./decision";
+import type { AgentContext, AgentMovementOrder } from "../agent.types";
 import type { AgentVec3 } from "./geometry";
 import type { AgentObstacle } from "./domain";
 

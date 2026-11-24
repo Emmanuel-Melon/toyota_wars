@@ -1,4 +1,4 @@
-import type { AgentConfig } from "../contracts/config";
+import type { AgentConfig } from "../agent.types";
 import type { AgentIntentDef, AgentUtilityOption } from "./types";
 import {
   createAttackIntent,

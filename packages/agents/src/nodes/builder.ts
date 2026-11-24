@@ -1,5 +1,5 @@
 import { BTNode, BTSelector, BTSequence } from "@toyota/ai";
-import type { AgentContext } from "../contracts/agent";
+import type { AgentContext } from "../agent.types";
 import { AgentNodes } from "./node-ids";
 import type { AgentNodeFactoryMap, AgentTreeDef } from "./tree-def";
 import { CheckTargetAssigned } from "./conditions/check-target-assigned";

@@ -1,7 +1,5 @@
 import { curves, remap } from "@toyota/ai";
-import type { AgentContext } from "../../contracts/agent";
-import type { AgentConfig } from "../../contracts/config";
-import { AgentSquadDirective } from "../../contracts/domain";
+import type { AgentContext } from "../../agent.types";
 import { AgentNodes } from "../../nodes/node-ids";
 import type { AgentTreeDef } from "../../nodes/tree-def";
 import { defineAgentIntent, AgentIntent, type AgentOptionFor } from "../types";
@@ -12,6 +10,8 @@ import {
   isAdvancingWithTarget,
   whenNotRole,
 } from "../utils";
+import { AgentConfig } from "../../agent.types";
+import { AgentSquadDirective } from "../../agents.config";
 
 const NO_FIRE_PENALTY = 0.85;
 const ADVANCE_BONUS = 1.8;

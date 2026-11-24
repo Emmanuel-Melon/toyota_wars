@@ -1,5 +1,5 @@
 import { BTNode, NodeState } from "@toyota/ai";
-import type { AgentContext } from "../../contracts/agent";
+import type { AgentContext } from "../../agent.types";
 import { alignmentError, headingTo } from "../../contracts/geometry";
 
 export class CheckAlignedWithTarget extends BTNode<AgentContext> {

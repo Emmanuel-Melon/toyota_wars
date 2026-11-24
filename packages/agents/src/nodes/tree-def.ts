@@ -1,5 +1,5 @@
 import type { BTNode } from "@toyota/ai";
-import type { AgentContext } from "../contracts/agent";
+import type { AgentContext } from "../agent.types";
 import { AgentNodes, type AgentNodeId } from "./node-ids";
 
 export type CheckTargetAssignedParams = Record<string, never>;

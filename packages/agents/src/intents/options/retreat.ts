@@ -1,9 +1,6 @@
 import { curves, remap } from "@toyota/ai";
-import type { AgentConfig } from "../../contracts/config";
-import {
-  AgentFireteamTactic,
-  AgentSquadDirective,
-} from "../../contracts/domain";
+import { AgentConfig } from "../../agent.types";
+import { AgentFireteamTactic, AgentSquadDirective } from "../../agents.config";
 import { AgentNodes } from "../../nodes/node-ids";
 import type { AgentTreeDef } from "../../nodes/tree-def";
 import { defineAgentIntent, AgentIntent, type AgentOptionFor } from "../types";

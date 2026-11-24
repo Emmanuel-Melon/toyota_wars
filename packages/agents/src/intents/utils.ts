@@ -1,17 +1,19 @@
 import { curves, remap, type Consideration } from "@toyota/ai";
-import type { AgentContext } from "../contracts/agent";
-import type { AgentConfig } from "../contracts/config";
+import type { AgentContext } from "../agent.types";
+import { AgentConfig } from "../agent.types";
 import {
   AgentAttackMode,
   AgentFireteamTactic,
   AgentSquadDirective,
-  type AgentAttackOrder,
-  type AgentFireDesignation,
   type AgentFireteamTacticType,
   type AgentSquadDirectiveType,
   type AgentTacticalRole,
-  type AgentWeapon,
-} from "../contracts/domain";
+} from "../agents.config";
+import {
+  AgentWeapon,
+  AgentAttackOrder,
+  AgentFireDesignation,
+} from "../contracts";
 
 export const hasTarget: Consideration<AgentContext> = {
   name: "hasTarget",

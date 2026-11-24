@@ -1,6 +1,6 @@
 import { BTNode, NodeState } from "@toyota/ai";
-import type { AgentContext } from "../../contracts/agent";
-import { AgentWeaponOrders } from "../../contracts/decision";
+import type { AgentContext } from "../../agent.types";
+import { AgentWeaponOrders } from "../../agents.config";
 
 export class FollowLeader extends BTNode<AgentContext> {
   constructor(

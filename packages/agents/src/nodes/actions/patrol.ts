@@ -1,9 +1,6 @@
 import { BTNode, NodeState } from "@toyota/ai";
-import type { AgentContext } from "../../contracts/agent";
-import {
-  AgentMovementOrders,
-  AgentWeaponOrders,
-} from "../../contracts/decision";
+import type { AgentContext } from "../../agent.types";
+import { AgentMovementOrders, AgentWeaponOrders } from "../../agents.config";
 import { clamp, distanceXZ, type Vec3 } from "../../contracts/geometry";
 
 export class PatrolAction extends BTNode<AgentContext> {

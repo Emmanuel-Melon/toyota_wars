@@ -1,5 +1,5 @@
 import { BTNode, NodeState } from "@toyota/ai";
-import type { AgentContext } from "../../contracts/agent";
+import type { AgentContext } from "../../agent.types";
 
 export class CheckHasLeader extends BTNode<AgentContext> {
   evaluate(ctx: AgentContext): NodeState {
