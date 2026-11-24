@@ -1,0 +1,33 @@
+{
+  "name": "@toyota/missions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "vitest run",
+    "format": "prettier --write src"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@toyota/ai": "workspace:*",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.5",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}

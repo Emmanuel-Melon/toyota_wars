@@ -9,7 +9,7 @@ import { useMission } from "@/context/missions.context";
 import { useMissionFlow } from "@/feature/mission-flow/mission-flow.context";
 import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
 import { calculateBallisticPitch } from "@/lib/combat/combat.ballistics";
-import { TEAM } from "@/lib/missions/definition/mission.constants";
+import { TEAM } from "@toyota/missions";
 import { rosterUnitId } from "@/lib/squad/squad.roster";
 import { WEAPONS } from "@/lib/weapons/weapon.config";
 import { createFireRequest } from "@/lib/weapons/weapon.math";

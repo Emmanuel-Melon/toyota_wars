@@ -5,13 +5,9 @@ import { Button } from "@/components/ui/button";
 import { usePlayer } from "@/context/player-context";
 import layout from "@/feature/hud/components/hud-layout.module.css";
 import { HudNotice, HudPanel } from "@/feature/hud/components/hud-parts";
-import {
-  cardinalBearing,
-  distance2D,
-  formatDistance,
-} from "@/lib/missions/missions.navigation";
+import { cardinalBearing, distance2D, formatDistance } from "@toyota/missions";
 import { useMission } from "@/context/missions.context";
-import type { MissionObjective } from "@/lib/missions/direction/mission.hud";
+import type { MissionObjective } from "@toyota/missions";
 import { TUTORIAL_MISSION_ID } from "@/lib/missions/missions.data";
 import { cn } from "@/lib/utils";
 import {

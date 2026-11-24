@@ -5,7 +5,7 @@ import type {
   PotentialTarget,
   Team,
 } from "@/lib/combat/combat.types";
-import type { Vec2 } from "@/lib/missions/definition/mission.types";
+import type { Vec2 } from "@toyota/missions";
 import type { UnitRegistry } from "./squad.registry";
 import { MESO_CONFIG } from "../meso/meso.config";
 import { TANK_CONFIG } from "../tanks/tanks.config";

@@ -9,7 +9,7 @@ import {
   MenuShell,
   StatBar,
 } from "@/feature/menu/components/menu-parts";
-import type { Mission } from "@/lib/missions/definition/mission.types";
+import type { Mission } from "@toyota/missions";
 import { MISSIONS, TUTORIAL_MISSION_ID } from "@/lib/missions/missions.data";
 import { cn } from "@/lib/utils";
 

@@ -15,9 +15,9 @@ import { resetCombatActivity } from "@/lib/combat/combat.activity";
 import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
 import type { VehiclePart } from "@/lib/combat/combat.teams";
 import type { HealthMap, PartHealthMap, Team } from "@/lib/combat/combat.types";
-import { createGameEventBus } from "@/lib/missions/events/game.events";
-import type { EventBus } from "@/lib/missions/events/event-bus";
-import type { GameEvents } from "@/lib/missions/events/game.events";
+import { createGameEventBus } from "@toyota/missions";
+import type { EventBus } from "@toyota/missions";
+import type { GameEvents } from "@toyota/missions";
 import type {
   BattleRoster,
   RosterSquad,

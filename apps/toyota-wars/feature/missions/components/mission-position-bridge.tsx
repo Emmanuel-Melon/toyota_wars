@@ -3,8 +3,8 @@
 import { useGameFrame } from "@/render-loop";
 import { useBattle } from "@/context/battle-context";
 import { useMissionRunner } from "@/context/missions.context";
-import { setMissionUnitPositions } from "@/lib/missions/mission-unit-positions";
-import type { Vec2 } from "@/lib/missions/definition/mission.types";
+import { setMissionUnitPositions } from "@toyota/missions";
+import type { Vec2 } from "@toyota/missions";
 
 export function MissionPositionBridge() {
   const { registry } = useBattle();

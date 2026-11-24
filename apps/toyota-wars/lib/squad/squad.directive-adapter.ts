@@ -1,8 +1,8 @@
-import type { Vec2 } from "@/lib/missions/definition/mission.types";
 import type {
   DirectiveTargetView,
   SquadDirectiveView,
-} from "@/lib/missions/direction/mission-view.types";
+  Vec2,
+} from "@toyota/missions";
 import { SQUAD_DIRECTIVE, type SquadDirective } from "./squad.types";
 
 export interface MissionStrategicInput {

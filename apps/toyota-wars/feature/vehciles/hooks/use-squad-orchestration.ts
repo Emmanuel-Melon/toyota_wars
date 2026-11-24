@@ -6,7 +6,7 @@ import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
 import { opposingTeam } from "@/lib/combat/combat.teams";
 import type { HealthMap, Team } from "@/lib/combat/combat.types";
 import type { Obstacle } from "@/lib/movement/movement.types";
-import type { SquadDirectiveView } from "@/lib/missions/direction/mission-view.types";
+import type { SquadDirectiveView } from "@toyota/missions";
 import { SQUAD_CONFIG } from "@/lib/squad/squad.config";
 import { adaptDirectiveView } from "@/lib/squad/squad.directive-adapter";
 import {

@@ -1,5 +1,5 @@
 // apps/toyota-wars/lib/missions/data/hold-the-line/success.ts
-import type { MissionInput } from "../../definition/mission.types";
+import type { MissionInput } from "@toyota/missions";
 
 export const objectives: MissionInput["objectives"] = [
   {

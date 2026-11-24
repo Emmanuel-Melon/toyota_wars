@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useMemo, type ReactNode } from "react";
 import { useCombat } from "@/context/combat-context";
-import { RADAR_UNIT_ID } from "@/lib/missions/mission-radar";
+import { RADAR_UNIT_ID } from "@/lib/missions/data/radar";
 
 export type RadarContextValue = {
   radarOnline: boolean;

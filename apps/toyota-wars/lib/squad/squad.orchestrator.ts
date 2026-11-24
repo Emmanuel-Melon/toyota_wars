@@ -22,7 +22,7 @@ import {
 } from "../vehicles/vehicle.config";
 import type { VehicleLoadout } from "../vehicles/vehicle.types";
 import { WEAPONS } from "../weapons/weapon.config";
-import type { Vec2 } from "@/lib/missions/definition/mission.types";
+import type { Vec2 } from "@toyota/missions";
 import type { TankIntent } from "@/lib/utility/utility.types";
 
 export interface SquadTickState {

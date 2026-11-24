@@ -1,4 +1,4 @@
-import { getMissionUnitPositions } from "@/lib/missions/mission-unit-positions";
+import { getMissionUnitPositions } from "@toyota/missions";
 import type { DrawContext } from "../types";
 import { ALLY_COLOR, ENEMY_COLOR, TAU } from "../colors";
 

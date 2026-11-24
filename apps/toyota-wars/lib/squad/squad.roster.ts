@@ -4,15 +4,15 @@ import { partMaxHealth, VEHICLE_PARTS } from "@/lib/combat/combat.parts";
 import { partId, type VehiclePart } from "@/lib/combat/combat.teams";
 import type { HealthMap, PartHealthMap, Team } from "@/lib/combat/combat.types";
 import type { VehicleSpawn } from "@/lib/map/map.types";
-import {
-  UNIT_TEMPLATES,
-  type UnitTemplateId,
-} from "@/lib/missions/missions.templates";
 import type {
   InitialOrder,
   Personality,
   SquadFireMode,
-} from "@/lib/missions/definition/mission.types";
+} from "@toyota/missions";
+import {
+  UNIT_TEMPLATES,
+  type UnitTemplateId,
+} from "@/lib/missions/data/templates";
 import type { FormationType } from "@/lib/tactics/tactics.formation";
 import { pickFactionPalette } from "@/lib/vehicle-identity";
 import type { UnitKind } from "./squad.registry";

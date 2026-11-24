@@ -1,8 +1,4 @@
-import { TEAM } from "@/lib/missions/definition/mission.constants";
-import type {
-  MissionInput,
-  Vec2,
-} from "@/lib/missions/definition/mission.types";
+import { TEAM, type MissionInput, type Vec2 } from "@toyota/missions";
 import { createRng, scatterPoints } from "./map.spawns";
 
 const AXES = [

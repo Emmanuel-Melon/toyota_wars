@@ -14,10 +14,7 @@ import {
   type FireDesignation,
   type SquadDirective,
 } from "@/lib/squad/squad.types";
-import type {
-  InitialOrder,
-  SquadFireMode,
-} from "@/lib/missions/definition/mission.types";
+import type { InitialOrder, SquadFireMode } from "@toyota/missions";
 import { useMission } from "@/context/missions.context";
 import type { RosterSquad, RosterUnit } from "@/lib/squad/squad.roster";
 import {

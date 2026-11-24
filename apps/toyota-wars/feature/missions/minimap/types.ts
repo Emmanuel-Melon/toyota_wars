@@ -3,7 +3,7 @@ import type { useRadar } from "@/context/radar-context";
 import type { useTargets } from "@/context/targets-context";
 import type { useCombat } from "@/context/combat-context";
 import type { useArena } from "@/context/arena-context";
-import type { MissionObjective } from "@/lib/missions/direction/mission.hud";
+import type { MissionObjective } from "@toyota/missions";
 
 /** Snapshot read once per frame by the draw loop. */
 export type MinimapState = {

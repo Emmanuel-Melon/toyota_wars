@@ -6,7 +6,7 @@ import { FxProvider } from "@/context/fx-context";
 import { MissionClock, MissionContext } from "@/context/missions.context";
 import { QuarksProvider } from "@/context/quarks-provider";
 import { MissionFlowClock } from "@/feature/mission-flow/mission-flow-clock";
-import type { MissionRunner } from "@/lib/missions/runtime/mission.runner";
+import type { MissionRunner } from "@toyota/missions";
 import { FrameLoopProvider, GameLoopDriver } from "@/render-loop";
 import { BattleProvider } from "../../context/battle-context";
 import { Mission2OpeningDirector } from "../missions/components/mission-2-opening-director";

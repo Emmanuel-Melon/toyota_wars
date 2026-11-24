@@ -1,4 +1,4 @@
-import type { MissionInput } from "../../definition/mission.types";
+import type { MissionInput } from "@toyota/missions";
 import { failConditions } from "./failure";
 import { objectives } from "./success";
 

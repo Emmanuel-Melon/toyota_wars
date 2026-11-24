@@ -1,5 +1,5 @@
-import type { MissionInput } from "../../definition/mission.types";
-import { noEffects } from "../../definition/mission.presets";
+import type { MissionInput } from "@toyota/missions";
+import { noEffects } from "@toyota/missions";
 import { failConditions } from "./failure";
 import { objectives } from "./success";
 import { CONVOY_ROUTE, ROAD_WAYPOINTS } from "./zones";

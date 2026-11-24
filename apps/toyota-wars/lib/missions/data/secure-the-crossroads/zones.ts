@@ -1,4 +1,4 @@
-import type { MissionInput, Vec2 } from "../../definition/mission.types";
+import type { MissionInput, Vec2 } from "@toyota/missions";
 
 export const CROSSROADS: Vec2 = { x: 0, z: -120 };
 

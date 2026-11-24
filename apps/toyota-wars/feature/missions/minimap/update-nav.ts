@@ -1,8 +1,4 @@
-import {
-  cardinalBearing,
-  distance2D,
-  formatDistance,
-} from "@/lib/missions/missions.navigation";
+import { cardinalBearing, distance2D, formatDistance } from "@toyota/missions";
 import type { MinimapState } from "./types";
 
 /** Writes distance/bearing into the header spans. Called once per frame. */

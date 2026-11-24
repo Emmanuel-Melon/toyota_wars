@@ -1,9 +1,5 @@
 import * as THREE from "three";
-import type {
-  Mission,
-  MissionArena,
-  Vec2,
-} from "@/lib/missions/definition/mission.types";
+import type { Mission, MissionArena, Vec2 } from "@toyota/missions";
 import {
   createRoadNetwork,
   gradeTerrain,

@@ -1,10 +1,7 @@
 // apps/toyota-wars/context/missions.context.tsx
 import { createContext, useContext, useSyncExternalStore } from "react";
 import { useGameFrame } from "@/render-loop";
-import type {
-  MissionRunner,
-  MissionSnapshot,
-} from "@/lib/missions/runtime/mission.runner";
+import type { MissionRunner, MissionSnapshot } from "@toyota/missions";
 
 export const MissionContext = createContext<MissionRunner | null>(null);
 

@@ -13,18 +13,18 @@ import {
 import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
 import { DEFAULT_ARENA } from "@/lib/map/arena";
 import type { MapPosition, VehicleSpawn } from "@/lib/map/map.types";
-import { MissionRunner } from "@/lib/missions/runtime/mission.runner";
-import type { MissionHost } from "@/lib/missions/host/mission.host";
+import {
+  MissionRunner,
+  type Mission,
+  type MissionHost,
+  type Squad,
+  type Vec2,
+} from "@toyota/missions";
 import { MissionContext } from "@/context/missions.context";
-import type {
-  Mission,
-  Squad,
-  Vec2,
-} from "@/lib/missions/definition/mission.types";
 import {
   UNIT_TEMPLATES,
   type UnitTemplateId,
-} from "@/lib/missions/missions.templates";
+} from "@/lib/missions/data/templates";
 import type { RosterSquadSpawn } from "@/lib/squad/squad.roster";
 import type { VehicleModelId } from "@/lib/vehicles/vehicle.types";
 import { SKIRMISH_SQUADS } from "@/feature/vehciles/spawns";
@@ -133,7 +133,9 @@ export function MissionSessionProvider({ children }: { children: ReactNode }) {
     [resetBattle, roster, setArenaSource],
   );
 
-  const [runner] = useState(() => new MissionRunner(host));
+  const [runner] = useState(
+    () => new MissionRunner(host, { playerUnitId: COMBAT_CONFIG.PLAYER_ID }),
+  );
 
   useEffect(() => runner.attach(events), [runner, events]);
 

@@ -1,6 +1,6 @@
 // apps/toyota-wars/lib/missions/data/hold-the-line/mission.ts
-import type { MissionInput } from "../../definition/mission.types";
-import { waveEffects } from "../../definition/mission.presets";
+import type { MissionInput } from "@toyota/missions";
+import { waveEffects } from "@toyota/missions";
 import { failConditions } from "./failure";
 import { objectives } from "./success";
 

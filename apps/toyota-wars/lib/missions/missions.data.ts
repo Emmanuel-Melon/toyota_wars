@@ -1,8 +1,8 @@
 // apps/toyota-wars/lib/missions/missions.data.ts
+import { MissionCatalogSchema, type Mission } from "@toyota/missions";
+
 import { applyMissionLayout } from "../map/mission-layout";
-import { MissionCatalogSchema } from "./definition/mission.schema";
-import type { Mission } from "./definition/mission.types";
-import { assertMissionTemplates } from "./missions.templates";
+import { assertMissionTemplates } from "./data/templates";
 import {
   cutTheHead,
   firstContact,

@@ -2,7 +2,8 @@ import { useMission } from "@/context/missions.context";
 import { GameOverMenu } from "@/feature/menu/components/game-menu";
 import { useMissionSession } from "@/feature/missions/components/mission-session";
 import type { Team } from "@/lib/combat/combat.types";
-import { getNextMission } from "@/lib/missions/missions.progression";
+import { MISSIONS } from "@/lib/missions/missions.data";
+import { getNextMission } from "@toyota/missions";
 import type { GameState } from "../game.types";
 import { MissionResultMenu } from "../../missions/components/mission-overlay";
 
@@ -10,7 +11,9 @@ export function MissionResultScreen({ game }: { game: GameState }) {
   const { retryMission, returnToSkirmish, startMission } = useMissionSession();
   const { mission, result } = useMission();
   const nextMission =
-    result?.outcome === "success" && mission ? getNextMission(mission) : null;
+    result?.outcome === "success" && mission
+      ? getNextMission(MISSIONS, mission)
+      : null;
 
   return (
     <MissionResultMenu
