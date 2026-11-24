@@ -54,6 +54,10 @@ export const InitialOrderSchema = z.enum([
   INITIAL_ORDER.PATROL,
 ]);
 
+export const SpawnLayoutSchema = z.enum(["generated", "authored"]);
+export const SquadFormationSchema = z.enum(["column", "wedge", "line"]);
+export const SquadFireModeSchema = z.enum(["normal", "scripted"]);
+
 // ─────────────────────────────────────────────────────────────
 // FORCES
 // ─────────────────────────────────────────────────────────────
@@ -102,6 +106,11 @@ const SquadBaseSchema = z.object({
   units: z.array(SquadUnitSchema).min(1),
   /** Units are assigned to spawn points in order, cycling if there are fewer points. */
   spawnPoints: z.array(Vec2Schema).min(1),
+  spawnLayout: SpawnLayoutSchema.default("generated"),
+  formation: SquadFormationSchema.default("wedge"),
+  spacing: z.number().min(6).max(40).default(8),
+  holdFormation: z.boolean().default(false),
+  fireMode: SquadFireModeSchema.default("normal"),
   trigger: SpawnTriggerSchema.default({ type: TRIGGER_TYPE.START }),
   personality: PersonalitySchema.default({ aggression: 0.5, caution: 0.5 }),
   initialOrder: InitialOrderSchema.default(INITIAL_ORDER.PATROL),

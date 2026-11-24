@@ -11,7 +11,9 @@ import {
 import type {
   InitialOrder,
   Personality,
+  SquadFireMode,
 } from "@/lib/missions/definition/mission.types";
+import type { FormationType } from "@/lib/tactics/tactics.formation";
 import { pickFactionPalette } from "@/lib/vehicle-identity";
 import type { UnitKind } from "./squad.registry";
 
@@ -31,6 +33,10 @@ export type RosterSquadSpawn = {
   units: readonly RosterUnitSpawn[];
   initialOrder?: InitialOrder;
   personality?: Personality;
+  formationType?: FormationType;
+  formationSpacing?: number;
+  holdFormation?: boolean;
+  fireMode?: SquadFireMode;
 };
 
 export type RosterUnit = {
@@ -52,6 +58,10 @@ export type RosterSquad = {
   unitIds: readonly string[];
   initialOrder: InitialOrder;
   personality: Personality;
+  formationType: FormationType;
+  formationSpacing: number;
+  holdFormation: boolean;
+  fireMode: SquadFireMode;
 };
 
 export type RosterSnapshot = {
@@ -198,6 +208,10 @@ export class BattleRoster {
       unitIds,
       initialOrder: spawn.initialOrder ?? "attack",
       personality: spawn.personality ?? { aggression: 0.5, caution: 0.5 },
+      formationType: spawn.formationType ?? "wedge",
+      formationSpacing: spawn.formationSpacing ?? 8,
+      holdFormation: spawn.holdFormation ?? false,
+      fireMode: spawn.fireMode ?? "normal",
     });
     this.rebuildLists();
     return added;

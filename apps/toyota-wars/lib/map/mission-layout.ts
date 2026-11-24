@@ -95,7 +95,11 @@ export function applyMissionLayout(mission: MissionInput): MissionInput {
     squad.route && squad.route.length > 1 ? [squad.route] : [],
   );
 
-  const isValidSpawn = (x: number, z: number): boolean => {
+  const isValidSpawn = (
+    x: number,
+    z: number,
+    reserved: readonly Vec2[] = [],
+  ): boolean => {
     if (
       Math.abs(x) > half - SPAWN_BOUND_MARGIN ||
       Math.abs(z) > half - SPAWN_BOUND_MARGIN
@@ -103,6 +107,11 @@ export function applyMissionLayout(mission: MissionInput): MissionInput {
       return false;
     }
     const point = { x, z };
+    if (
+      reserved.some((other) => distance(point, other) < MIN_SPAWN_SEPARATION)
+    ) {
+      return false;
+    }
     if (
       zones.some(
         (zone) =>
@@ -126,10 +135,6 @@ export function applyMissionLayout(mission: MissionInput): MissionInput {
     mission.squads
       .filter((squad) => squad.team === TEAM.ALLY)
       .reduce((total, squad) => total + squadSpawnCount(squad), 0);
-  const enemyCount = mission.squads
-    .filter((squad) => squad.team === TEAM.ENEMY)
-    .reduce((total, squad) => total + squadSpawnCount(squad), 0);
-
   const friendlyPoints = scatterPoints({
     rng,
     center: [friendlyCenter.x, friendlyCenter.z],
@@ -138,29 +143,100 @@ export function applyMissionLayout(mission: MissionInput): MissionInput {
     minSeparation: MIN_SPAWN_SEPARATION,
     isValid: isValidSpawn,
   });
+  const playerPoint = toVec2(
+    friendlyPoints[0] ?? [friendlyCenter.x, friendlyCenter.z],
+  );
+
+  const authoredIndices = new Set(
+    mission.squads
+      .map((squad, index) => ({ squad, index }))
+      .filter(
+        ({ squad }) =>
+          squad.team === TEAM.ENEMY && squad.spawnLayout === "authored",
+      )
+      .map(({ index }) => index),
+  );
+  const authoredSourcePoints = mission.squads.flatMap((squad, index) =>
+    authoredIndices.has(index) ? squad.spawnPoints : [],
+  );
+  const authoredSourceCenter = average(authoredSourcePoints, enemyCenter);
+  const authoredAngle = Math.atan2(
+    mission.arena.playerSpawn.x - authoredSourceCenter.x,
+    mission.arena.playerSpawn.z - authoredSourceCenter.z,
+  );
+  const generatedAngle = Math.atan2(
+    playerPoint.x - enemyCenter.x,
+    playerPoint.z - enemyCenter.z,
+  );
+  const rotation = generatedAngle - authoredAngle;
+  const cosRotation = Math.cos(rotation);
+  const sinRotation = Math.sin(rotation);
+
+  const authoredPointsByIndex = new Map<number, Vec2[]>();
+  for (const index of authoredIndices) {
+    const squad = mission.squads[index];
+    if (!squad) continue;
+    authoredPointsByIndex.set(
+      index,
+      squad.spawnPoints.map((point) => {
+        const dx = point.x - authoredSourceCenter.x;
+        const dz = point.z - authoredSourceCenter.z;
+        const rotated = {
+          x: enemyCenter.x + dx * cosRotation + dz * sinRotation,
+          z: enemyCenter.z - dx * sinRotation + dz * cosRotation,
+        };
+        return {
+          x: clamp(
+            rotated.x,
+            -half + SPAWN_BOUND_MARGIN,
+            half - SPAWN_BOUND_MARGIN,
+          ),
+          z: clamp(
+            rotated.z,
+            -half + SPAWN_BOUND_MARGIN,
+            half - SPAWN_BOUND_MARGIN,
+          ),
+        };
+      }),
+    );
+  }
+
+  const reservedEnemyPoints = [...authoredPointsByIndex.values()].flat();
+  const enemyCount = mission.squads
+    .map((squad, index) => ({ squad, index }))
+    .filter(
+      ({ squad, index }) =>
+        squad.team === TEAM.ENEMY && !authoredIndices.has(index),
+    )
+    .reduce((total, { squad }) => total + squadSpawnCount(squad), 0);
   const enemyPoints = scatterPoints({
     rng,
     center: [enemyCenter.x, enemyCenter.z],
     radius: CLUSTER_RADIUS,
     count: enemyCount,
     minSeparation: MIN_SPAWN_SEPARATION,
-    isValid: isValidSpawn,
+    isValid: (x, z) =>
+      isValidSpawn(x, z, [playerPoint, ...reservedEnemyPoints]),
   });
 
-  const playerPoint = toVec2(
-    friendlyPoints[0] ?? [friendlyCenter.x, friendlyCenter.z],
-  );
   const allyPoints = friendlyPoints.slice(1);
   const cursors = { ally: 0, enemy: 0 };
 
-  const squads = mission.squads.map((squad) => {
+  const squads = mission.squads.map((squad, index) => {
+    const authoredPoints = authoredPointsByIndex.get(index);
+    if (authoredPoints) return { ...squad, spawnPoints: authoredPoints };
+
     const isEnemy = squad.team === TEAM.ENEMY;
     const pool = isEnemy ? enemyPoints : allyPoints;
     const key = isEnemy ? "enemy" : "ally";
     const points: Vec2[] = [];
 
-    for (let index = 0; index < squadSpawnCount(squad); index += 1) {
-      const point = pool[cursors[key] + index] ?? pool[pool.length - 1];
+    for (
+      let spawnIndex = 0;
+      spawnIndex < squadSpawnCount(squad);
+      spawnIndex += 1
+    ) {
+      const point = pool[cursors[key] + spawnIndex] ?? pool[pool.length - 1];
       points.push(
         point ? toVec2(point) : isEnemy ? enemyCenter : friendlyCenter,
       );
@@ -170,7 +246,12 @@ export function applyMissionLayout(mission: MissionInput): MissionInput {
     return { ...squad, spawnPoints: points };
   });
 
-  const enemySpawnCenter = average(enemyPoints.map(toVec2), enemyCenter);
+  const enemySpawnCenter = average(
+    squads
+      .filter((squad) => squad.team === TEAM.ENEMY)
+      .flatMap((squad) => squad.spawnPoints),
+    enemyCenter,
+  );
   const heading = Math.atan2(
     enemySpawnCenter.x - playerPoint.x,
     enemySpawnCenter.z - playerPoint.z,

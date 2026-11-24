@@ -14,7 +14,10 @@ import {
   type FireDesignation,
   type SquadDirective,
 } from "@/lib/squad/squad.types";
-import type { InitialOrder } from "@/lib/missions/definition/mission.types";
+import type {
+  InitialOrder,
+  SquadFireMode,
+} from "@/lib/missions/definition/mission.types";
 import { useMission } from "@/context/missions.context";
 import type { RosterSquad, RosterUnit } from "@/lib/squad/squad.roster";
 import {
@@ -37,6 +40,9 @@ export type SquadShared = {
   bound?: number;
   retreatOnDamage?: boolean;
   formationType?: FormationType;
+  formationSpacing?: number;
+  holdFormation?: boolean;
+  fireMode?: SquadFireMode;
   directive?: SquadDirective;
   isExplicitOrder?: boolean;
   fireDesignation?: FireDesignation | null;
@@ -157,7 +163,11 @@ export function SquadVehicles({
           const id = unit.id;
           const value = health[id] ?? unit.maxHealth;
           const formationOffset = shared?.formationType
-            ? getFormationOffset(formationSlots[i], shared.formationType, 8)
+            ? getFormationOffset(
+                formationSlots[i],
+                shared.formationType,
+                shared.formationSpacing ?? 8,
+              )
             : spawn.formationOffset;
           const vehicleSpawn = { ...spawn, formationOffset };
           const leader =
@@ -188,7 +198,8 @@ export function SquadVehicles({
                 unit.maxHealth,
               )}
               fireWhileMoving
-              onShoot={(pos, heading, pitch, spread, weapon, worldMuzzle) =>
+              onShoot={(pos, heading, pitch, spread, weapon, worldMuzzle) => {
+                if (shared?.fireMode === "scripted") return;
                 projectiles.current?.fire(
                   createFireRequest(
                     pos,
@@ -200,8 +211,8 @@ export function SquadVehicles({
                     team === "ally" ? TANK_CONFIG.combat.allyDamageScale : 1,
                     worldMuzzle,
                   ),
-                )
-              }
+                );
+              }}
             />
           );
         })}

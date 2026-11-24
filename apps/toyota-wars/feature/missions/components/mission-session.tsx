@@ -79,6 +79,10 @@ function missionSquadSpawn(squad: Squad, playerSpawn: Vec2): RosterSquadSpawn {
     units,
     initialOrder: squad.initialOrder,
     personality: squad.personality,
+    formationType: squad.formation,
+    formationSpacing: squad.spacing,
+    holdFormation: squad.holdFormation,
+    fireMode: squad.fireMode,
   };
 }
 

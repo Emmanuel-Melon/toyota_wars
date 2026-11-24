@@ -197,7 +197,9 @@ export function useSquadOrchestration({
       },
     );
 
-    if (team === "enemy") tactics.apply(squadOrdersRef.current);
+    if (team === "enemy" && !shared?.holdFormation) {
+      tactics.apply(squadOrdersRef.current);
+    }
 
     applyFireDesignation({
       designation: shared?.fireDesignation,
@@ -215,6 +217,12 @@ export function useSquadOrchestration({
       retreat: TANK_INTENT.RETREAT,
       attack: TANK_INTENT.ATTACK,
     });
+
+    if (shared?.holdFormation && leaderId) {
+      for (const [id, order] of squadOrdersRef.current) {
+        if (id !== leaderId) order.forcedIntent = TANK_INTENT.FOLLOW_LEADER;
+      }
+    }
   }, "squadCommand");
 
   return {

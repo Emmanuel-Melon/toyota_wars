@@ -12,8 +12,11 @@ import type {
   ObjectiveSchema,
   PersonalitySchema,
   RoadConfigSchema,
+  SpawnLayoutSchema,
   SpawnTriggerSchema,
   SquadEffectSchema,
+  SquadFireModeSchema,
+  SquadFormationSchema,
   SquadSchema,
   SquadUnitSchema,
   TeamSchema,
@@ -28,6 +31,9 @@ export type MissionZone = z.infer<typeof MissionZoneSchema>;
 export type Personality = z.infer<typeof PersonalitySchema>;
 export type InitialOrder = z.infer<typeof InitialOrderSchema>;
 export type Team = z.infer<typeof TeamSchema>;
+export type SpawnLayout = z.infer<typeof SpawnLayoutSchema>;
+export type SquadFormation = z.infer<typeof SquadFormationSchema>;
+export type SquadFireMode = z.infer<typeof SquadFireModeSchema>;
 
 // ── Forces ──
 export type SpawnTrigger = z.infer<typeof SpawnTriggerSchema>;

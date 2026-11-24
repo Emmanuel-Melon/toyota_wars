@@ -90,27 +90,50 @@ function validateBounds(m: MissionDraft, report: ReportIssue): void {
 }
 
 function validateSpawnLayout(m: MissionDraft, report: ReportIssue): void {
-  const spawns: { point: Vec2; path: IssuePath }[] = [
-    { point: m.arena.playerSpawn, path: ["arena", "playerSpawn"] },
+  const spawns: {
+    point: Vec2;
+    path: IssuePath;
+    squadIndex: number;
+    spawnLayout: "generated" | "authored";
+    spacing: number;
+  }[] = [
+    {
+      point: m.arena.playerSpawn,
+      path: ["arena", "playerSpawn"],
+      squadIndex: -1,
+      spawnLayout: "generated",
+      spacing: MIN_SPAWN_SEPARATION,
+    },
     ...m.squads.flatMap((squad, squadIndex) =>
       squad.spawnPoints.map((point, pointIndex) => ({
         point,
         path: ["squads", squadIndex, "spawnPoints", pointIndex] as IssuePath,
+        squadIndex,
+        spawnLayout: squad.spawnLayout,
+        spacing: squad.spacing,
       })),
     ),
   ];
 
   for (let i = 0; i < spawns.length; i += 1) {
     for (let j = i + 1; j < spawns.length; j += 1) {
+      const a = spawns[i];
+      const b = spawns[j];
+      const sameAuthoredSquad =
+        a.squadIndex >= 0 &&
+        a.squadIndex === b.squadIndex &&
+        a.spawnLayout === "authored" &&
+        b.spawnLayout === "authored";
+      const minimum = sameAuthoredSquad
+        ? Math.max(6, a.spacing, b.spacing)
+        : MIN_SPAWN_SEPARATION;
       if (
-        Math.hypot(
-          spawns[i].point.x - spawns[j].point.x,
-          spawns[i].point.z - spawns[j].point.z,
-        ) < MIN_SPAWN_SEPARATION
+        Math.hypot(a.point.x - b.point.x, a.point.z - b.point.z) <
+        minimum - 0.01
       ) {
         report(
-          `${spawns[i].path.join(".")} and ${spawns[j].path.join(".")} are closer than ${MIN_SPAWN_SEPARATION}m`,
-          spawns[j].path,
+          `${a.path.join(".")} and ${b.path.join(".")} are closer than ${minimum}m`,
+          b.path,
         );
       }
     }
