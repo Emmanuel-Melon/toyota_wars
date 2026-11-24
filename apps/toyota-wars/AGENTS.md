@@ -6,6 +6,10 @@
 - Backend lives in `../server` (package name `api`); shared API SDK is `../../packages/client`. The game does not import `@toyota/client` yet.
 - App pins `pnpm@12.3.4`. Prefer running commands from this directory; from the monorepo root use `pnpm turbo run dev --filter=toyota-wars`.
 
+## Agent constraints
+
+- The agent shall only write code. All scripts are run manually by the user — dev servers, builds, typechecks, tests, linting, formatting, codegen, DB setup/migrations, and seeders. Command sections below are reference only.
+
 ## Commands
 
 - `pnpm dev`, `pnpm build`, `pnpm start`
@@ -30,10 +34,11 @@
 ## Missions
 
 - See [docs/missions.md](./docs/missions.md) for the current system and [docs/missions-plan.md](./docs/missions-plan.md) for the approved directive architecture roadmap.
-- Mission definitions live in `lib/missions/data/<id>/` with `mission.ts`, `success.ts`, `failure.ts`, and optional `zones.ts`; they are re-exported by `lib/missions/data/index.ts` and registered in `lib/missions/missions.data.ts`. Zod validates ids, squad refs, zone refs, unit templates, arena bounds, and winnability at import time.
-- Canonical mission schema/validation lives in `lib/missions/definition/**`; imports point directly there. Spatial objectives reference `zones[].id` instead of inline `point`/`radius`. `lib/missions/events/**` is the event bus contract.
-- `game.tsx` imports `missions.data` for its validation side effect; do not remove that import.
-- `MissionRunner` is an external store in `lib/missions/runtime/mission.runner.ts`; `MissionSessionProvider` maps missions to roster spawns and arena state. Keep `MissionClock` inside `<Canvas>`.
+- Mission definitions live in `lib/missions/data/<id>/` with `mission.ts`, `success.ts`, `failure.ts`, `cutscenes.ts`, `qtes.ts`, `flow.ts`, optional `zones.ts`, and `index.ts`. Each folder exports a `GameMissionBundle`; `lib/missions/data/index.ts` re-exports all bundles.
+- `lib/missions/missions.init.ts` validates the catalog, asserts templates, and registers every bundle through `lib/missions/missions.registry.ts`. `game.tsx` imports it for that side effect; do not remove that import.
+- `MissionsRegistry` comes from `@toyota/missions`; the app facade stores `{ mission, flow?, tutorial? }`. Consumers read missions and flow scripts from `lib/missions/missions.registry.ts`, not from a hand-maintained `MISSIONS` array.
+- Pure flow script types live in `lib/mission-flow/mission-flow.types.ts`; `feature/mission-flow/` owns only runtime/store/UI. Cutscene and QTE data belongs beside the mission in `cutscenes.ts` and `qtes.ts`.
+- Canonical mission schema/validation lives in `@toyota/missions`; spatial objectives reference `zones[].id`. `MissionRunner` is an external store in `@toyota/missions`; `MissionSessionProvider` maps missions to roster spawns and arena state. Keep `MissionClock` inside `<Canvas>`.
 - Mission select hides the tutorial and shows every other mission; `requires` and `rewards.unlocks` are not enforced as progression.
 - `MissionSnapshot.activeObjective` is currently consumed by both HUD/navigation and AI. The planned boundary is: objectives are conditions, `MissionState` is the runtime truth, and a pure squad director derives neutral `SquadDirectiveView` data that the AI adapts into tactics.
 
