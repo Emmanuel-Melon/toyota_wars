@@ -9,19 +9,18 @@ export type VehiclePalette = {
   accent: string;
 };
 
-export type CrewGunnerPalette = {
-  uniform?: string;
-  vest?: string;
-  helmet?: string;
-  skin?: string;
-};
-
-export type ResolvedPalette = {
+export type CrewGunnerPalette = Partial<{
   uniform: string;
   vest: string;
   helmet: string;
   skin: string;
-};
+  glove: string;
+  boots: string;
+  gear: string;
+  lens: string;
+}>;
+
+export type ResolvedPalette = Required<CrewGunnerPalette>;
 
 export type WeaponMountKind = "heavyMg" | "autocannon" | "rocketPod";
 
