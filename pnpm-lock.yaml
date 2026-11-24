@@ -277,6 +277,12 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  packages/missions:
+    dependencies:
+      zod:
+        specifier: ^4.6.7
+        version: 4.6.7
+
 packages:
 
   '@alloc/quick-lru@5.3.0':
