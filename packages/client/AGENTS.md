@@ -6,6 +6,10 @@
 - It talks to `apps/server` (package `api`) over HTTP only. Do not import from `apps/*` or other workspace packages, and do not pull browser/engine UI code into the SDK.
 - No build step: `main`, `types`, and `exports` all point at `src/index.ts`.
 
+## Agent constraints
+
+- The agent shall only write code. All scripts are run manually by the user — dev servers, builds, typechecks, tests, linting, formatting, codegen, DB setup/migrations, and seeders. Command sections below are reference only.
+
 ## Commands
 
 - `pnpm check-types`, `pnpm format`. There is no build, lint, or test script.

@@ -7,6 +7,10 @@
 - `@toyota/agents` consumes this package; the game app consumes that. Mission views in `src/director/mission-directive.types.ts` must stay neutral (`{ x, z }`, no engine types).
 - No build step: `main`, `types`, and `exports` all point at `src/index.ts`.
 
+## Agent constraints
+
+- The agent shall only write code. All scripts are run manually by the user — dev servers, builds, typechecks, tests, linting, formatting, codegen, DB setup/migrations, and seeders. Command sections below are reference only.
+
 ## Commands
 
 - `pnpm check-types`, `pnpm test` (vitest with colocated `*.test.ts`), `pnpm format`.

@@ -6,6 +6,10 @@
 - It may depend only on `@toyota/ai` (`workspace:*`). Do not import from `apps/*`, React, Three.js, or mission/app code. Host-specific pathfinding and movement stay behind `AgentPorts`.
 - No build step: `main`, `types`, and `exports` all point at `src/index.ts`.
 
+## Agent constraints
+
+- The agent shall only write code. All scripts are run manually by the user — dev servers, builds, typechecks, tests, linting, formatting, codegen, DB setup/migrations, and seeders. Command sections below are reference only.
+
 ## Commands
 
 - `pnpm check-types`, `pnpm test` (vitest with colocated `*.test.ts`), `pnpm format`.
