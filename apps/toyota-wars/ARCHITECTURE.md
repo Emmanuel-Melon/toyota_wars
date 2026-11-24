@@ -41,9 +41,6 @@ toyota-wars/
 │       ├── ally-vehicles.tsx
 │       └── opponent-vehicles.tsx
 ├── lib/                   # Core libraries
-│   ├── behavior-tree/     # AI behavior tree system
-│   │   ├── behavior-tree.config.ts
-│   │   └── behavior-tree.core.ts
 │   ├── combat/            # Combat logic
 │   │   ├── combat.config.ts
 │   │   ├── combat.targets.ts
@@ -81,7 +78,7 @@ Located in `lib/agents/agent-runtime.config.ts`:
 
 ## AI Behavior Tree
 
-Behavior-tree primitives come from `@toyota/ai`; agent nodes, intents, and utility trees live in `@toyota/agents`. The app supplies only host adapters (`lib/agents/`) for config, ports, and decision mapping. Node state is `SUCCESS`, `FAILURE`, or `RUNNING`.
+Behavior-tree, utility, difficulty, and mission-director primitives come from `@toyota/ai`; agent nodes, intents, and utility trees live in `@toyota/agents`. The app supplies only host adapters (`lib/agents/`) for config, ports, and decision mapping. Node state is `SUCCESS`, `FAILURE`, or `RUNNING`.
 
 ### Squad Management
 

@@ -41,3 +41,5 @@
 
 - Import alias `@/*` maps to this repo root (`tsconfig.json`).
 - `tsconfig.tsbuildinfo` is tracked and changes after typecheck/build; avoid including it in focused commits.
+- `render.tsx` uses `shadows="percentage"` intentionally: R3F v9 maps it to `THREE.PCFShadowMap`; boolean `shadows` and `"soft"` select deprecated `PCFSoftShadowMap`.
+- The browser `THREE.Clock` deprecation warning is upstream-only from R3F v9 and three.quarks; no app code creates `THREE.Clock`, so do not add a duplicate app-level `Timer` to chase it.

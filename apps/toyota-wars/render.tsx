@@ -17,7 +17,7 @@ export function Render({ onSceneReady }: { onSceneReady: () => void }) {
       className="absolute inset-0 cursor-none touch-none [&_canvas]:block [&_canvas]:touch-none"
       aria-label="A quiet procedural Kordofan-inspired plain"
     >
-      <Canvas shadows dpr={isMobile ? [1, 1.25] : [1, 1.5]}>
+      <Canvas shadows="percentage" dpr={isMobile ? [1, 1.25] : [1, 1.5]}>
         <SceneProviders runner={runner} paused={paused} onReady={onSceneReady}>
           <SceneContent />
         </SceneProviders>
