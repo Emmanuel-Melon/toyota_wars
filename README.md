@@ -4,6 +4,8 @@
 
 Toyota Wars is a browser-based tactical combat game where you lead a squad of improvised armored vehicles through mission-based warfare. Every unit fights with its own weapon, personality, and role — and the squad's survival depends on how well you orchestrate them.
 
+<img width="1920" height="1080" alt="Screenshot 2026-11-24 at 14 18 01" src="https://github.com/user-attachments/assets/1505340f-8f5b-488a-911a-3df941a7d8ca" />
+
 ## Features
 
 - **Squad command** — issue orders to your warband: attack, follow, hold, or retreat. Allies react to the tactical situation, not just your commands.
