@@ -22,6 +22,7 @@ import { VehicleProvider } from "@/context/vehicle-context";
 
 // features
 import { PlayerCamera } from "@/feature/camera";
+import { DroneRoamController } from "@/feature/camera/components/drone-roam-controller";
 import { DamageWarningBridge } from "@/feature/combat/components/damage-warning-bridge";
 import { FireDesignationMarker } from "@/feature/combat/components/fire-designation-marker";
 import { EnemyMarkerUpdater } from "@/feature/combat/components/enemy-marker";
@@ -30,6 +31,7 @@ import { WreckMarkers } from "@/feature/combat/components/wreck-markers";
 import { WreckPickupSystem } from "@/feature/combat/components/wreck-pickup-system";
 import { KeyboardNavigator } from "@/feature/controls/components/keyboard-navigator";
 import { PlayerController } from "@/feature/controls/components/player-controller";
+import { FlowCameraController } from "@/feature/mission-flow/components/flow-camera-controller";
 import { MissionObjectiveMarker } from "@/feature/missions/components/mission-objective-marker";
 import { MissionPositionBridge } from "@/feature/missions/components/mission-position-bridge";
 import { AllyVehicles } from "@/feature/vehciles/components/ally-vehicles";
@@ -115,6 +117,8 @@ export function SceneContent() {
         />
       </VehicleProvider>
       <PlayerCamera />
+      <DroneRoamController />
+      <FlowCameraController />
       {!isMobile && <KeyboardNavigator />}
       <PlayerController />
       <PlayerWeapon />

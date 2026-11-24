@@ -3,7 +3,10 @@
 
 import { Sky } from "@react-three/drei";
 import { useArena } from "@/context/arena-context";
+import { useCameraMode } from "@/context/camera-mode-context";
 import { usePlayer } from "@/context/player-context";
+import { isRoamMode } from "@/feature/camera/camera.types";
+import { useDroneRoam } from "@/feature/camera/drone-roam.context";
 import { TerrainManager } from "./terrain-manager";
 import { ArenaObstacles } from "./arena-obstacles";
 import { GrassPatches } from "./grass-patches";
@@ -12,7 +15,10 @@ import { RoadNetworkManager } from "../../roads/components/road-network-manager"
 
 export function PlainsEnvironment() {
   const { playerBody } = usePlayer();
+  const { mode } = useCameraMode();
+  const { streamingFocus } = useDroneRoam();
   const arena = useArena();
+  const focus = isRoamMode(mode) ? streamingFocus : playerBody;
 
   return (
     <>
@@ -29,7 +35,7 @@ export function PlainsEnvironment() {
 
       {/* Infinite Chunk Manager streams terrain around the player */}
       <TerrainManager
-        playerBody={playerBody}
+        playerBody={focus}
         terrain={arena.terrain}
         chunkSize={arena.chunks.size}
         renderRadius={arena.chunks.renderRadius}
@@ -38,7 +44,7 @@ export function PlainsEnvironment() {
 
       {/* Road Network */}
       <RoadNetworkManager
-        playerBody={playerBody}
+        playerBody={focus}
         network={arena.roads}
         terrain={arena.terrain}
         roadRadius={280}
@@ -49,7 +55,7 @@ export function PlainsEnvironment() {
       <ArenaStructures structures={arena.structures} />
 
       <GrassPatches
-        playerBody={playerBody}
+        playerBody={focus}
         terrain={arena.terrain}
         obstacles={arena.obstacles}
         roads={arena.roads}

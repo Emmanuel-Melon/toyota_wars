@@ -20,6 +20,18 @@ export const DRONE_CAMERA_CONFIG = {
   terrainClearance: 3,
 } as const;
 
+export const DRONE_ROAM_CONFIG = {
+  initialAltitude: 30,
+  minAltitude: 18,
+  maxAltitude: 180,
+  moveSpeed: 70,
+  altitudeSpeed: 35,
+  edgeMargin: 8,
+  lookAhead: 12,
+  lookHeight: 1,
+  fov: 68,
+} as const;
+
 export const PLAYER_CAMERA_DAMAGE = {
   offsetPenalty: 0.28,
   fovPenalty: 0.18,

@@ -61,6 +61,7 @@ export const IDLE_DRIVE: DriveCommand = Object.freeze({
 export interface MovementBody extends VehicleState {
   step(command: DriveCommand, dt: number): void;
   reset(position: THREE.Vector3, heading: number): void;
+  halt(): void;
 }
 
 /** A circular footprint on the XZ plane. Threats and obstacles share it. */

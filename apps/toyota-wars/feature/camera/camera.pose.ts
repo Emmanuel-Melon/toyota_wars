@@ -4,10 +4,11 @@ import {
   PLAYER_CAMERA_CONFIG,
   PLAYER_CAMERA_DAMAGE,
   DRONE_CAMERA_CONFIG,
+  DRONE_ROAM_CONFIG,
   PORTRAIT_CAMERA_FRAMING,
   MOBILE_CAMERA_LOOK_CONFIG,
 } from "./camera.config";
-import type { CameraPoseInput } from "./camera.types";
+import type { CameraPoseInput, DroneRoamState } from "./camera.types";
 
 export type { CameraPoseInput } from "./camera.types";
 
@@ -157,4 +158,32 @@ export function computeDroneFov(portrait = false): number {
   return (
     DRONE_CAMERA_CONFIG.fov * (portrait ? PORTRAIT_CAMERA_FRAMING.droneFov : 1)
   );
+}
+
+export function computeDroneRoamPosition(
+  roam: DroneRoamState,
+  terrain: TerrainSampler,
+  out: THREE.Vector3,
+): THREE.Vector3 {
+  const altitude = Math.max(
+    roam.altitude,
+    DRONE_CAMERA_CONFIG.terrainClearance,
+  );
+  out.set(roam.x, terrain.getHeight(roam.x, roam.z) + altitude, roam.z);
+  return out;
+}
+
+export function computeDroneRoamTarget(
+  roam: DroneRoamState,
+  terrain: TerrainSampler,
+  out: THREE.Vector3,
+): THREE.Vector3 {
+  const x = roam.x + Math.sin(roam.heading) * DRONE_ROAM_CONFIG.lookAhead;
+  const z = roam.z + Math.cos(roam.heading) * DRONE_ROAM_CONFIG.lookAhead;
+  out.set(x, terrain.getHeight(x, z) + DRONE_ROAM_CONFIG.lookHeight, z);
+  return out;
+}
+
+export function computeDroneRoamFov(): number {
+  return DRONE_ROAM_CONFIG.fov;
 }

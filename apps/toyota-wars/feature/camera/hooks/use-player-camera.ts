@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useGameFrame } from "@/render-loop";
 import * as THREE from "three";
 import { useArena } from "@/context/arena-context";
 import { usePlayer } from "@/context/player-context";
 import { useViewport } from "@/context/viewport-context";
+import { useMissionFlow } from "@/feature/mission-flow/mission-flow.context";
 import { dampAngle } from "@/lib/aim/aim.math";
 import {
   MOBILE_CAMERA_LOOK_CONFIG,
@@ -18,10 +19,14 @@ import {
   computeCameraTarget,
   computeDroneFov,
   computeDronePosition,
+  computeDroneRoamFov,
+  computeDroneRoamPosition,
+  computeDroneRoamTarget,
   computeDroneTarget,
 } from "../camera.pose";
 import { useCameraMode } from "../../../context/camera-mode-context";
-import type { CameraPoseInput } from "../camera.types";
+import { isDroneMode, isRoamMode, type CameraPoseInput } from "../camera.types";
+import { useDroneRoam } from "../drone-roam.context";
 
 export function usePlayerCamera() {
   const {
@@ -36,6 +41,8 @@ export function usePlayerCamera() {
   const { mode } = useCameraMode();
   const { isPortrait, isMobile, isTouch } = useViewport();
   const cameraLook = useCameraLook();
+  const { state: roamState } = useDroneRoam();
+  const { camera: flowCamera, cameraEpoch } = useMissionFlow();
 
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const pose = useRef<CameraPoseInput>({
@@ -52,10 +59,17 @@ export function usePlayerCamera() {
   const currentLook = useRef({ yaw: 0, pitch: 0 });
   const idleTime = useRef(0);
   const lastRevision = useRef(-1);
+  const lastFlowEpoch = useRef(cameraEpoch);
+
+  useEffect(() => {
+    if (lastFlowEpoch.current === cameraEpoch) return;
+    lastFlowEpoch.current = cameraEpoch;
+    initialized.current = false;
+  }, [cameraEpoch]);
 
   useGameFrame((_, delta) => {
     const camera = cameraRef.current;
-    if (!camera) return;
+    if (!camera || flowCamera === "scripted") return;
 
     // ── 1. Refresh pose input ─────────────────────────────────────────
     const currentPose = pose.current;
@@ -140,7 +154,14 @@ export function usePlayerCamera() {
     }
 
     // ── 2. Compute desired pose (mode-dependent) ──────────────────────
-    if (mode === "drone") {
+    if (isRoamMode(mode)) {
+      computeDroneRoamPosition(
+        roamState,
+        arena.terrain,
+        desiredPosition.current,
+      );
+      computeDroneRoamTarget(roamState, arena.terrain, desiredTarget.current);
+    } else if (isDroneMode(mode)) {
       computeDronePosition(currentPose, arena.terrain, desiredPosition.current);
       computeDroneTarget(currentPose, desiredTarget.current);
     } else {
@@ -171,8 +192,9 @@ export function usePlayerCamera() {
     }
 
     // ── 4. FOV — also damped so mode transitions are smooth ───────────
-    const targetFov =
-      mode === "drone"
+    const targetFov = isRoamMode(mode)
+      ? computeDroneRoamFov()
+      : isDroneMode(mode)
         ? computeDroneFov(isPortrait)
         : computeCameraFov(currentPose.visionPenalty, isPortrait);
 

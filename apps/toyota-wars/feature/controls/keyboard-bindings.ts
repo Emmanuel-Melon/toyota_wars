@@ -8,4 +8,6 @@ export const DRIVE_KEYS = [
   ...LEFT_KEYS,
   ...RIGHT_KEYS,
 ] as const;
+export const DRONE_UP_KEYS = ["q"] as const;
+export const DRONE_DOWN_KEYS = ["e"] as const;
 export const FIRE_KEY_CODE = "Space";

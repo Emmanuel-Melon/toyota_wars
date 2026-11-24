@@ -4,12 +4,17 @@ import type { ReactNode } from "react";
 import { ArenaProvider } from "@/context/arena-context";
 import { CameraModeProvider } from "@/context/camera-mode-context";
 import { CameraLookProvider } from "@/feature/camera/camera-look.context";
+import { DroneRoamProvider } from "@/feature/camera/drone-roam.context";
 import { CombatProvider, useCombat } from "@/context/combat-context";
 import { useMission } from "@/context/missions.context";
 import { PlayerProvider } from "@/context/player-context";
 import { RadarProvider } from "@/context/radar-context";
 import { TargetsProvider } from "@/context/targets-context";
 import type { GameMode } from "@/feature/game/game.types";
+import {
+  MissionFlowProvider,
+  useMissionFlow,
+} from "@/feature/mission-flow/mission-flow.context";
 import { MissionSessionProvider } from "@/feature/missions/components/mission-session";
 import { DEFAULT_PLAYER_LOADOUT } from "@/lib/vehicles/vehicle.config";
 import type { VehicleLoadout } from "@/lib/vehicles/vehicle.types";
@@ -33,14 +38,18 @@ export function GameProviders({
         <MissionSessionProvider>
           <RadarProvider>
             <CameraModeProvider>
-              <GameRuntime
-                mode={mode}
-                loadout={loadout}
-                graphicsReady={graphicsReady}
-                uiBlocked={uiBlocked}
-              >
-                {children}
-              </GameRuntime>
+              <DroneRoamProvider>
+                <MissionFlowProvider>
+                  <GameRuntime
+                    mode={mode}
+                    loadout={loadout}
+                    graphicsReady={graphicsReady}
+                    uiBlocked={uiBlocked}
+                  >
+                    {children}
+                  </GameRuntime>
+                </MissionFlowProvider>
+              </DroneRoamProvider>
             </CameraModeProvider>
           </RadarProvider>
         </MissionSessionProvider>
@@ -64,14 +73,16 @@ function GameRuntime({
 }) {
   const { winner } = useCombat();
   const { status } = useMission();
+  const { phase: flowPhase } = useMissionFlow();
   const missionActive = status === "briefing" || status === "active";
   const missionFinished = status === "success" || status === "failed";
-  const paused =
+  const basePaused =
     !graphicsReady ||
     uiBlocked ||
     mode !== "playing" ||
     missionFinished ||
     (winner !== null && !missionActive);
+  const paused = basePaused || flowPhase === "cutscene";
 
   return (
     <TargetsProvider playerModel={loadout.model}>

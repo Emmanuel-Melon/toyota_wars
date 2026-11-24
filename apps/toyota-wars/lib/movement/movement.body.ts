@@ -100,6 +100,11 @@ export class KinematicTankBody implements MovementBody {
     this._throttleHold = 0;
   }
 
+  halt(): void {
+    this._speed = 0;
+    this._throttleHold = 0;
+  }
+
   /** Offsets the body horizontally (e.g. collision separation) and re-snaps Y. */
   nudge(dx: number, dz: number): void {
     this._position.x += dx;

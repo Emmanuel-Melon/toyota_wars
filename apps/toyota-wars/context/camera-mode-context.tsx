@@ -2,17 +2,24 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
-import type { CameraMode } from "../feature/camera/camera.types";
+import { useRadar } from "@/context/radar-context";
+import {
+  isDroneMode,
+  nextCameraMode,
+  type CameraMode,
+} from "../feature/camera/camera.types";
 
 type CameraModeContextValue = {
   mode: CameraMode;
   setMode: (mode: CameraMode) => void;
-  toggleMode: () => void;
+  cycleMode: () => void;
 };
 
 const CameraModeContext = createContext<CameraModeContextValue | null>(null);
@@ -23,15 +30,37 @@ type Props = {
 };
 
 export function CameraModeProvider({ children, initialMode = "chase" }: Props) {
-  const [mode, setMode] = useState<CameraMode>(initialMode);
+  const { radarOnline } = useRadar();
+  const [mode, setInternalMode] = useState<CameraMode>(initialMode);
+
+  const resolveMode = useCallback(
+    (candidate: CameraMode): CameraMode =>
+      !radarOnline && isDroneMode(candidate) ? "chase" : candidate,
+    [radarOnline],
+  );
+
+  const setMode = useCallback(
+    (candidate: CameraMode) => setInternalMode(resolveMode(candidate)),
+    [resolveMode],
+  );
+
+  const cycleMode = useCallback(
+    () => setInternalMode((current) => resolveMode(nextCameraMode(current))),
+    [resolveMode],
+  );
+
+  useEffect(() => {
+    if (radarOnline) return;
+    setInternalMode((current) => (isDroneMode(current) ? "chase" : current));
+  }, [radarOnline]);
 
   const value = useMemo<CameraModeContextValue>(
     () => ({
       mode,
       setMode,
-      toggleMode: () => setMode((m) => (m === "chase" ? "drone" : "chase")),
+      cycleMode,
     }),
-    [mode],
+    [mode, setMode, cycleMode],
   );
 
   return (

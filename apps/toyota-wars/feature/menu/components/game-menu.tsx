@@ -180,8 +180,19 @@ export function GameMenu({
               <tr>
                 <th className={CONTROL_TH_CLASS}>Camera</th>
                 <td className={CONTROL_TD_CLASS}>
-                  <kbd className={CONTROL_KEY_CLASS}>V</kbd> to toggle chase /
-                  drone
+                  <kbd className={CONTROL_KEY_CLASS}>V</kbd> to cycle chase /
+                  drone / roam
+                </td>
+              </tr>
+              <tr>
+                <th className={CONTROL_TH_CLASS}>Drone roam</th>
+                <td className={CONTROL_TD_CLASS}>
+                  <kbd className={CONTROL_KEY_CLASS}>W</kbd>
+                  <kbd className={CONTROL_KEY_CLASS}>A</kbd>
+                  <kbd className={CONTROL_KEY_CLASS}>S</kbd>
+                  <kbd className={CONTROL_KEY_CLASS}>D</kbd> move ·{" "}
+                  <kbd className={CONTROL_KEY_CLASS}>Q</kbd>
+                  <kbd className={CONTROL_KEY_CLASS}>E</kbd> altitude
                 </td>
               </tr>
             </tbody>
