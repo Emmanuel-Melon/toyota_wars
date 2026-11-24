@@ -6,7 +6,10 @@ import type * as THREE from "three";
 import type { VehiclePart } from "@/lib/combat/combat.teams";
 import type { Team } from "@/lib/combat/combat.types";
 import type { VehiclePalette } from "@/lib/palettes";
-import type { VehiclePlatformId } from "@/lib/vehicles/vehicle.types";
+import type {
+  VehicleModelId,
+  VehiclePlatformId,
+} from "@/lib/vehicles/vehicle.types";
 import type { WeaponCelebrationSystem } from "@/lib/weapons/weapon.celebration";
 import type { WeaponConfig } from "@/lib/weapons/weapon.types";
 import type { RecoilRef } from "@/feature/vehciles/hooks/use-wreck-visual";
@@ -22,6 +25,7 @@ export type VehicleContextValue = {
   unitId: string;
   team: Team;
   palette: VehiclePalette;
+  model: VehicleModelId;
   platform?: VehiclePlatformId;
   weapon?: WeaponConfig;
   health: number;

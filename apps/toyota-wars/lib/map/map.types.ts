@@ -1,5 +1,8 @@
 import type { VehiclePalette } from "../palettes";
-import type { VehiclePlatformId } from "../vehicles/vehicle.types";
+import type {
+  VehicleModelId,
+  VehiclePlatformId,
+} from "../vehicles/vehicle.types";
 import type { WeaponId } from "../weapons/weapon.types";
 
 export type MapPosition = [number, number];
@@ -26,6 +29,7 @@ export type VehicleSpawn = {
   rotationY: number;
   scale?: number;
   palette: VehiclePalette;
+  model?: VehicleModelId;
   weapon?: WeaponId;
   platform?: VehiclePlatformId;
 };

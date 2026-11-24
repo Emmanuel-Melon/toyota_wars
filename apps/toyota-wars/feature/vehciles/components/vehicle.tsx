@@ -3,7 +3,7 @@
 
 import { useRef, type ReactNode } from "react";
 import type * as THREE from "three";
-import { PickupHull } from "./pickup/pickup-hull";
+import { VehicleBody } from "./vehicle-body";
 import { BedWeapon } from "./bed-weapon";
 import { Wheels } from "./wheels/wheels";
 import {
@@ -34,6 +34,7 @@ export function Vehicle({
   const {
     unitId,
     palette,
+    model,
     health,
     maxHealth,
     partHealth,
@@ -55,6 +56,7 @@ export function Vehicle({
     motionRef,
     maxHealth,
     partHealth,
+    model,
     destructionActive,
     destructionSeed: hashUnitId(unitId),
   });
@@ -75,7 +77,8 @@ export function Vehicle({
 
       {/* sprung: rocks on its "suspension" when firing */}
       <group ref={bodyRef}>
-        <PickupHull
+        <VehicleBody
+          model={model}
           palette={bodyPalette}
           health={wrecked ? 0 : (partHealth?.body ?? health)}
           maxHealth={maxHealth}

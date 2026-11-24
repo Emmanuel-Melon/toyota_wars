@@ -6,19 +6,20 @@ import type { WheelsProps } from "./types";
 import { Wheel } from "./wheel";
 import { useVehicleContext } from "@/context/vehicle-context";
 import { FallenPart } from "../parts/vehicle-parts";
-import { WHEEL, AXLE_Y } from "@/feature/vehciles/vehicles.config";
+import { VEHICLE_MODELS } from "@/lib/vehicles/vehicle.config";
 
 function partNameFor(steers: boolean, side: number): VehiclePart {
   return `${steers ? "wheelF" : "wheelR"}${side > 0 ? "L" : "R"}` as VehiclePart;
 }
 
 export function Wheels({ motionRef }: WheelsProps) {
-  const { wrecked } = useVehicleContext();
+  const { wrecked, model } = useVehicleContext();
+  const frame = VEHICLE_MODELS[model].frame;
   const TRACK_INWARD_FACTOR = 0.86; // Pulls wheels inward slightly
 
   return (
     <>
-      {WHEEL.axles.flatMap(({ z, steers }) =>
+      {frame.axles.flatMap(({ z, steers }) =>
         [-1, 1].map((side) => {
           const part = partNameFor(steers, side);
           return (
@@ -26,11 +27,11 @@ export function Wheels({ motionRef }: WheelsProps) {
               key={part}
               part={part}
               position={[
-                side * WHEEL.trackHalfWidth * TRACK_INWARD_FACTOR,
-                AXLE_Y,
+                side * frame.trackHalfWidth * TRACK_INWARD_FACTOR,
+                frame.axleY,
                 z,
               ]}
-              drop={WHEEL.radius}
+              drop={frame.wheelRadius}
               spin={[0.35, side * 1.2, side * 0.9]}
               debris="wheel"
               forceDetach={wrecked}

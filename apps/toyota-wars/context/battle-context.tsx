@@ -63,6 +63,7 @@ export function useRegisterUnit(def: UnitDef, enabled = true) {
   const { registry } = useBattle();
   const { id, team, kind, radius, ai, loadout, body, nudge } = def;
   // Compare loadout by value: callers may pass a fresh object every render.
+  const loadoutModel = loadout?.model;
   const loadoutPlatform = loadout?.platform;
   const loadoutWeapon = loadout?.weapon;
   useEffect(() => {
@@ -74,8 +75,14 @@ export function useRegisterUnit(def: UnitDef, enabled = true) {
       radius,
       ai,
       loadout:
-        loadoutPlatform !== undefined && loadoutWeapon !== undefined
-          ? { platform: loadoutPlatform, weapon: loadoutWeapon }
+        loadoutModel !== undefined &&
+        loadoutPlatform !== undefined &&
+        loadoutWeapon !== undefined
+          ? {
+              model: loadoutModel,
+              platform: loadoutPlatform,
+              weapon: loadoutWeapon,
+            }
           : undefined,
       body,
       nudge,
@@ -87,6 +94,7 @@ export function useRegisterUnit(def: UnitDef, enabled = true) {
     kind,
     radius,
     ai,
+    loadoutModel,
     loadoutPlatform,
     loadoutWeapon,
     body,

@@ -130,7 +130,7 @@ export function AIVehicle({
   } = spawn;
   const loadout = useMemo(
     () => resolveVehicleLoadout(spawn),
-    [spawn.weapon, spawn.platform],
+    [spawn.model, spawn.weapon, spawn.platform],
   );
   const weapon = WEAPONS[loadout.weapon];
   const vehicle = VEHICLE_PLATFORMS[loadout.platform];
@@ -512,6 +512,7 @@ export function AIVehicle({
       unitId={unitId}
       team={team}
       palette={palette}
+      model={loadout.model}
       platform={loadout.platform}
       weapon={weapon}
       initialPosition={initialPosition}

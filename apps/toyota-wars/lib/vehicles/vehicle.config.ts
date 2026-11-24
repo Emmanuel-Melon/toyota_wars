@@ -1,16 +1,41 @@
 // lib/vehicles/vehicle.config.ts
 import { MOVEMENT_CONFIG } from "../movement/movement.config";
 import type { TankBodyConfig } from "../movement/movement.types";
-import {
-  DEFAULT_PLAYER_WEAPON_ID,
-  DEFAULT_WEAPON_ID,
-} from "../weapons/weapon.config";
+import { DEFAULT_PLAYER_WEAPON_ID } from "../weapons/weapon.config";
 import type { WeaponId } from "../weapons/weapon.types";
+import { hiluxVehicle } from "./definitions/hilux.vehicle";
+import { landCruiserVehicle } from "./definitions/land-cruiser.vehicle";
+import { hiaceVehicle } from "./definitions/hiace.vehicle";
+import { radarVehicle } from "./definitions/radar.vehicle";
 import type {
   VehicleLoadout,
+  VehicleModel,
+  VehicleModelId,
   VehiclePlatform,
   VehiclePlatformId,
 } from "./vehicle.types";
+
+export const VEHICLE_MODEL_IDS = [
+  "hilux",
+  "land-cruiser",
+  "hiace",
+  "radar",
+] as const satisfies readonly VehicleModelId[];
+
+export const PLAYER_SELECTABLE_VEHICLE_MODEL_IDS: readonly VehicleModelId[] = [
+  "hilux",
+  "land-cruiser",
+  "hiace",
+];
+
+export const VEHICLE_MODELS: Record<VehicleModelId, VehicleModel> = {
+  hilux: hiluxVehicle,
+  "land-cruiser": landCruiserVehicle,
+  hiace: hiaceVehicle,
+  radar: radarVehicle,
+};
+
+export const DEFAULT_VEHICLE_MODEL_ID: VehicleModelId = "land-cruiser";
 
 export const VEHICLE_PLATFORMS: Record<VehiclePlatformId, VehiclePlatform> = {
   technical: {
@@ -30,22 +55,44 @@ export const VEHICLE_PLATFORMS: Record<VehiclePlatformId, VehiclePlatform> = {
   },
 };
 
+export const DEFAULT_MODEL_FOR_WEAPON: Record<WeaponId, VehicleModelId> = {
+  dshk: "hilux",
+  zu23: "land-cruiser",
+  type63: "hiace",
+};
+
+export const DEFAULT_MODEL_FOR_PLATFORM: Record<
+  VehiclePlatformId,
+  VehicleModelId
+> = {
+  technical: "hilux",
+  armored: "land-cruiser",
+  support: "hiace",
+};
+
 export const DEFAULT_PLATFORM_FOR_WEAPON: Record<WeaponId, VehiclePlatformId> =
   {
-    dshk: "technical",
-    zu23: "armored",
-    type63: "support",
+    dshk: VEHICLE_MODELS[DEFAULT_MODEL_FOR_WEAPON.dshk].platform,
+    zu23: VEHICLE_MODELS[DEFAULT_MODEL_FOR_WEAPON.zu23].platform,
+    type63: VEHICLE_MODELS[DEFAULT_MODEL_FOR_WEAPON.type63].platform,
   };
 
-export const DEFAULT_VEHICLE_LOADOUT: VehicleLoadout = {
-  platform: DEFAULT_PLATFORM_FOR_WEAPON[DEFAULT_WEAPON_ID],
-  weapon: DEFAULT_WEAPON_ID,
-};
+export function createVehicleLoadout(modelId: VehicleModelId): VehicleLoadout {
+  const model = VEHICLE_MODELS[modelId];
+  return {
+    model: model.id,
+    platform: model.platform,
+    weapon: model.weapon,
+  };
+}
 
-export const DEFAULT_PLAYER_LOADOUT: VehicleLoadout = {
-  platform: DEFAULT_PLATFORM_FOR_WEAPON[DEFAULT_PLAYER_WEAPON_ID],
-  weapon: DEFAULT_PLAYER_WEAPON_ID,
-};
+export const DEFAULT_VEHICLE_LOADOUT = createVehicleLoadout(
+  DEFAULT_VEHICLE_MODEL_ID,
+);
+
+export const DEFAULT_PLAYER_LOADOUT = createVehicleLoadout(
+  DEFAULT_MODEL_FOR_WEAPON[DEFAULT_PLAYER_WEAPON_ID],
+);
 
 export function createPlayerBodyConfig(
   platform: VehiclePlatform,
@@ -65,15 +112,26 @@ export function createPlayerBodyConfig(
   };
 }
 
+export type VehicleSpawnIdentity = {
+  model?: VehicleModelId;
+  weapon?: WeaponId;
+  platform?: VehiclePlatformId;
+};
+
+export function resolveVehicleModel(
+  spawn?: VehicleSpawnIdentity | null,
+): VehicleModel {
+  if (spawn?.model) return VEHICLE_MODELS[spawn.model];
+  if (spawn?.weapon)
+    return VEHICLE_MODELS[DEFAULT_MODEL_FOR_WEAPON[spawn.weapon]];
+  if (spawn?.platform) {
+    return VEHICLE_MODELS[DEFAULT_MODEL_FOR_PLATFORM[spawn.platform]];
+  }
+  return VEHICLE_MODELS[DEFAULT_VEHICLE_MODEL_ID];
+}
+
 export function resolveVehicleLoadout(
-  spawn?: {
-    weapon?: WeaponId;
-    platform?: VehiclePlatformId;
-  } | null,
+  spawn?: VehicleSpawnIdentity | null,
 ): VehicleLoadout {
-  const weapon = spawn?.weapon ?? DEFAULT_WEAPON_ID;
-  return {
-    platform: spawn?.platform ?? DEFAULT_PLATFORM_FOR_WEAPON[weapon],
-    weapon,
-  };
+  return createVehicleLoadout(resolveVehicleModel(spawn).id);
 }

@@ -1,7 +1,27 @@
 // lib/vehicles/vehicle.types.ts
+import type { TargetPart } from "../combat/combat.types";
 import type { WeaponId } from "../weapons/weapon.types";
 
 export type VehiclePlatformId = "technical" | "armored" | "support";
+
+export type VehicleModelId = "hilux" | "land-cruiser" | "hiace" | "radar";
+
+export type VehicleBodyKind = "pickup" | "suv" | "van";
+
+export type VehicleAxle = {
+  z: number;
+  steers: boolean;
+};
+
+export type VehicleFrame = {
+  colliderHalfExtents: [number, number, number];
+  axleY: number;
+  axles: readonly VehicleAxle[];
+  trackHalfWidth: number;
+  wheelRadius: number;
+  mountPosition: [number, number, number];
+  hitboxes: readonly TargetPart[];
+};
 
 export interface VehiclePlatform {
   id: VehiclePlatformId;
@@ -11,7 +31,18 @@ export interface VehiclePlatform {
   frontlineDurability: number;
 }
 
+export interface VehicleModel {
+  id: VehicleModelId;
+  label: string;
+  description: string;
+  body: VehicleBodyKind;
+  platform: VehiclePlatformId;
+  weapon: WeaponId;
+  frame: VehicleFrame;
+}
+
 export interface VehicleLoadout {
+  model: VehicleModelId;
   platform: VehiclePlatformId;
   weapon: WeaponId;
 }

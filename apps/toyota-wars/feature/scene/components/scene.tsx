@@ -52,6 +52,7 @@ export function SceneContent() {
     playerBody,
     playerVehicle,
     playerWeapon,
+    playerModel,
     aimTargetRef,
     aimAlignedRef,
     celebrationRef,
@@ -82,6 +83,7 @@ export function SceneContent() {
           unitId: COMBAT_CONFIG.PLAYER_ID,
           team: "ally",
           palette: PLAYER_PALETTE,
+          model: playerModel,
           platform: playerVehicle.id,
           weapon: playerWeapon,
           health:

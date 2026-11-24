@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { WeaponPreview } from "@/feature/menu/components/weapon-preview";
+import { VehiclePreview } from "@/feature/menu/components/weapon-preview";
 import {
   MenuActions,
   MenuHeading,
@@ -13,7 +13,8 @@ import {
 } from "@/feature/menu/components/menu-parts";
 import type { Team } from "@/lib/combat/combat.types";
 import {
-  DEFAULT_PLATFORM_FOR_WEAPON,
+  PLAYER_SELECTABLE_VEHICLE_MODEL_IDS,
+  VEHICLE_MODELS,
   VEHICLE_PLATFORMS,
   resolveVehicleLoadout,
 } from "@/lib/vehicles/vehicle.config";
@@ -22,20 +23,12 @@ import type {
   VehiclePlatform,
 } from "@/lib/vehicles/vehicle.types";
 import { WEAPONS } from "@/lib/weapons/weapon.config";
-import type { WeaponConfig, WeaponId } from "@/lib/weapons/weapon.types";
+import type { WeaponConfig } from "@/lib/weapons/weapon.types";
 import { cn } from "@/lib/utils";
 
 import shellStyles from "./menu-shell.module.css";
 
 export type GameMenuMode = "menu" | "settings";
-
-const VEHICLE_OPTIONS: readonly WeaponId[] = ["dshk", "zu23", "type63"];
-
-const VEHICLE_DESCRIPTIONS: Record<WeaponId, string> = {
-  dshk: "Fast technical with a heavy machine gun. Agile, light, and quick to fire.",
-  zu23: "Armored autocannon platform with balanced protection and rate of fire.",
-  type63: "Support truck with a slow-firing rocket launcher and heavy punch.",
-};
 
 const CONTROL_TH_CLASS =
   "w-[120px] py-[10px] pr-4 align-top text-left font-mono text-[11px] font-semibold uppercase leading-[1.6] tracking-[0.18em] opacity-70";
@@ -300,14 +293,17 @@ export function VehicleSelectMenu({
   onConfirm: (loadout: VehicleLoadout) => void;
   onBack: () => void;
 }) {
-  const initialIndex = Math.max(0, VEHICLE_OPTIONS.indexOf(loadout.weapon));
+  const initialIndex = Math.max(
+    0,
+    PLAYER_SELECTABLE_VEHICLE_MODEL_IDS.indexOf(loadout.model),
+  );
   const [index, setIndex] = useState(initialIndex);
   const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const selected = VEHICLE_OPTIONS[index];
-  const chosen = resolveVehicleLoadout({ weapon: selected });
-  const selectedWeapon = WEAPONS[selected];
-  const selectedPlatform =
-    VEHICLE_PLATFORMS[DEFAULT_PLATFORM_FOR_WEAPON[selected]];
+  const selected = PLAYER_SELECTABLE_VEHICLE_MODEL_IDS[index];
+  const selectedModel = VEHICLE_MODELS[selected];
+  const chosen = resolveVehicleLoadout({ model: selected });
+  const selectedWeapon = WEAPONS[selectedModel.weapon];
+  const selectedPlatform = VEHICLE_PLATFORMS[selectedModel.platform];
   const stats = getVehicleStats(selectedWeapon, selectedPlatform);
 
   useEffect(() => {
@@ -316,7 +312,8 @@ export function VehicleSelectMenu({
       event.preventDefault();
       const offset = event.key === "ArrowRight" ? 1 : -1;
       const next =
-        (index + offset + VEHICLE_OPTIONS.length) % VEHICLE_OPTIONS.length;
+        (index + offset + PLAYER_SELECTABLE_VEHICLE_MODEL_IDS.length) %
+        PLAYER_SELECTABLE_VEHICLE_MODEL_IDS.length;
       setIndex(next);
       thumbRefs.current[next]?.focus();
     };
@@ -327,14 +324,14 @@ export function VehicleSelectMenu({
 
   return (
     <MenuShell
-      label="Weapon selection"
+      label="Vehicle selection"
       width="wide"
       panelClassName="max-h-[calc(100vh-64px)] overflow-y-auto"
     >
       <MenuHeading
         kicker="Deployment Loadout"
-        title="Pick Your Weapon"
-        subtitle="Use ← / → or pick a weapon below"
+        title="Pick Your Vehicle"
+        subtitle="Use ← / → or pick a vehicle below"
         small
       />
 
@@ -344,9 +341,9 @@ export function VehicleSelectMenu({
             shellStyles.preview,
             "relative flex min-h-[300px] items-center justify-center overflow-hidden border border-ui-secondary/30 p-[18px] max-[919px]:min-h-[240px]",
           )}
-          aria-label={`${selectedWeapon.label} preview`}
+          aria-label={`${selectedModel.label} preview`}
         >
-          <WeaponPreview weapon={selectedWeapon} />
+          <VehiclePreview model={selectedModel} />
           <span className="absolute bottom-3 font-mono text-[10px] font-semibold tracking-[0.2em] text-ui-primary/90">
             {titleCase(selectedWeapon.mechanism)}
           </span>
@@ -354,11 +351,11 @@ export function VehicleSelectMenu({
 
         <section
           className="min-h-[300px] border border-ui-secondary/30 bg-ui-panel/50 p-[18px] max-[919px]:min-h-[220px]"
-          aria-label="Weapon stats"
+          aria-label="Vehicle stats"
         >
           <div className="flex items-baseline justify-between gap-3 border-b border-ui-secondary/20 pb-3">
             <span className="font-mono text-[22px] font-bold leading-none tracking-[0.08em]">
-              {selectedWeapon.label}
+              {selectedModel.label}
             </span>
             <span className="font-mono text-[10px] font-semibold leading-none tracking-[0.2em] opacity-70">
               {titleCase(selectedPlatform.id)}
@@ -373,17 +370,17 @@ export function VehicleSelectMenu({
       </div>
 
       <p className="mt-4 font-mono text-[12px] leading-[1.6] tracking-[0.04em] opacity-85">
-        {VEHICLE_DESCRIPTIONS[selected]}
+        {selectedModel.description}
       </p>
 
       <div
         className="mt-[14px] grid grid-cols-3 gap-2.5 max-[919px]:gap-1.5"
         role="group"
-        aria-label="Choose weapon"
+        aria-label="Choose vehicle"
       >
-        {VEHICLE_OPTIONS.map((id, optionIndex) => {
-          const weapon = WEAPONS[id];
-          const platform = VEHICLE_PLATFORMS[DEFAULT_PLATFORM_FOR_WEAPON[id]];
+        {PLAYER_SELECTABLE_VEHICLE_MODEL_IDS.map((id, optionIndex) => {
+          const model = VEHICLE_MODELS[id];
+          const platform = VEHICLE_PLATFORMS[model.platform];
           const active = id === selected;
 
           return (
@@ -405,7 +402,7 @@ export function VehicleSelectMenu({
                 {String(optionIndex + 1).padStart(2, "0")}
               </span>
               <span className="font-mono text-[13px] font-bold leading-none tracking-[0.08em] max-[919px]:text-[11px]">
-                {weapon.label}
+                {model.label}
               </span>
               <span className="col-start-2 font-mono text-[9px] font-semibold leading-none tracking-[0.2em] opacity-65">
                 {titleCase(platform.id)}
@@ -416,7 +413,8 @@ export function VehicleSelectMenu({
       </div>
 
       <div className="mt-[14px] font-mono text-[11px] leading-[1.4] tracking-[0.16em] opacity-75">
-        {selectedWeapon.label} / {titleCase(selectedPlatform.id)} · Frontline{" "}
+        {selectedModel.label} · {selectedWeapon.label} /{" "}
+        {titleCase(selectedPlatform.id)} · Frontline{" "}
         {Math.round(selectedPlatform.frontlineDurability * 100)}%
       </div>
 

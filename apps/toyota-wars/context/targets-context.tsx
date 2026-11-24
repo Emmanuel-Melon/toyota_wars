@@ -9,12 +9,22 @@ import {
   type RefObject,
 } from "react";
 import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
-import { TANK_HIT_PARTS } from "@/lib/combat/combat.hitboxes";
-import type { EnemyTarget, HealthMap, Team } from "@/lib/combat/combat.types";
+import type {
+  EnemyTarget,
+  HealthMap,
+  TargetPart,
+  Team,
+} from "@/lib/combat/combat.types";
 import type { TerrainSampler } from "@/lib/map/map.terrain";
 import type { RosterUnit } from "@/lib/squad/squad.roster";
+import { resolveVehicleModel } from "@/lib/vehicles/vehicle.config";
+import type { VehicleModelId } from "@/lib/vehicles/vehicle.types";
 import { useCombat } from "./combat-context";
 import { useArena } from "./arena-context";
+
+function hitboxesFor(model?: VehicleModelId): TargetPart[] {
+  return [...resolveVehicleModel(model ? { model } : null).frame.hitboxes];
+}
 
 function makeTarget(
   id: string,
@@ -23,13 +33,14 @@ function makeTarget(
   z: number,
   heading: number,
   terrain: TerrainSampler,
+  parts: TargetPart[],
 ): EnemyTarget {
   return {
     id,
     team,
     heading,
     position: [x, terrain.getVehicleHeight(x, z), z],
-    parts: TANK_HIT_PARTS,
+    parts,
   };
 }
 
@@ -51,6 +62,7 @@ function rosterTargets(
         unit.spawn.position[1],
         unit.spawn.rotationY,
         terrain,
+        hitboxesFor(unit.spawn.model),
       ),
     );
   }
@@ -66,7 +78,13 @@ type TargetsContextValue = {
 
 const TargetsCtx = createContext<TargetsContextValue | null>(null);
 
-export function TargetsProvider({ children }: { children: ReactNode }) {
+export function TargetsProvider({
+  children,
+  playerModel,
+}: {
+  children: ReactNode;
+  playerModel: VehicleModelId;
+}) {
   const arena = useArena();
   const { units, health } = useCombat();
   const enemies = useMemo<EnemyTarget[]>(
@@ -89,7 +107,7 @@ export function TargetsProvider({ children }: { children: ReactNode }) {
       ),
       arena.playerSpawn[1],
     ],
-    parts: TANK_HIT_PARTS,
+    parts: hitboxesFor(playerModel),
   });
 
   const projectileTargets = useMemo<EnemyTarget[]>(

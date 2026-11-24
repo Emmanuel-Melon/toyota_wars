@@ -71,7 +71,7 @@ function GameRuntime({
     (winner !== null && !missionActive);
 
   return (
-    <TargetsProvider>
+    <TargetsProvider playerModel={loadout.model}>
       <PlayerProvider paused={paused} loadout={loadout}>
         <CameraLookProvider screenMode={mode}>{children}</CameraLookProvider>
       </PlayerProvider>

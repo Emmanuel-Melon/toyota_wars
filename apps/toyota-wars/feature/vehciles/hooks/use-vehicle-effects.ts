@@ -1,6 +1,5 @@
 // apps/toyota-wars/feature/vehciles/hooks/use-vehicle-effects.ts
 import { useDust } from "@/feature/effects/components/dust-system";
-import { AXLE_Y, WHEEL } from "@/feature/vehciles/vehicles.config";
 import type { VehicleMotion } from "@/feature/vehciles/vehicles.utils";
 import {
   DESTRUCTION_DURATION,
@@ -9,6 +8,8 @@ import {
 import type { VehiclePartHealth } from "@/context/vehicle-context";
 import { isPartDestroyed } from "@/lib/combat/combat.parts";
 import type { VehiclePart } from "@/lib/combat/combat.teams";
+import { VEHICLE_MODELS } from "@/lib/vehicles/vehicle.config";
+import type { VehicleModelId } from "@/lib/vehicles/vehicle.types";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, type RefObject } from "react";
 import * as THREE from "three";
@@ -33,6 +34,7 @@ export function useVehicleEffects({
   motionRef,
   maxHealth,
   partHealth,
+  model,
   destructionActive = false,
   destructionSeed = 0.5,
 }: {
@@ -43,10 +45,12 @@ export function useVehicleEffects({
   motionRef?: RefObject<VehicleMotion>;
   maxHealth: number;
   partHealth?: VehiclePartHealth;
+  model: VehicleModelId;
   destructionActive?: boolean;
   destructionSeed?: number;
 }) {
   const dust = useDust();
+  const frame = VEHICLE_MODELS[model].frame;
   const pitch = useRef(spring());
   const back = useRef(spring());
   const roll = useRef(spring());
@@ -72,7 +76,7 @@ export function useVehicleEffects({
   }, [destructionActive]);
 
   const wheelPart = (z: number, side: number): VehiclePart =>
-    `${z === (WHEEL.axles.find((a) => a.steers) ?? WHEEL.axles[0]).z ? "wheelF" : "wheelR"}${side > 0 ? "L" : "R"}` as VehiclePart;
+    `${z === (frame.axles.find((a) => a.steers) ?? frame.axles[0]).z ? "wheelF" : "wheelR"}${side > 0 ? "L" : "R"}` as VehiclePart;
 
   const wheelActive = (z: number, side: number) => {
     const part = wheelPart(z, side);
@@ -86,7 +90,7 @@ export function useVehicleEffects({
     out: THREE.Vector3,
   ) =>
     vehicle.localToWorld(
-      out.set(side * WHEEL.trackHalfWidth, AXLE_Y - WHEEL.radius, z),
+      out.set(side * frame.trackHalfWidth, frame.axleY - frame.wheelRadius, z),
     );
 
   useFrame((_, rawDelta) => {
@@ -122,7 +126,7 @@ export function useVehicleEffects({
           life: 1.0,
         });
       }
-      for (const { z } of WHEEL.axles) {
+      for (const { z } of frame.axles) {
         for (const side of [-1, 1]) {
           if (!wheelActive(z, side)) continue;
           dust.emit({
@@ -192,7 +196,7 @@ export function useVehicleEffects({
         _d.set(0, 0, 1).transformDirection(vehicle.matrixWorld);
         _d.multiplyScalar(-Math.sign(speed));
         for (const side of [-1, 1]) {
-          const rear = WHEEL.axles.find((a) => !a.steers) ?? WHEEL.axles[0];
+          const rear = frame.axles.find((a) => !a.steers) ?? frame.axles[0];
           if (!wheelActive(rear.z, side)) continue;
           dust.emit({
             origin: wheelContact(vehicle, side, rear.z, _p),

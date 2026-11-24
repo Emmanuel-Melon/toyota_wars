@@ -16,7 +16,11 @@ import {
 } from "./vehicle";
 import type { VehicleMotion } from "@/feature/vehciles/vehicles.utils";
 import type { Team } from "@/lib/combat/combat.types";
-import type { VehiclePlatformId } from "@/lib/vehicles/vehicle.types";
+import type {
+  VehicleModelId,
+  VehiclePlatformId,
+} from "@/lib/vehicles/vehicle.types";
+import { VEHICLE_MODELS } from "@/lib/vehicles/vehicle.config";
 import type { WeaponConfig } from "@/lib/weapons/weapon.types";
 import { VehicleProvider } from "@/context/vehicle-context";
 import type { RecoilRef } from "@/feature/vehciles/hooks/use-wreck-visual";
@@ -26,6 +30,7 @@ type VehicleVisualsProps = {
   unitId: string;
   team: Team;
   palette: VehiclePalette;
+  model: VehicleModelId;
   platform: VehiclePlatformId;
   weapon: WeaponConfig;
   initialPosition: [number, number];
@@ -51,6 +56,7 @@ export function VehicleVisuals({
   unitId,
   team,
   palette,
+  model,
   platform,
   weapon,
   initialPosition,
@@ -72,6 +78,7 @@ export function VehicleVisuals({
   children,
 }: VehicleVisualsProps) {
   const wrecked = useWreckVisual(destroyed);
+  const collider = VEHICLE_MODELS[model].frame.colliderHalfExtents;
 
   if (destroyed) {
     const position: [number, number, number] = wreckPosition ?? [
@@ -87,6 +94,7 @@ export function VehicleVisuals({
             unitId,
             team,
             palette,
+            model,
             platform,
             weapon,
             health: 0,
@@ -119,12 +127,13 @@ export function VehicleVisuals({
       type="kinematicPosition"
       lockRotations
     >
-      <CuboidCollider args={[1.3, 0.575, 2.1]} />
+      <CuboidCollider args={collider} />
       <VehicleProvider
         value={{
           unitId,
           team,
           palette,
+          model,
           platform,
           weapon,
           health,

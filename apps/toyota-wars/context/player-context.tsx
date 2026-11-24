@@ -30,6 +30,7 @@ import {
 } from "@/lib/vehicles/vehicle.config";
 import type {
   VehicleLoadout,
+  VehicleModelId,
   VehiclePlatform,
 } from "@/lib/vehicles/vehicle.types";
 import { WEAPONS } from "@/lib/weapons/weapon.config";
@@ -50,6 +51,7 @@ type PlayerContextValue = {
   playerLoadout: VehicleLoadout;
   playerWeapon: WeaponConfig;
   playerVehicle: VehiclePlatform;
+  playerModel: VehicleModelId;
   playerBody: ReturnType<typeof createTankBody>;
   playerCommand: RefObject<DriveCommand>;
   playerMotion: RefObject<VehicleMotion>;
@@ -255,6 +257,7 @@ export function PlayerProvider({
       playerLoadout: loadout,
       playerWeapon,
       playerVehicle,
+      playerModel: loadout.model,
       playerBody,
       playerCommand,
       playerMotion,
@@ -282,6 +285,7 @@ export function PlayerProvider({
       loadout,
       playerWeapon,
       playerVehicle,
+      loadout.model,
       playerBody,
       playerPartHealth,
       playerDamageEffects,

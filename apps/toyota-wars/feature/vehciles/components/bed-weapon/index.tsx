@@ -9,7 +9,7 @@ import {
 import { DEFAULT_MUZZLES } from "@/lib/weapons/weapon.config";
 import { useVehicleContext } from "@/context/vehicle-context";
 import { CrewGunner } from "../gunner/crew-gunner";
-import { PICKUP } from "@/feature/vehciles/pickup.geometry";
+import { VEHICLE_MODELS } from "@/lib/vehicles/vehicle.config";
 import type { BedWeaponProps } from "./types";
 import { MOUNT_MUZZLE_Z } from "./constants";
 import { useTurretAim } from "../../hooks/use-turret-aim";
@@ -31,7 +31,7 @@ export function BedWeapon({
   const pitchRef = useRef<THREE.Group>(null);
   const slideRef = useRef<THREE.Group>(null);
 
-  const { weapon } = useVehicleContext();
+  const { weapon, model } = useVehicleContext();
   const mount = weapon?.visual.mount ?? "autocannon";
   const muzzleZ = MOUNT_MUZZLE_Z[mount];
   const muzzleOffsets = weapon?.muzzles ?? DEFAULT_MUZZLES;
@@ -54,7 +54,7 @@ export function BedWeapon({
 
   return (
     <TankPart
-      position={[0, PICKUP.baseY + PICKUP.bedFloorY, PICKUP.mountZ]}
+      position={VEHICLE_MODELS[model].frame.mountPosition}
       health={health}
       maxHealth={maxHealth}
       barColor={palette.accent}

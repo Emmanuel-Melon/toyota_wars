@@ -4,6 +4,7 @@ import { useCombat } from "@/context/combat-context";
 import { usePlayer } from "@/context/player-context";
 import { HudStatRow } from "@/feature/hud/components/hud-parts";
 import layout from "@/feature/hud/components/hud-layout.module.css";
+import { VEHICLE_MODELS } from "@/lib/vehicles/vehicle.config";
 
 export function CombatTelemetry({
   compact = false,
@@ -13,7 +14,7 @@ export function CombatTelemetry({
   showLoadout?: boolean;
 }) {
   const { stats, maxAmmo, livingAllies, livingEnemies } = useCombat();
-  const { playerWeapon, playerVehicle } = usePlayer();
+  const { playerWeapon, playerVehicle, playerModel } = usePlayer();
   const { enemiesDestroyed, currentAmmo } = stats;
   const ammoPercent = (currentAmmo / maxAmmo) * 100;
   const rowClass = compact ? layout.compactRow : undefined;
@@ -41,6 +42,10 @@ export function CombatTelemetry({
       </div>
       {showLoadout && (
         <div className="flex flex-col gap-1">
+          <HudStatRow
+            label="VEHICLE"
+            value={VEHICLE_MODELS[playerModel].label}
+          />
           <HudStatRow label="WEAPON" value={playerWeapon.label} />
           <HudStatRow
             label="PLATFORM"

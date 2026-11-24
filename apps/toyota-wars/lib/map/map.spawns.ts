@@ -1,3 +1,4 @@
+import { DEFAULT_MODEL_FOR_WEAPON } from "../vehicles/vehicle.config";
 import type { WeaponId } from "../weapons/weapon.types";
 import type { SpawnConfig, VehicleSpawn } from "./map.types";
 
@@ -121,6 +122,7 @@ export function createSpawns(cfg: SpawnConfig): VehicleSpawn[] {
     position,
     rotationY: headingFor(cfg, position, rng),
     palette: palettes[i],
+    model: DEFAULT_MODEL_FOR_WEAPON[weapons[i]],
     weapon: weapons[i],
     formationOffset: cfg.formation?.(i, cfg.count),
   }));
