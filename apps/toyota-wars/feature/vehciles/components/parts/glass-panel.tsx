@@ -1,5 +1,6 @@
 "use client";
 
+import { GlassPanelVisual } from "@toyota/models";
 import { partHealthRatio } from "@/lib/combat/combat.parts";
 import { useVehicleContext } from "../../../../context/vehicle-context";
 import { FallenPart } from "./fallen-part";
@@ -9,7 +10,6 @@ import type { GlassPanelProps } from "./types";
 const ZERO_V3: [number, number, number] = [0, 0, 0];
 const GLASS_SPIN: [number, number, number] = [1.4, 0.7, 1.1];
 
-/** A shatterable glass pane with two crack decals that fade in on damage. */
 export function GlassPanel({
   part,
   position,
@@ -31,30 +31,14 @@ export function GlassPanel({
       spin={GLASS_SPIN}
       debris="glass"
     >
-      <mesh material={glassMat} castShadow={false}>
-        <boxGeometry args={size} />
-      </mesh>
-      {cracked && (
-        <group>
-          <mesh material={crackMat}>
-            <boxGeometry args={[0.012, size[1] * 0.9, size[2] + 0.008]} />
-          </mesh>
-          <mesh
-            position={[size[0] * 0.12, 0, 0]}
-            rotation={[0, 0, -0.65]}
-            material={crackMat}
-          >
-            <boxGeometry args={[0.01, size[1] * 0.75, size[2] + 0.008]} />
-          </mesh>
-          <mesh
-            position={[-size[0] * 0.18, size[1] * 0.12, 0]}
-            rotation={[0, 0, 0.5]}
-            material={crackMat}
-          >
-            <boxGeometry args={[0.01, size[1] * 0.6, size[2] + 0.008]} />
-          </mesh>
-        </group>
-      )}
+      <GlassPanelVisual
+        position={ZERO_V3}
+        rotation={ZERO_V3}
+        size={size}
+        glassMat={glassMat}
+        crackMat={crackMat}
+        cracked={cracked}
+      />
     </FallenPart>
   );
 }

@@ -35,7 +35,8 @@
     "@toyota/agents": "workspace:*",
     "@toyota/ai": "workspace:*",
     "@toyota/client": "workspace:*",
-    "@toyota/missions": "workspace:*"
+    "@toyota/missions": "workspace:*",
+    "@toyota/models": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",

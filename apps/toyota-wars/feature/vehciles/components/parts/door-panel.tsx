@@ -1,8 +1,11 @@
 "use client";
 
 import { useMemo } from "react";
-import { PICKUP } from "@/feature/vehciles/pickup.geometry";
-import { getVehicleNumberTexture } from "@/feature/vehciles/vehicle-number.texture";
+import {
+  DoorPanelVisual,
+  PICKUP,
+  getVehicleNumberTexture,
+} from "@toyota/models";
 import { vehicleNumberForUnitId } from "@/lib/vehicle-identity";
 import { useVehicleContext } from "../../../../context/vehicle-context";
 import { FallenPart } from "./fallen-part";
@@ -11,7 +14,6 @@ import type { DoorPanelProps } from "./types";
 
 const DOOR_Y = 0.76;
 
-/** A detachable door with paint, chrome handle, and a dark shut-line. */
 export function DoorPanel({
   part,
   side,
@@ -38,33 +40,16 @@ export function DoorPanel({
       debris="door"
       debrisColor={palette.body}
     >
-      <mesh material={paintMat} castShadow>
-        <boxGeometry args={[0.045, 0.48, 0.86]} />
-      </mesh>
-      {showNumber && (
-        <mesh
-          position={[side * 0.03, -0.06, -0.2]}
-          rotation={[0, (side * Math.PI) / 2, 0]}
-        >
-          <planeGeometry args={[0.3, 0.16]} />
-          <meshBasicMaterial
-            map={numberTexture}
-            color={team === "ally" ? "#20261d" : "#d9d5c2"}
-            transparent
-            alphaTest={0.08}
-            depthWrite={false}
-            polygonOffset
-            polygonOffsetFactor={-2}
-            toneMapped={false}
-          />
-        </mesh>
-      )}
-      <mesh position={[side * 0.03, 0.17, 0]} material={chromeMat}>
-        <boxGeometry args={[0.02, 0.03, 0.16]} />
-      </mesh>
-      <mesh position={[side * 0.025, 0, 0]} material={darkMat}>
-        <boxGeometry args={[0.012, 0.44, 0.012]} />
-      </mesh>
+      <DoorPanelVisual
+        side={side}
+        z={z}
+        paintMat={paintMat}
+        chromeMat={chromeMat}
+        darkMat={darkMat}
+        showNumber={showNumber}
+        numberTexture={numberTexture}
+        numberColor={team === "ally" ? "#20261d" : "#d9d5c2"}
+      />
     </FallenPart>
   );
 }

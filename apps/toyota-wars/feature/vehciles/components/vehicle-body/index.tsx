@@ -2,8 +2,8 @@
 
 import type { VehiclePalette } from "@/lib/palettes";
 import type { VehicleModelId } from "@/lib/vehicles/vehicle.types";
+import { RadarDish } from "@toyota/models";
 import { PickupHull } from "../pickup/pickup-hull";
-import { RadarDish } from "../radar/radar-dish";
 
 export type VehicleBodyProps = {
   model: VehicleModelId;

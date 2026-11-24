@@ -6,11 +6,8 @@ import { applyTurretAim } from "@/lib/aim/aim.turret";
 import { isMuzzleAimedAt } from "@/lib/aim/aim.muzzle";
 import type { TurretAimLimits } from "@/lib/aim/aim.types";
 import type { WeaponMountKind } from "@/lib/weapons/weapon.types";
+import { BARREL_KICK, MOUNT_PITCH_OFFSET } from "@toyota/models";
 import { useVehicleContext } from "../../../context/vehicle-context";
-import {
-  BARREL_KICK,
-  MOUNT_PITCH_OFFSET,
-} from "../components/bed-weapon/constants";
 
 type Params = {
   yawRef: RefObject<THREE.Group | null>;

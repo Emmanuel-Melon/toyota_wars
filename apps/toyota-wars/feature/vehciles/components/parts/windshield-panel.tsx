@@ -1,4 +1,4 @@
-import { PICKUP, WINDSHIELD } from "@/feature/vehciles/pickup.geometry";
+import { PICKUP, WINDSHIELD } from "@toyota/models";
 import { GlassPanel } from "./glass-panel";
 import type { GlassMaterialProps } from "./types";
 

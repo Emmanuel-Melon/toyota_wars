@@ -1,8 +1,6 @@
-export type VehiclePalette = {
-  body: string;
-  cabin: string;
-  accent: string;
-};
+import type { VehiclePalette } from "@toyota/models";
+
+export type { VehiclePalette } from "@toyota/models";
 
 export const PLAYER_PALETTE: VehiclePalette = {
   body: "#7f8a5a",

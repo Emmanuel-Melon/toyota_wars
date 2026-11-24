@@ -1,4 +1,5 @@
-import { AXLE_Y, WHEEL } from "@/feature/vehciles/vehicles.config";
+import { AXLE_Y } from "@toyota/models";
+import { WHEEL } from "@/feature/vehciles/vehicles.config";
 
 /** Y of the ground plane, derived from the wheel contact point. */
 export const GROUND_Y = AXLE_Y - WHEEL.radius;

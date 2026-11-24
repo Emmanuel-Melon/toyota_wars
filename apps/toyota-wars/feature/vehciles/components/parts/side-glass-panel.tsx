@@ -1,4 +1,4 @@
-import { PICKUP } from "@/feature/vehciles/pickup.geometry";
+import { PICKUP } from "@toyota/models";
 import { GlassPanel } from "./glass-panel";
 import type { SideGlassPanelProps } from "./types";
 
