@@ -1,15 +1,27 @@
 // packages/models/src/vehicle/components/gunner/limb.tsx
-import { useMemo } from "react";
-import { Quaternion, Vector3 } from "three";
+import { useEffect, useMemo } from "react";
+import {
+  CylinderGeometry,
+  MeshStandardMaterial,
+  Quaternion,
+  SphereGeometry,
+  Vector3,
+} from "three";
 import type { V3 } from "../../types";
+
+const _a = new Vector3();
+const _b = new Vector3();
+const _dir = new Vector3();
+const _up = new Vector3(0, 1, 0);
 
 type LimbProps = {
   from: V3;
   to: V3;
   radiusFrom: number;
   radiusTo: number;
-  color: string;
+  color?: string;
   roughness?: number;
+  material?: MeshStandardMaterial;
 };
 
 /** Tapered cylinder spanning two points, so poses are authored as joint positions. */
@@ -18,42 +30,113 @@ export function Limb({
   to,
   radiusFrom,
   radiusTo,
-  color,
+  color = "#888",
   roughness = 0.9,
+  material,
 }: LimbProps) {
   const { position, quaternion, length } = useMemo(() => {
-    const a = new Vector3(...from);
-    const b = new Vector3(...to);
-    const dir = b.clone().sub(a);
-    const length = dir.length();
-    const quaternion = new Quaternion().setFromUnitVectors(
-      new Vector3(0, 1, 0),
-      dir.normalize(),
-    );
-    return { position: a.add(b).multiplyScalar(0.5), quaternion, length };
+    _a.set(from[0], from[1], from[2]);
+    _b.set(to[0], to[1], to[2]);
+    _dir.subVectors(_b, _a);
+
+    const rawLength = _dir.length();
+    const safeLength = rawLength > 1e-6 ? rawLength : 1e-6;
+    if (rawLength > 1e-6) {
+      _dir.divideScalar(rawLength);
+    } else {
+      _dir.copy(_up);
+    }
+
+    return {
+      position: _a.clone().add(_b).multiplyScalar(0.5),
+      quaternion: new Quaternion().setFromUnitVectors(_up, _dir),
+      length: safeLength,
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [from[0], from[1], from[2], to[0], to[1], to[2]]);
 
+  const geometry = useMemo(
+    () => new CylinderGeometry(radiusTo, radiusFrom, length, 10),
+    [radiusTo, radiusFrom, length],
+  );
+
+  const fallbackMaterial = useMemo(
+    () =>
+      material
+        ? null
+        : new MeshStandardMaterial({ color, roughness }),
+    [material, color, roughness],
+  );
+
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+    };
+  }, [geometry]);
+
+  useEffect(() => {
+    return () => {
+      fallbackMaterial?.dispose();
+    };
+  }, [fallbackMaterial]);
+
   return (
-    <mesh position={position} quaternion={quaternion} castShadow>
-      <cylinderGeometry args={[radiusTo, radiusFrom, length, 10]} />
-      <meshStandardMaterial color={color} roughness={roughness} />
-    </mesh>
+    <mesh
+      position={position}
+      quaternion={quaternion}
+      geometry={geometry}
+      material={material ?? fallbackMaterial!}
+      castShadow
+    />
   );
 }
 
 type JointProps = {
   position: V3;
   radius: number;
-  color: string;
+  color?: string;
   roughness?: number;
+  material?: MeshStandardMaterial;
 };
 
-export function Joint({ position, radius, color, roughness = 0.9 }: JointProps) {
+export function Joint({
+  position,
+  radius,
+  color = "#888",
+  roughness = 0.9,
+  material,
+}: JointProps) {
+  const geometry = useMemo(
+    () => new SphereGeometry(radius, 10, 8),
+    [radius],
+  );
+
+  const fallbackMaterial = useMemo(
+    () =>
+      material
+        ? null
+        : new MeshStandardMaterial({ color, roughness }),
+    [material, color, roughness],
+  );
+
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+    };
+  }, [geometry]);
+
+  useEffect(() => {
+    return () => {
+      fallbackMaterial?.dispose();
+    };
+  }, [fallbackMaterial]);
+
   return (
-    <mesh position={position} castShadow>
-      <sphereGeometry args={[radius, 10, 8]} />
-      <meshStandardMaterial color={color} roughness={roughness} />
-    </mesh>
+    <mesh
+      position={position}
+      geometry={geometry}
+      material={material ?? fallbackMaterial!}
+      castShadow
+    />
   );
 }
