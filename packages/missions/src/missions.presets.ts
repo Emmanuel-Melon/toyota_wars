@@ -1,4 +1,4 @@
-// apps/toyota-wars/lib/missions/definition/mission.presets.ts
+// packages/missions/src/missions.presets.ts
 import { SQUAD_EFFECT_TYPE } from "./missions.config";
 import type { SquadEffectInput } from "./missions.types";
 

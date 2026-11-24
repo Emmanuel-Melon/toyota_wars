@@ -1,3 +1,4 @@
+// packages/missions/src/direction/mission-state-view.ts
 import { OBJECTIVE_TYPE, TEAM } from "../missions.config";
 import type { Mission, Objective, Team, Vec2 } from "../missions.types";
 import {

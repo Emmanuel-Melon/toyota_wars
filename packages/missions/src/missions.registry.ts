@@ -1,65 +1,44 @@
-import type { z } from "zod";
+export type MissionsRegistry<TEntry> = {
+  register: (id: string, entry: TEntry) => void;
+  get: (id: string) => TEntry | undefined;
+  require: (id: string) => TEntry;
+  all: () => TEntry[];
+  ids: () => string[];
+  reset: () => void;
+};
 
-import type {
-  MissionCutsceneDef,
-  MissionDefinition,
-  MissionQteDef,
-  MissionRegistryEntry,
-} from "./missions.types";
+export function createMissionsRegistry<TEntry>(): MissionsRegistry<TEntry> {
+  const entries = new Map<string, TEntry>();
 
-const missionsById = new Map<string, MissionRegistryEntry>();
-
-export class MissionsRegistry {
-  static register<
-    TId extends string,
-    TCutscene extends MissionCutsceneDef,
-    TQte extends MissionQteDef,
-    TCustomData,
-    TStateSchema extends z.ZodTypeAny,
-  >(
-    definition: MissionDefinition<
-      TId,
-      TCutscene,
-      TQte,
-      TCustomData,
-      TStateSchema
-    >,
-  ): void {
-    if (missionsById.has(definition.id)) {
-      console.warn(
-        `[MissionsRegistry] Overwriting existing mission registration for id "${definition.id}".`,
-      );
-    }
-
-    missionsById.set(definition.id, {
-      id: definition.id,
-      definition: definition as unknown as MissionRegistryEntry["definition"],
-    });
-  }
-
-  static get(missionId: string): MissionRegistryEntry | undefined {
-    return missionsById.get(missionId);
-  }
-
-  static require(missionId: string): MissionRegistryEntry {
-    const entry = missionsById.get(missionId);
-    if (!entry) {
-      throw new Error(
-        `[MissionsRegistry] No mission registered with id "${missionId}". Ensure mission modules are imported during initialization.`,
-      );
-    }
-    return entry;
-  }
-
-  static parseState<TStateSchema extends z.ZodTypeAny>(
-    missionId: string,
-    rawState: unknown,
-  ): z.infer<TStateSchema> {
-    const { definition } = this.require(missionId);
-    return definition.stateSchema.parse(rawState) as z.infer<TStateSchema>;
-  }
-
-  static registeredIds(): string[] {
-    return Array.from(missionsById.keys());
-  }
+  return {
+    register(id, entry) {
+      if (entries.has(id)) {
+        console.warn(
+          `[MissionsRegistry] Overwriting existing mission registration for id "${id}".`,
+        );
+      }
+      entries.set(id, entry);
+    },
+    get(id) {
+      return entries.get(id);
+    },
+    require(id) {
+      const entry = entries.get(id);
+      if (!entry) {
+        throw new Error(
+          `[MissionsRegistry] No mission registered with id "${id}". Ensure mission modules are imported during initialization.`,
+        );
+      }
+      return entry;
+    },
+    all() {
+      return Array.from(entries.values());
+    },
+    ids() {
+      return Array.from(entries.keys());
+    },
+    reset() {
+      entries.clear();
+    },
+  };
 }

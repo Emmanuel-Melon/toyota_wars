@@ -1,4 +1,4 @@
-// apps/toyota-wars/lib/missions/definition/mission.schema.ts
+// packages/missions/src/missions.schema.ts
 import { z } from "zod";
 import {
   FAIL_TYPE,

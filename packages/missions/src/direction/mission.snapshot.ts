@@ -1,3 +1,4 @@
+// packages/missions/src/direction/mission.snapshot.ts
 import { TEAM } from "../missions.config";
 import type { Mission, Team } from "../missions.types";
 import { quantizeProgress, type MissionRun } from "../engine/mission.run";
