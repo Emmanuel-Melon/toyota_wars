@@ -5,9 +5,13 @@ import { useGameFrame } from "@/render-loop";
 
 /** Steps the canonical player body after input has been captured. */
 export function PlayerController() {
-  const { playerBody: body, playerCommand: command, destroyed } = usePlayer();
+  const {
+    playerBody: body,
+    playerCommand: command,
+    vehicleHalted,
+  } = usePlayer();
   useGameFrame((_, delta) => {
-    if (destroyed) {
+    if (vehicleHalted) {
       command.current.throttle = 0;
       command.current.steer = 0;
       command.current.desiredHeading = null;

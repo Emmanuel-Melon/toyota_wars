@@ -1,69 +1,46 @@
-# Toyota Wars Monorepo
+# Toyota Wars
 
-pnpm + Turborepo monorepo containing the Toyota Wars game client, a shared API client package, and a backend API server.
+**Armored squad tactics on the open plains.** Command a column of makeshift war machines, designate targets, and outfight the warband across procedurally generated battlefields.
 
-## Layout
+Toyota Wars is a browser-based tactical combat game where you lead a squad of improvised armored vehicles through mission-based warfare. Every unit fights with its own weapon, personality, and role — and the squad's survival depends on how well you orchestrate them.
+
+## Features
+
+- **Squad command** — issue orders to your warband: attack, follow, hold, or retreat. Allies react to the tactical situation, not just your commands.
+- **Missions** — a campaign of objective-driven scenarios: escort convoys, defend positions, eliminate priority targets, and survive escalating waves.
+- **Customizable loadouts** — pick your vehicle platform and weapon before each mission. Platforms differ in speed, armor, and durability; weapons range from rapid-fire autocannons to devastating rocket pods.
+- **Procedural battlefields** — seeded terrain, roads, and locations mean every mission plays differently.
+- **Destructible warfare** — vehicles take part-based damage, leave wrecks, and drop salvage (ammo and repairs) for anyone who can reach them in time.
+- **AI that adapts** — enemies and allies use capability-driven tactics: fireteams flank, suppress, bound, and counter-ambush based on local numbers, health, and the mission objective.
+- **Spectacle** — particle effects, muzzle flashes, camera work, and scripted mission intros.
+
+## Tech stack
+
+- **Game client** — Next.js 16, React 19, React Three Fiber, Rapier physics
+- **Backend** — Express API with Drizzle ORM and PostgreSQL
+- **Tooling** — pnpm workspaces + Turborepo
+
+## Repository layout
 
 ```
-.
-├── apps/
-│   ├── toyota-wars/   # Next.js 16 + React 19 + React Three Fiber game client
-│   └── server/        # Express API server ("api") — Drizzle ORM, missions/catalog/tanks
-├── packages/
-│   └── client/        # @toyota/client — generated API types, axios instance, React Query hooks
-├── turbo.json         # Turborepo task pipeline (build, check-types, dev)
-└── package.json       # Root workspace manifest (apps/*, packages/*)
+apps/
+  toyota-wars/   # the game (Next.js client)
+  server/        # Express API — missions, catalog, blueprints
+packages/
+  client/        # @toyota/client — shared API SDK
 ```
-
-## Apps
-
-### `apps/toyota-wars` — game client
-
-Next.js app housing the tank combat game. Key internals:
-
-- `app/` — Next.js routes
-- `feature/` — React components (`scene/`, `vehciles/`, `combat/`, `context/`, `effects/`, `missions/`, `three/`)
-- `lib/` — pure game logic: `aim/`, `combat/`, `movement/`, `selector/`, `squad/`, `tanks/`, `weapons/`, `fx/`, `missions/`, `map/`, `difficulty/`
-- `docs/` — architecture notes for the selector, squad, and utility systems
-
-See `apps/toyota-wars/ARCHITECTURE.md` (inside the app) for the game's internal architecture.
-
-### `apps/server` — API server
-
-Express + TypeScript backend (`name: "api"`) exposing missions, game catalog and tank blueprints with Drizzle ORM. Includes vitest unit/integration suites and drizzle-kit migrations.
-
-### `packages/client` — `@toyota/client`
-
-Shared client SDK for the API: generated OpenAPI/Zod types (`src/api/generated/`), axios instance, and TanStack Query hooks. Types are generated from the server's `/api-docs.json`.
 
 ## Getting started
 
-Requires Node 20+ and pnpm 8.5+.
+Requires Node 20+ and pnpm.
 
 ```bash
 pnpm install
+pnpm turbo run dev --filter=toyota-wars   # play the game
 ```
 
-Run a single app from its directory:
+## Documentation
 
-```bash
-cd apps/toyota-wars && pnpm dev   # game client
-cd apps/server && pnpm dev        # API server
-```
-
-## Turborepo tasks
-
-Defined in `turbo.json`:
-
-| Task          | Depends on     | Notes                        |
-| ------------- | -------------- | ---------------------------- |
-| `build`       | `^build`       | outputs `.next/**`           |
-| `check-types` | `^check-types` | typecheck across packages    |
-| `dev`         | —              | persistent, uncached         |
-
-```bash
-pnpm turbo run build         # build all packages in dependency order
-pnpm turbo run check-types   # typecheck everything
-pnpm turbo run dev           # run all dev servers
-pnpm turbo run dev --filter=toyota-wars   # run just the game
-```
+- [ARCHITECTURE.md](./ARCHITECTURE.md) — monorepo overview: apps, packages, and how they fit together
+- [apps/toyota-wars/docs/](./apps/toyota-wars/docs/) — game internals (providers, selector, squad, utility AI, missions)
+- [apps/toyota-wars/ARCHITECTURE.md](./apps/toyota-wars/ARCHITECTURE.md) — client architecture

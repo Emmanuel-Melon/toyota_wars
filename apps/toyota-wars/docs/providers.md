@@ -9,40 +9,44 @@ Toyota Wars uses React context at three levels: the **DOM shell** (game state sh
 ├── ArenaProvider                      context/arena-context.tsx
 ├── CombatProvider                     context/combat-context.tsx
 ├── MissionSessionProvider             feature/missions/mission-session.tsx
+├── RadarProvider                      context/radar-context.tsx
 ├── CameraModeProvider                 context/camera-mode-context.tsx
-└── GameRuntime                        (computes `paused`)
-    ├── TargetsProvider                context/targets-context.tsx
-    └── PlayerProvider                 context/player-context.tsx
-        └── <Render /> → <Canvas>       render.tsx
-            └── SceneProviders         feature/scene/scene-providers.tsx
-                ├── MissionContext.Provider
-                └── FrameLoopProvider  render-loop.tsx
-                    ├── GameLoopDriver
-                    ├── MissionClock
-                    └── <Physics> (rapier)
-                        ├── PlainsEnvironment
-                        └── QuarksProvider   feature/effects/quarks-provider.tsx
-                            └── FxProvider   context/fx-context.tsx
-                                └── BattleProvider   feature/scene/battle-context.tsx
-                                    └── …scene objects…
-                                        ├── VehicleProvider   (per vehicle, in scene.tsx / vehicle-visuals)
-                                        └── SquadProvider     (per squad, in squad-vehicles.tsx)
+└── DroneRoamProvider                  feature/camera/drone-roam.context.tsx
+    └── GameRuntime                    (computes `paused`)
+        ├── TargetsProvider            context/targets-context.tsx
+        └── PlayerProvider             context/player-context.tsx
+            └── <Render /> → <Canvas>   render.tsx
+                └── SceneProviders     feature/scene/scene-providers.tsx
+                    ├── MissionContext.Provider
+                    └── FrameLoopProvider  render-loop.tsx
+                        ├── GameLoopDriver
+                        ├── MissionClock
+                        └── <Physics> (rapier)
+                            ├── PlainsEnvironment
+                            └── QuarksProvider   feature/effects/quarks-provider.tsx
+                                └── FxProvider   context/fx-context.tsx
+                                    └── BattleProvider   feature/scene/battle-context.tsx
+                                        └── …scene objects…
+                                            ├── VehicleProvider   (per vehicle, in scene.tsx / vehicle-visuals)
+                                            └── SquadProvider     (per squad, in squad-vehicles.tsx)
 ```
 
 ## DOM shell providers
 
 Mounted once in `game/game-providers.tsx`. These are visible to both the HUD (outside `<Canvas>`) and scene components that consume them through props/refs.
 
-| Provider                 | File                                   | Holds                                                                                                                                                                                                                              | Key consumers                                                                               |
-| ------------------------ | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `ArenaProvider`          | `context/arena-context.tsx`            | `ArenaRuntime`: terrain sampler, obstacles, roads, bound, player spawn/heading; `ArenaControls`                                                                                                                                    | `usePlayerCamera`, `CasingSystem`, `MissionMinimap`, `RoadNetworkManager`, scene terrain    |
-| `CombatProvider`         | `context/combat-context.tsx`           | `health`, `partHealth`, squad/unit roster, `winner`, `stats`, `fireDesignation`, `onHit`/`onKill`/`getHealth`/`recordPlayerDamage`                                                                                                 | `PlayerHealthBar`, `CombatStats`, `SquadVehicles`, `ProjectileSystemLayer`, `useGameScreen` |
-| `MissionSessionProvider` | `feature/missions/mission-session.tsx` | Mission session: canonical `MissionRunner` host, `startMission`, `retryMission`, `returnToSkirmish`                                                                                                                                | `MissionLaunchBridge`, `MissionResultScreen`, `render.tsx`                                  |
-| `CameraModeProvider`     | `context/camera-mode-context.tsx`      | `mode` (`"chase" \| "drone"`), `setMode`, `toggleMode`                                                                                                                                                                             | `usePlayerCamera`, `CameraModeControl` (V key)                                              |
-| `TargetsProvider`        | `context/targets-context.tsx`          | `enemies`, `allyTargets`, `projectileTargets` (live target lists for AI/HUD)                                                                                                                                                       | `LeadReticle`, `ProjectileSystemLayer`, squad AI                                            |
-| `PlayerProvider`         | `context/player-context.tsx`           | `playerBody` (KinematicTankBody), `playerWeapon`, `playerVehicle`, loadout, `aimMode`, `playerAimController`, ammo, shared refs (`aimTargetRef`, `muzzleRef`, `celebrationRef`, `recoilRef`, damage effects), `paused`/`destroyed` | `PlayerWeapon`, `PlayerCamera`, `DamageWarningBridge`, `Speedometer`, reticles, minimap     |
+| Provider                 | File                                    | Holds                                                                                                                                                                                                                                                                      | Key consumers                                                                               |
+| ------------------------ | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `ArenaProvider`          | `context/arena-context.tsx`             | `ArenaRuntime`: terrain sampler, obstacles, roads, bound, player spawn/heading; `ArenaControls`                                                                                                                                                                            | `usePlayerCamera`, `CasingSystem`, `MissionMinimap`, `RoadNetworkManager`, scene terrain    |
+| `CombatProvider`         | `context/combat-context.tsx`            | `health`, `partHealth`, squad/unit roster, `winner`, `stats`, `fireDesignation`, `onHit`/`onKill`/`getHealth`/`recordPlayerDamage`                                                                                                                                         | `PlayerHealthBar`, `CombatStats`, `SquadVehicles`, `ProjectileSystemLayer`, `useGameScreen` |
+| `MissionSessionProvider` | `feature/missions/mission-session.tsx`  | Mission session: canonical `MissionRunner` host, `startMission`, `retryMission`, `returnToSkirmish`                                                                                                                                                                        | `MissionLaunchBridge`, `MissionResultScreen`, `render.tsx`                                  |
+| `RadarProvider`          | `context/radar-context.tsx`             | `radarOnline` derived from the allied intel unit's health; `radarUnitId`                                                                                                                                                                                                   | `CameraModeProvider`, `CameraModeControl`, minimap, `EnemyMarkerUpdater`                    |
+| `CameraModeProvider`     | `context/camera-mode-context.tsx`       | `mode` (`"chase" \| "drone" \| "drone-roam"`), guarded `setMode`, `cycleMode`                                                                                                                                                                                              | `usePlayerCamera`, `CameraModeControl` (V key)                                              |
+| `DroneRoamProvider`      | `feature/camera/drone-roam.context.tsx` | mutable roam `x`/`z`/`altitude`/`heading`, stable `streamingFocus`, `reset`                                                                                                                                                                                                | `DroneRoamController`, `usePlayerCamera`, `PlainsEnvironment`                               |
+| `TargetsProvider`        | `context/targets-context.tsx`           | `enemies`, `allyTargets`, `projectileTargets` (live target lists for AI/HUD)                                                                                                                                                                                               | `LeadReticle`, `ProjectileSystemLayer`, squad AI                                            |
+| `PlayerProvider`         | `context/player-context.tsx`            | `playerBody` (KinematicTankBody), `playerWeapon`, `playerVehicle`, loadout, `aimMode`, `playerAimController`, ammo, shared refs (`aimTargetRef`, `muzzleRef`, `celebrationRef`, `recoilRef`, damage effects), `paused`/`destroyed`, `vehicleHalted`/`playerControlsLocked` | `PlayerWeapon`, `PlayerCamera`, `DamageWarningBridge`, `Speedometer`, reticles, minimap     |
 
-`GameRuntime` derives `paused` (non-playing mode, mission finished, or winner outside mission) and passes it to `PlayerProvider`, which freezes player input/weapon logic.
+`GameRuntime` derives `paused` (non-playing mode, mission finished, or winner outside mission) and passes it to `PlayerProvider`. `PlayerProvider` also locks player controls and halts the body in `drone-roam` without changing `paused`, so the mission clock and AI keep running.
 
 ## Canvas providers
 

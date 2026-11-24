@@ -15,7 +15,8 @@ import { usePlayer } from "@/context/player-context";
 export function WreckPickupSystem() {
   const { wrecks } = useBattle();
   const { health, partHealth, roster } = useCombat();
-  const { playerBody, playerAmmo, refillAmmo, paused, destroyed } = usePlayer();
+  const { playerBody, playerAmmo, refillAmmo, playerControlsLocked } =
+    usePlayer();
   const playerHealth =
     health[COMBAT_CONFIG.PLAYER_ID] ?? COMBAT_CONFIG.PLAYER_MAX_HEALTH;
   const projectedParts = projectPartHealth(
@@ -35,7 +36,7 @@ export function WreckPickupSystem() {
     );
 
   useGameFrame(() => {
-    if (paused || destroyed) return;
+    if (playerControlsLocked) return;
 
     const wreck = wrecks.findNear(
       playerBody.position,

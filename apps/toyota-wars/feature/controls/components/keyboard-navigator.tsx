@@ -18,24 +18,19 @@ const hasAny = (pressed: ReadonlySet<string>, keys: readonly string[]) =>
 
 /** Captures player keys and writes a drive command. Never moves a body itself. */
 export function KeyboardNavigator() {
-  const { playerCommand: command, paused, destroyed } = usePlayer();
+  const { playerCommand: command, playerControlsLocked } = usePlayer();
   const { capabilities, reportForward } = useTutorialGates();
   const pressedKeys = useRef(new Set<string>());
-  const pausedRef = useRef(paused);
-  const destroyedRef = useRef(destroyed);
+  const lockedRef = useRef(playerControlsLocked);
 
   useEffect(() => {
-    pausedRef.current = paused;
-  }, [paused]);
-
-  useEffect(() => {
-    destroyedRef.current = destroyed;
-    if (destroyed) pressedKeys.current.clear();
-  }, [destroyed]);
+    lockedRef.current = playerControlsLocked;
+    if (playerControlsLocked) pressedKeys.current.clear();
+  }, [playerControlsLocked]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (pausedRef.current || destroyedRef.current) return;
+      if (lockedRef.current) return;
       const key = event.key.toLowerCase();
       const allowedKeys = capabilities.forwardOnly ? FORWARD_KEYS : DRIVE_KEYS;
       if ((allowedKeys as readonly string[]).includes(key)) {
@@ -54,7 +49,7 @@ export function KeyboardNavigator() {
   }, [capabilities]);
 
   useGameFrame(() => {
-    if (paused || destroyed) {
+    if (playerControlsLocked) {
       pressedKeys.current.clear();
       command.current.throttle = 0;
       command.current.steer = 0;

@@ -1,3 +1,6 @@
+import type { FlowSnapshot } from "@/feature/mission-flow/mission-flow.types";
+import { CutsceneScreen } from "@/feature/mission-flow/components/cutscene-screen";
+import { QteOverlay } from "@/feature/mission-flow/components/qte-overlay";
 import type { GameState, GameScreen } from "../game.types";
 import { PlayingHud } from "./playing-hud";
 import { GameOverScreen, MissionResultScreen } from "../screens/result-screens";
@@ -9,17 +12,22 @@ import {
   VehicleSelectScreen,
 } from "../screens/menu-screens";
 
-type Props = { screen: GameScreen; game: GameState };
+type Props = { screen: GameScreen; game: GameState; flow: FlowSnapshot };
 
-/** Renders exactly one screen based on the resolved `GameScreen`. */
-export function GameScreenRouter({ screen, game }: Props) {
+export function GameScreenRouter({ screen, game, flow }: Props) {
   switch (screen.kind) {
     case "mission-result":
       return <MissionResultScreen game={game} />;
     case "game-over":
       return <GameOverScreen winner={screen.winner} game={game} />;
     case "playing":
-      return <PlayingHud game={game} shellRef={game.shellRef} />;
+      if (flow.phase === "cutscene") return <CutsceneScreen />;
+      return (
+        <>
+          <PlayingHud game={game} shellRef={game.shellRef} />
+          {flow.phase === "qte" && <QteOverlay />}
+        </>
+      );
     case "new-game":
       return <NewGameScreen game={game} />;
     case "survival":

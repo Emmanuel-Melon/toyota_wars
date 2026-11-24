@@ -17,7 +17,7 @@ const STICK_RADIUS = 40;
 const AIM_SENSITIVITY = 3;
 
 export function TouchControls({ game }: { game: GameState }) {
-  const { playerCommand, aimRef, aimMode, firingRef, paused, destroyed } =
+  const { playerCommand, aimRef, aimMode, firingRef, playerControlsLocked } =
     usePlayer();
   const { capabilities, reportForward } = useTutorialGates();
 
@@ -36,12 +36,12 @@ export function TouchControls({ game }: { game: GameState }) {
   }, [playerCommand]);
 
   useEffect(() => {
-    if (!paused && !destroyed) return;
+    if (!playerControlsLocked) return;
     firingRef.current = false;
     drivePointer.current = null;
     aimPointer.current = null;
     resetDrive();
-  }, [paused, destroyed, firingRef, resetDrive]);
+  }, [firingRef, playerControlsLocked, resetDrive]);
 
   useEffect(
     () => () => {
@@ -69,7 +69,7 @@ export function TouchControls({ game }: { game: GameState }) {
     if (knobRef.current) {
       knobRef.current.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
     }
-    if (paused || destroyed) return;
+    if (playerControlsLocked) return;
 
     const throttle = -y / STICK_RADIUS;
     playerCommand.current.throttle = capabilities.forwardOnly

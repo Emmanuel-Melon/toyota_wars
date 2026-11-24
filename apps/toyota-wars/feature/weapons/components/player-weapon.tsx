@@ -13,6 +13,7 @@ import { WeaponBloomSystem } from "@/lib/weapons/weapon.bloom";
 import { createFireRequest } from "@/lib/weapons/weapon.math";
 import { useArena } from "@/context/arena-context";
 import { useCombat } from "@/context/combat-context";
+import { useMissionFlow } from "@/feature/mission-flow/mission-flow.context";
 import { usePlayer } from "@/context/player-context";
 import { useTargets } from "@/context/targets-context";
 import { useProjectileSystem } from "@/context/battle-context";
@@ -35,17 +36,18 @@ export function PlayerWeapon() {
     firingRef,
     playerAmmo,
     spendAmmo,
-    paused,
+    playerControlsLocked,
     destroyed,
     playerDamageEffects,
   } = usePlayer();
+  const { phase } = useMissionFlow();
   const { fireDesignation, stats } = useCombat();
   const { enemies } = useTargets();
   const arena = useArena();
   const { camera } = useThree();
   const projectiles = useProjectileSystem();
   const { capabilities, reportShot } = useTutorialGates();
-  const pausedRef = useRef(paused);
+  const controlsLockedRef = useRef(playerControlsLocked);
   const destroyedRef = useRef(destroyed);
   const weaponDisabledRef = useRef(playerDamageEffects.weaponDisabled);
   const weapon = useRef(new Weapon(playerWeapon.cooldown));
@@ -58,9 +60,9 @@ export function PlayerWeapon() {
   const lastKillCount = useRef(stats.enemiesDestroyed);
 
   useEffect(() => {
-    pausedRef.current = paused;
-    if (paused) firingRef.current = false;
-  }, [paused]);
+    controlsLockedRef.current = playerControlsLocked;
+    if (playerControlsLocked) firingRef.current = false;
+  }, [playerControlsLocked]);
 
   useEffect(() => {
     destroyedRef.current = destroyed;
@@ -104,7 +106,7 @@ export function PlayerWeapon() {
         event.preventDefault();
         if (
           !capabilities.canFire ||
-          pausedRef.current ||
+          controlsLockedRef.current ||
           destroyedRef.current ||
           weaponDisabledRef.current
         ) {
@@ -112,7 +114,7 @@ export function PlayerWeapon() {
         }
         firingRef.current = true;
       }
-      if (event.code === "KeyM") {
+      if (event.code === "KeyM" && phase === "gameplay") {
         setAimMode(aimMode === "auto" ? "manual" : "auto");
       }
     };
@@ -125,14 +127,13 @@ export function PlayerWeapon() {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [aimMode, capabilities.canFire, setAimMode]);
+  }, [aimMode, capabilities.canFire, phase, setAimMode]);
 
   useGameFrame((_, delta) => {
     weapon.current.tick(delta);
     const canAct =
       capabilities.canFire &&
-      !paused &&
-      !destroyed &&
+      !playerControlsLocked &&
       !playerDamageEffects.weaponDisabled;
     const celebrating = canAct && celebrationRef.current.active;
 

@@ -43,7 +43,10 @@ import {
   createRecoilState,
   type RecoilRef,
 } from "@/feature/vehciles/hooks/use-wreck-visual";
+import { isRoamMode } from "@/feature/camera/camera.types";
+import { useMissionFlow } from "@/feature/mission-flow/mission-flow.context";
 import { useArena } from "./arena-context";
+import { useCameraMode } from "./camera-mode-context";
 import { useCombat } from "./combat-context";
 import { useTargets } from "./targets-context";
 
@@ -74,6 +77,8 @@ type PlayerContextValue = {
   designateFireFromAim: (group: FireDesignationGroup) => void;
   paused: boolean;
   destroyed: boolean;
+  vehicleHalted: boolean;
+  playerControlsLocked: boolean;
 };
 
 const PlayerCtx = createContext<PlayerContextValue | null>(null);
@@ -90,6 +95,15 @@ export function PlayerProvider({
   const { health, partHealth, setCurrentAmmo, designateFire } = useCombat();
   const { enemies } = useTargets();
   const arena = useArena();
+  const { mode: cameraMode } = useCameraMode();
+  const { phase: flowPhase } = useMissionFlow();
+  const roamActive = isRoamMode(cameraMode);
+  const flowInputLocked = flowPhase !== "gameplay";
+  const playerHealth =
+    health[COMBAT_CONFIG.PLAYER_ID] ?? COMBAT_CONFIG.PLAYER_MAX_HEALTH;
+  const playerControlsLocked =
+    paused || roamActive || playerHealth <= 0 || flowInputLocked;
+  const vehicleHalted = roamActive || playerHealth <= 0 || flowInputLocked;
   const playerWeapon = WEAPONS[loadout.weapon];
   const playerVehicle = VEHICLE_PLATFORMS[loadout.platform];
   const bodyConfig = useMemo(
@@ -141,13 +155,7 @@ export function PlayerProvider({
 
   const designateFireFromAim = useCallback(
     (group: FireDesignationGroup) => {
-      if (
-        paused ||
-        (health[COMBAT_CONFIG.PLAYER_ID] ?? COMBAT_CONFIG.PLAYER_MAX_HEALTH) <=
-          0
-      ) {
-        return;
-      }
+      if (playerControlsLocked) return;
       const aim = aimTargetRef.current;
       const origin = playerBody.position;
       const point = aim
@@ -173,7 +181,7 @@ export function PlayerProvider({
       }
       designateFire(group, point, targetId);
     },
-    [aimTargetRef, designateFire, enemies, health, paused, playerBody],
+    [aimTargetRef, designateFire, enemies, playerBody, playerControlsLocked],
   );
 
   useEffect(() => {
@@ -249,8 +257,7 @@ export function PlayerProvider({
     });
   }, [playerBody, playerDamageEffects]);
 
-  const destroyed =
-    (health[COMBAT_CONFIG.PLAYER_ID] ?? COMBAT_CONFIG.PLAYER_MAX_HEALTH) <= 0;
+  const destroyed = playerHealth <= 0;
 
   const value = useMemo<PlayerContextValue>(
     () => ({
@@ -280,6 +287,8 @@ export function PlayerProvider({
       designateFireFromAim,
       paused,
       destroyed,
+      vehicleHalted,
+      playerControlsLocked,
     }),
     [
       loadout,
@@ -306,6 +315,8 @@ export function PlayerProvider({
       designateFireFromAim,
       paused,
       destroyed,
+      vehicleHalted,
+      playerControlsLocked,
     ],
   );
 

@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import { useCombat } from "@/context/combat-context";
 import { usePlayer } from "@/context/player-context";
 import { useViewport } from "@/context/viewport-context";
+import { useMissionFlow } from "@/feature/mission-flow/mission-flow.context";
 import { TutorialOverlay } from "@/feature/game/components/tutorial-overlay";
 import type { GameState } from "@/feature/game/game.types";
 import { MissionLaunchBridge } from "@/feature/game/components/mission-launch-bridge";
@@ -43,6 +44,7 @@ export function GameView({
   } = usePlayer();
   const { capabilities, reportCommand, reportFormation } = useTutorialGates();
   const { isMobile, isPortrait, isTouch } = useViewport();
+  const flow = useMissionFlow();
 
   const handleAttack = useCallback(() => {
     issueAllyAttack(
@@ -86,7 +88,7 @@ export function GameView({
   }, [clearFireDesignation, reportCommand]);
 
   useGameShortcuts({
-    disabled: !game.graphicsReady,
+    disabled: !game.graphicsReady || flow.phase !== "gameplay",
     hasActiveRound: game.hasActiveRound,
     canCommand: capabilities.canCommand,
     canFormation: capabilities.canFormation,
@@ -106,6 +108,7 @@ export function GameView({
       isMobile &&
       isTouch &&
       screen.kind === "playing" &&
+      flow.phase === "gameplay" &&
       game.graphicsReady &&
       !isPortrait &&
       aimMode === "auto" &&
@@ -117,11 +120,14 @@ export function GameView({
     <>
       <Render onSceneReady={onSceneReady} />
       <MissionLaunchBridge game={game} />
-      <GameScreenRouter screen={screen} game={game} />
-      {isMobile && screen.kind === "playing" && <TouchControls game={game} />}
+      <GameScreenRouter screen={screen} game={game} flow={flow} />
+      {isMobile && screen.kind === "playing" && flow.phase === "gameplay" && (
+        <TouchControls game={game} />
+      )}
       {game.tutorialActive &&
         game.hasActiveRound &&
-        screen.kind === "playing" && <TutorialOverlay game={game} />}
+        screen.kind === "playing" &&
+        flow.phase === "gameplay" && <TutorialOverlay game={game} />}
     </>
   );
 }
