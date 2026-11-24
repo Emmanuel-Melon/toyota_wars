@@ -1,11 +1,11 @@
-// components/plains/terrain/rock.geometry.ts
+// packages/models/src/environment/geometry/rock.geometry.ts
 import * as THREE from "three";
 import { ImprovedNoise } from "three/examples/jsm/math/ImprovedNoise.js";
 import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 const perlin = new ImprovedNoise();
 export const ROCK_VARIANTS = 8;
-export const ROCK_BASE_Y = -0.45; // local y of the flat underside
+export const ROCK_BASE_Y = -0.45;
 
 export function mulberry32(seed: number) {
   let a = seed | 0;
@@ -40,13 +40,12 @@ function build(variant: number) {
   let geo: THREE.BufferGeometry = new THREE.IcosahedronGeometry(1, 5);
   geo.deleteAttribute("normal");
   geo.deleteAttribute("uv");
-  geo = mergeVertices(geo); // indexed -> smooth normals, no cracks
+  geo = mergeVertices(geo);
 
   const sx = 0.9 + rand() * 0.5;
   const sy = 0.65 + rand() * 0.45;
   const sz = 0.9 + rand() * 0.5;
 
-  // fracture planes: anything poking past a plane is pushed back onto it
   const planes = Array.from({ length: 4 + Math.floor(rand() * 4) }, () => ({
     n: new THREE.Vector3(
       rand() * 2 - 1,
@@ -63,37 +62,31 @@ function build(variant: number) {
   for (let i = 0; i < pos.count; i++) {
     v.fromBufferAttribute(pos, i);
 
-    // 1. large-scale lumpy silhouette
     v.multiplyScalar(
       1 + fbm(v.x * 0.9 + off, v.y * 0.9 + off, v.z * 0.9 + off, 2) * 0.5,
     );
     v.set(v.x * sx, v.y * sy, v.z * sz);
 
-    // 2. flat fracture faces
     for (const { n, d } of planes) {
       const excess = v.dot(n) - d;
       if (excess > 0) v.addScaledVector(n, -excess * 0.92);
     }
 
-    // 3. craggy grain (fbm) plus a little ridged noise for sharp creases
     const dn = fbm(v.x * 3.2 + off, v.y * 3.2 + off, v.z * 3.2 + off, 3);
     const ridge = 1 - Math.abs(perlin.noise(v.x * 5 + off, v.y * 5, v.z * 5));
     v.multiplyScalar(1 + dn * 0.08 + (ridge - 0.5) * 0.05);
     detail[i] = dn;
 
-    // 4. horizontal sandstone ledges
     const ledge = 1 + 0.025 * Math.sin(v.y * 11 + dn * 4);
     v.x *= ledge;
     v.z *= ledge;
 
-    // 5. squash everything below the base plane flat so it sits on the ground
     if (v.y < ROCK_BASE_Y) v.y = ROCK_BASE_Y + (v.y - ROCK_BASE_Y) * 0.05;
 
     pos.setXYZ(i, v.x, v.y, v.z);
   }
   geo.computeVertexNormals();
 
-  // bake colour: strata bands, dust on upward faces, grain, darker contact edge
   const nrm = geo.attributes.normal;
   const col = new Float32Array(pos.count * 3);
   const c = new THREE.Color();
@@ -115,8 +108,12 @@ function build(variant: number) {
 }
 
 const cache = new Map<number, THREE.BufferGeometry>();
+
 export function getRockGeometry(variant: number) {
-  let g = cache.get(variant);
-  if (!g) cache.set(variant, (g = build(variant)));
-  return g;
+  let geometry = cache.get(variant);
+  if (!geometry) {
+    geometry = build(variant);
+    cache.set(variant, geometry);
+  }
+  return geometry;
 }

@@ -1,3 +1,4 @@
+// packages/models/src/vehicle/components/mounts/muzzle-anchor.tsx
 import type { ReactNode, RefObject } from "react";
 import type * as THREE from "three";
 import type { V3 } from "../../types";

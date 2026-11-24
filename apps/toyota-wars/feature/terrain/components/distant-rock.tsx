@@ -4,12 +4,7 @@
 import { useMemo } from "react";
 import * as THREE from "three";
 import { RigidBody } from "@react-three/rapier";
-import {
-  ROCK_BASE_Y,
-  ROCK_VARIANTS,
-  getRockGeometry,
-  mulberry32,
-} from "@/lib/world/rock.geometry";
+import { Environment } from "@toyota/models";
 
 const rockMaterial = new THREE.MeshStandardMaterial({
   vertexColors: true,
@@ -31,11 +26,16 @@ export function DistantRock({
   solid = true,
 }: DistantRockProps) {
   const s = Math.floor(seed);
-  const variant = ((s % ROCK_VARIANTS) + ROCK_VARIANTS) % ROCK_VARIANTS;
-  const geometry = useMemo(() => getRockGeometry(variant), [variant]);
+  const variant =
+    ((s % Environment.ROCK_VARIANTS) + Environment.ROCK_VARIANTS) %
+    Environment.ROCK_VARIANTS;
+  const geometry = useMemo(
+    () => Environment.getRockGeometry(variant),
+    [variant],
+  );
 
   const { yaw, tilt, stretch } = useMemo(() => {
-    const r = mulberry32(s * 7919 + 3);
+    const r = Environment.mulberry32(s * 7919 + 3);
     return {
       yaw: r() * Math.PI * 2,
       tilt: [(r() - 0.5) * 0.18, (r() - 0.5) * 0.18] as const, // flat base stays down
@@ -45,7 +45,7 @@ export function DistantRock({
 
   const sy = scale * stretch[1];
   const sink = 0.2; // bury 20% of the height so it looks planted, not placed
-  const y = position[1] - ROCK_BASE_Y * sy - sink * sy;
+  const y = position[1] - Environment.ROCK_BASE_Y * sy - sink * sy;
 
   return (
     <RigidBody
@@ -75,7 +75,7 @@ export function RockCluster({
   heightAt,
 }: DistantRockProps & { heightAt?: (x: number, z: number) => number }) {
   const satellites = useMemo(() => {
-    const r = mulberry32(Math.floor(seed) * 131 + 7);
+    const r = Environment.mulberry32(Math.floor(seed) * 131 + 7);
     const n = 2 + Math.floor(r() * 3);
     return Array.from({ length: n }, (_, i) => {
       const a = r() * Math.PI * 2;

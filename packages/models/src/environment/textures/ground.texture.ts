@@ -1,4 +1,3 @@
-// lib/map/texture.generator.ts
 import * as THREE from "three";
 
 function createNoiseCanvas(
@@ -14,11 +13,9 @@ function createNoiseCanvas(
   const ctx = canvas.getContext("2d");
 
   if (ctx) {
-    // Fill base color
     ctx.fillStyle = baseColor;
     ctx.fillRect(0, 0, width, height);
 
-    // Add grit/speckle noise for organic terrain feel
     ctx.fillStyle = speckleColor;
     const numSpeckles = width * height * density;
     for (let i = 0; i < numSpeckles; i++) {
@@ -37,14 +34,12 @@ export function createProceduralGroundTextures(): {
   colorMap: THREE.CanvasTexture;
   roughnessMap: THREE.CanvasTexture;
 } {
-  // 1. Diffuse / Color Texture (Arid desert/earth tone with darker grit)
   const colorCanvas = createNoiseCanvas(256, 256, "#a48c5b", "#6e5b38", 0.15);
   const colorMap = new THREE.CanvasTexture(colorCanvas);
   colorMap.colorSpace = THREE.SRGBColorSpace;
   colorMap.wrapS = THREE.RepeatWrapping;
   colorMap.wrapT = THREE.RepeatWrapping;
 
-  // 2. Roughness Texture (Varied roughness for matte dirt vs hard packed earth)
   const roughCanvas = createNoiseCanvas(256, 256, "#cccccc", "#555555", 0.08);
   const roughnessMap = new THREE.CanvasTexture(roughCanvas);
   roughnessMap.wrapS = THREE.RepeatWrapping;

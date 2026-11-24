@@ -2,15 +2,14 @@
 "use client";
 
 import { Sky } from "@react-three/drei";
+import { Environment } from "@toyota/models";
 import { useArena } from "@/context/arena-context";
 import { useCameraMode } from "@/context/camera-mode-context";
 import { usePlayer } from "@/context/player-context";
 import { isRoamMode } from "@/feature/camera/camera.types";
 import { useDroneRoam } from "@/feature/camera/drone-roam.context";
 import { TerrainManager } from "./terrain-manager";
-import { ArenaObstacles } from "./arena-obstacles";
 import { GrassPatches } from "./grass-patches";
-import { ArenaStructures } from "./arena-structures";
 import { RoadNetworkManager } from "../../roads/components/road-network-manager";
 
 export function PlainsEnvironment() {
@@ -51,8 +50,11 @@ export function PlainsEnvironment() {
       />
 
       {/* Arena obstacles */}
-      <ArenaObstacles obstacles={arena.obstacles} terrain={arena.terrain} />
-      <ArenaStructures structures={arena.structures} />
+      <Environment.ArenaObstacles
+        obstacles={arena.obstacles}
+        terrain={arena.terrain}
+      />
+      <Environment.ArenaStructures structures={arena.structures} />
 
       <GrassPatches
         playerBody={focus}

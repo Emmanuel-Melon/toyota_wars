@@ -19,17 +19,21 @@
 
 ## Architecture
 
-- `src/index.ts` is the public surface and exports the `Vehicle` and `Weapons` namespaces from `src/vehicle` and `src/weapons`.
-- Each domain (`src/vehicle/`, `src/weapons/`) has its own barrel and namespace export. Future sibling domains follow the same pattern.
+- `src/index.ts` is the public surface and exports the `Vehicle`, `Weapons`, and `Environment` namespaces from `src/vehicle`, `src/weapons`, and `src/environment`.
+- Each domain (`src/vehicle/`, `src/weapons/`, `src/environment/`) has its own barrel and namespace export. Future sibling domains follow the same pattern.
 - Within `src/vehicle/`, `config/` holds visual-only dimensions and mount constants.
 - Within `src/weapons/`, `components/` holds pure weapon mount visuals.
+- Within `src/environment/`, `chunks.ts` holds chunk math, `geometry/` holds terrain/rock/road geometry, `textures/` holds procedural canvas textures, `materials/` holds terrain materials, and `components/` holds R3F leaf visuals.
+- `src/environment/types.ts` defines neutral visual contracts that are structurally compatible with app terrain, road, obstacle, structure, and location types. Do not import app types.
 - `geometry/`, `materials/`, and `textures/` hold pure visual helpers with no app imports.
-- `components/` holds R3F leaf parts. Components accept explicit props and optional slots; they never read `VehicleContext`, combat state, weapon config, or damage state.
-- Damage detachment, health bars, smoke/effects, physics, aiming, recoil, audio, and weapon configs stay in the app and are passed into package components as slots or refs.
+- `components/` holds R3F leaf parts. Components accept explicit props and optional slots; they never read app contexts, game-frame hooks, combat state, weapon config, or damage state.
+- Damage detachment, health bars, smoke/effects, physics, aiming, recoil, audio, mission layout, terrain generation, road-network generation, arena placement, and weapon configs stay in the app and are passed into package components as slots or refs.
+- Environment frame orchestration and camera/streaming focus selection stay in the app. Package environment components take explicit focus/center props or expose imperative handles.
+- Do not add `@react-three/drei` or `@react-three/rapier` dependencies; sky/lighting and colliders stay in the app.
 
 ## Gotchas
 
-- Callers use `Vehicle.X` and `Weapons.X` from `@toyota/models`; do not add named re-exports to `src/index.ts`.
+- Callers use `Vehicle.X`, `Weapons.X`, and `Environment.X` from `@toyota/models`; do not add named re-exports to `src/index.ts`.
 - `WeaponMountKind` is a neutral visual union; it is structurally compatible with the app's weapon mount ids.
 - Muzzle effects are app-owned and passed into `Vehicle.BedMount` as slots.
 - Geometry created with `useMemo` is disposed in `useEffect` cleanup.

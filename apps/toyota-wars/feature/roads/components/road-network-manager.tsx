@@ -2,6 +2,7 @@
 "use client";
 
 import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { Environment } from "@toyota/models";
 import { useGameFrame } from "@/render-loop";
 import * as THREE from "three";
 import type {
@@ -10,9 +11,6 @@ import type {
   RoadNetwork,
 } from "@/lib/map/map.network";
 import type { TerrainSampler } from "@/lib/map/map.terrain";
-import { createProceduralRoadTextures } from "@/lib/map/road-texture.generator";
-import { buildRoadChunkGeometry } from "@/lib/map/road-chunk-geometry";
-import { LocationSite } from "@/feature/scene/components/location-site";
 
 type WorldPosition = { readonly x: number; readonly z: number };
 
@@ -26,30 +24,6 @@ interface Props {
 
 const CELL = 32;
 
-const RoadChunk = memo(function RoadChunk({
-  chunk,
-  terrain,
-  material,
-}: {
-  chunk: RoadChunkRef;
-  terrain: TerrainSampler;
-  material: THREE.Material;
-}) {
-  const geometry = useMemo(
-    () => buildRoadChunkGeometry(chunk, terrain),
-    [chunk, terrain],
-  );
-  useEffect(() => () => geometry.dispose(), [geometry]);
-  return (
-    <mesh
-      geometry={geometry}
-      material={material}
-      renderOrder={1}
-      receiveShadow
-    />
-  );
-});
-
 export const RoadNetworkManager = memo(function RoadNetworkManager({
   playerBody,
   network,
@@ -59,7 +33,7 @@ export const RoadNetworkManager = memo(function RoadNetworkManager({
 }: Props) {
   // ONE shared material/texture set for the whole network
   const material = useMemo(() => {
-    const t = createProceduralRoadTextures();
+    const t = Environment.createProceduralRoadTextures();
     for (const tex of [t.colorMap, t.roughnessMap]) {
       tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
       tex.repeat.set(1, 1);
@@ -108,7 +82,7 @@ export const RoadNetworkManager = memo(function RoadNetworkManager({
   return (
     <group>
       {view.chunks.map((c) => (
-        <RoadChunk
+        <Environment.RoadChunk
           key={c.key}
           chunk={c}
           terrain={terrain}
@@ -116,7 +90,7 @@ export const RoadNetworkManager = memo(function RoadNetworkManager({
         />
       ))}
       {view.sites.map((loc) => (
-        <LocationSite key={loc.id} location={loc} />
+        <Environment.LocationSite key={loc.id} location={loc} />
       ))}
     </group>
   );
