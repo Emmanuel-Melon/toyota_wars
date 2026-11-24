@@ -7,7 +7,7 @@ import type {
   FlowSnapshot,
   FlowStep,
   QteOutcome,
-} from "./mission-flow.types";
+} from "@/lib/mission-flow/mission-flow.types";
 
 const QTE_RESOLVE_HOLD_MS = 420;
 const MAX_FRAME_MS = 100;

@@ -13,6 +13,11 @@ import { TEAM } from "@toyota/missions";
 import { rosterUnitId } from "@/lib/squad/squad.roster";
 import { WEAPONS } from "@/lib/weapons/weapon.config";
 import { createFireRequest } from "@/lib/weapons/weapon.math";
+import {
+  ARTILLERY_SQUAD_ID,
+  HOLD_THE_LINE_MISSION_ID,
+} from "@/lib/missions/data/hold-the-line/mission";
+import { EVADE_QTE_ID } from "@/lib/missions/data/hold-the-line/qtes";
 import { useGameFrame } from "@/render-loop";
 
 const SHOTS = [
@@ -21,10 +26,6 @@ const SHOTS = [
   { at: 3.3, unit: 2, side: 5, forward: 3 },
   { at: 4.5, unit: 0, side: -6, forward: -3 },
 ] as const;
-
-const ARTILLERY_SQUAD_ID = "opening-artillery";
-const MISSION_ID = "hold-the-line";
-const EVADE_QTE_ID = "hold-the-line-evade";
 
 export function Mission2OpeningDirector() {
   const mission = useMission();
@@ -57,7 +58,7 @@ export function Mission2OpeningDirector() {
     if (
       phase !== "gameplay" ||
       mission.status !== "active" ||
-      mission.mission?.id !== MISSION_ID
+      mission.mission?.id !== HOLD_THE_LINE_MISSION_ID
     ) {
       return;
     }

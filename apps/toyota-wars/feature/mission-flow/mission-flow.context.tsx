@@ -10,9 +10,9 @@ import {
   type ReactNode,
 } from "react";
 import { useMission } from "@/context/missions.context";
+import type { FlowSnapshot } from "@/lib/mission-flow/mission-flow.types";
+import { getMissionFlow } from "@/lib/missions/missions.registry";
 import { MissionFlowRunner } from "./mission-flow.store";
-import { getMissionFlowScript } from "./scripts";
-import type { FlowSnapshot } from "./mission-flow.types";
 
 const MissionFlowContext = createContext<MissionFlowRunner | null>(null);
 
@@ -46,7 +46,7 @@ function MissionFlowBridge({ runner }: { runner: MissionFlowRunner }) {
 
     if (status !== "active" || startedMissionId.current === missionId) return;
 
-    const script = getMissionFlowScript(missionId);
+    const script = getMissionFlow(missionId);
     if (!script) return;
 
     startedMissionId.current = missionId;

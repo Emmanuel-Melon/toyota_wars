@@ -1,4 +1,4 @@
-import type { FlowSnapshot } from "@/feature/mission-flow/mission-flow.types";
+import type { FlowSnapshot } from "@/lib/mission-flow/mission-flow.types";
 import { CutsceneScreen } from "@/feature/mission-flow/components/cutscene-screen";
 import { QteOverlay } from "@/feature/mission-flow/components/qte-overlay";
 import type { GameState, GameScreen } from "../game.types";

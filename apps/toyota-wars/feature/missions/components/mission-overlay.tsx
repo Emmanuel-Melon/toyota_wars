@@ -8,7 +8,7 @@ import { HudNotice, HudPanel } from "@/feature/hud/components/hud-parts";
 import { cardinalBearing, distance2D, formatDistance } from "@toyota/missions";
 import { useMission } from "@/context/missions.context";
 import type { MissionObjective } from "@toyota/missions";
-import { TUTORIAL_MISSION_ID } from "@/lib/missions/missions.data";
+import { tutorialMissionId } from "@/lib/missions/missions.registry";
 import { cn } from "@/lib/utils";
 import {
   MenuActions,
@@ -72,7 +72,7 @@ export function MissionHud({ compact = false }: { compact?: boolean }) {
     useMission();
   if (
     !mission ||
-    mission.id === TUTORIAL_MISSION_ID ||
+    mission.id === tutorialMissionId() ||
     status === "idle" ||
     status === "success" ||
     status === "failed"

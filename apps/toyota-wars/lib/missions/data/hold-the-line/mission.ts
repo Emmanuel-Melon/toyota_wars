@@ -4,8 +4,11 @@ import { waveEffects } from "@toyota/missions";
 import { failConditions } from "./failure";
 import { objectives } from "./success";
 
+export const HOLD_THE_LINE_MISSION_ID = "hold-the-line";
+export const ARTILLERY_SQUAD_ID = "opening-artillery";
+
 export const holdTheLine: MissionInput = {
-  id: "hold-the-line",
+  id: HOLD_THE_LINE_MISSION_ID,
   schemaVersion: 2,
   order: 2,
   title: "Hold the Line",
@@ -40,7 +43,7 @@ export const holdTheLine: MissionInput = {
       initialOrder: "follow",
     },
     {
-      id: "opening-artillery",
+      id: ARTILLERY_SQUAD_ID,
       team: "enemy",
       units: [
         { template: "heavy" },

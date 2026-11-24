@@ -10,12 +10,16 @@ import {
   StatBar,
 } from "@/feature/menu/components/menu-parts";
 import type { Mission } from "@toyota/missions";
-import { MISSIONS, TUTORIAL_MISSION_ID } from "@/lib/missions/missions.data";
+import {
+  allOrderedMissions,
+  tutorialMissionId,
+} from "@/lib/missions/missions.registry";
 import { cn } from "@/lib/utils";
 
-const ORDERED_MISSIONS = [...MISSIONS]
-  .filter((mission) => mission.id !== TUTORIAL_MISSION_ID)
-  .sort((a, b) => a.order - b.order);
+function selectableMissions(): Mission[] {
+  const tutorialId = tutorialMissionId();
+  return allOrderedMissions().filter((mission) => mission.id !== tutorialId);
+}
 
 function hostileCount(mission: Mission): number {
   return mission.squads
@@ -33,7 +37,8 @@ export function MissionSelectMenu({
   const [selectedIndex, setSelectedIndex] = useState(0);
   const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const shouldFocusThumb = useRef(false);
-  const selected = ORDERED_MISSIONS[selectedIndex];
+  const missions = selectableMissions();
+  const selected = missions[selectedIndex];
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -42,9 +47,7 @@ export function MissionSelectMenu({
       const direction = event.key === "ArrowRight" ? 1 : -1;
       shouldFocusThumb.current = true;
       setSelectedIndex(
-        (current) =>
-          (current + direction + ORDERED_MISSIONS.length) %
-          ORDERED_MISSIONS.length,
+        (current) => (current + direction + missions.length) % missions.length,
       );
     };
 
@@ -167,7 +170,7 @@ export function MissionSelectMenu({
         role="group"
         aria-label="Choose mission"
       >
-        {ORDERED_MISSIONS.map((mission, index) => {
+        {missions.map((mission, index) => {
           const active = index === selectedIndex;
           return (
             <button

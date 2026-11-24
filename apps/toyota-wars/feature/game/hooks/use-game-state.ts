@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { TUTORIAL_MISSION_ID } from "@/lib/missions/missions.data";
+import { tutorialMissionId } from "@/lib/missions/missions.registry";
 import { DEFAULT_PLAYER_LOADOUT } from "@/lib/vehicles/vehicle.config";
 import type { VehicleLoadout } from "@/lib/vehicles/vehicle.types";
 import { TUTORIAL_STEP_COUNT } from "../tutorial/tutorial-steps";
@@ -89,7 +89,7 @@ export function useGameState(): GameState {
 
   const startTutorial = useCallback(() => {
     setPlayerLoadout(DEFAULT_PLAYER_LOADOUT);
-    setPendingMissionId(TUTORIAL_MISSION_ID);
+    setPendingMissionId(tutorialMissionId());
     setHasActiveRound(false);
     setRound((current) => current + 1);
     setTutorialStep(0);

@@ -2,7 +2,7 @@ import { useMission } from "@/context/missions.context";
 import { GameOverMenu } from "@/feature/menu/components/game-menu";
 import { useMissionSession } from "@/feature/missions/components/mission-session";
 import type { Team } from "@/lib/combat/combat.types";
-import { MISSIONS } from "@/lib/missions/missions.data";
+import { allOrderedMissions } from "@/lib/missions/missions.registry";
 import { getNextMission } from "@toyota/missions";
 import type { GameState } from "../game.types";
 import { MissionResultMenu } from "../../missions/components/mission-overlay";
@@ -12,7 +12,7 @@ export function MissionResultScreen({ game }: { game: GameState }) {
   const { mission, result } = useMission();
   const nextMission =
     result?.outcome === "success" && mission
-      ? getNextMission(MISSIONS, mission)
+      ? getNextMission(allOrderedMissions(), mission)
       : null;
 
   return (

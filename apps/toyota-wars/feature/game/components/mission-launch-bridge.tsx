@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useMissionSession } from "@/feature/missions/components/mission-session";
-import { MISSIONS } from "@/lib/missions/missions.data";
+import { getMission } from "@/lib/missions/missions.registry";
 import type { GameState } from "../game.types";
 
 export function MissionLaunchBridge({ game }: { game: GameState }) {
@@ -20,9 +20,7 @@ export function MissionLaunchBridge({ game }: { game: GameState }) {
     if (launched.current) return;
     if (mode !== "playing" || hasActiveRound || !pendingMissionId) return;
 
-    const mission = MISSIONS.find(
-      (candidate) => candidate.id === pendingMissionId,
-    );
+    const mission = getMission(pendingMissionId);
     if (!mission) return;
 
     launched.current = true;

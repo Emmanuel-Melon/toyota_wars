@@ -1,6 +1,6 @@
 "use client";
 
-import "@/lib/missions/missions.data";
+import "@/lib/missions/missions.init";
 
 import { ViewportProvider, useViewport } from "@/context/viewport-context";
 import { LoadingScreen } from "@/feature/game/components/loading-screen";

@@ -1,11 +1,10 @@
-// apps/toyota-wars/feature/mission-flow/scripts/hold-the-line.ts
 import type {
+  FlowCameraContext,
   FlowCameraResolver,
   FlowCameraShot,
-  FlowCameraContext,
-  FlowScript,
+  FlowCutsceneStep,
   FlowVec3,
-} from "../mission-flow.types";
+} from "@/lib/mission-flow/mission-flow.types";
 
 function anchoredPoint(
   context: FlowCameraContext,
@@ -61,31 +60,19 @@ function evadeShot(context: FlowCameraContext): FlowCameraShot {
 const wide: FlowCameraResolver = wideShot;
 const evade: FlowCameraResolver = evadeShot;
 
-export const holdTheLineOpening: FlowScript = {
-  id: "hold-the-line-opening",
-  steps: [
-    {
-      type: "cutscene",
-      id: "hold-the-line-flank",
-      durationMs: 3600,
-      title: "FLANKING FIRE",
-      caption: "Type 63 support is opening fire from the left flank.",
-      camera: wide,
-    },
-    {
-      type: "qte",
-      id: "hold-the-line-evade",
-      durationMs: 2200,
-      title: "EVASIVE ACTION",
-      caption: "The first salvo is inbound.",
-      camera: evade,
-      qte: {
-        prompt: "DODGE THE SALVO",
-        detail: "Tap A or D before impact.",
-        keys: ["a", "d"],
-        labels: ["A", "D"],
-        durationMs: 2200,
-      },
-    },
-  ],
+export const FLANK_CUTSCENE_ID = "hold-the-line-flank";
+
+export const flankCutscene: FlowCutsceneStep = {
+  type: "cutscene",
+  id: FLANK_CUTSCENE_ID,
+  durationMs: 3600,
+  title: "FLANKING FIRE",
+  caption: "Type 63 support is opening fire from the left flank.",
+  camera: wide,
 };
+
+export const cutscenes = {
+  [FLANK_CUTSCENE_ID]: flankCutscene,
+} satisfies Record<string, FlowCutsceneStep>;
+
+export { evade };

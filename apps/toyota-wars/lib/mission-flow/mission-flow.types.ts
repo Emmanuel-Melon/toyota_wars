@@ -41,9 +41,14 @@ type FlowStepBase = {
   camera: FlowCameraResolver;
 };
 
-export type FlowStep =
-  | (FlowStepBase & { type: "cutscene" })
-  | (FlowStepBase & { type: "qte"; qte: FlowQteConfig });
+export type FlowCutsceneStep = FlowStepBase & { type: "cutscene" };
+
+export type FlowQteStep = FlowStepBase & {
+  type: "qte";
+  qte: FlowQteConfig;
+};
+
+export type FlowStep = FlowCutsceneStep | FlowQteStep;
 
 export type FlowScript = {
   id: string;
