@@ -8,8 +8,6 @@ import { FallenPart } from "./fallen-part";
 import { dropToGround } from "./helpers";
 import type { DoorPanelProps } from "./types";
 
-const DOOR_Y = 0.76;
-
 export function DoorPanel({
   part,
   side,
@@ -19,7 +17,7 @@ export function DoorPanel({
   darkMat,
 }: DoorPanelProps) {
   const { palette, team, unitId } = useVehicleContext();
-  const x = side * (Vehicle.PICKUP.width / 2 + 0.025);
+  const x = side * (Vehicle.PICKUP.width / 2 + Vehicle.PICKUP_DOOR.xOffset);
   const showNumber = part === "doorFL" || part === "doorFR";
   const vehicleNumber = vehicleNumberForUnitId(unitId);
   const numberTexture = useMemo(
@@ -30,8 +28,8 @@ export function DoorPanel({
   return (
     <FallenPart
       part={part}
-      position={[x, DOOR_Y, z]}
-      drop={dropToGround(DOOR_Y)}
+      position={[x, Vehicle.PICKUP_DOOR.y, z]}
+      drop={dropToGround(Vehicle.PICKUP_DOOR.y)}
       spin={[0.2, side * 0.9, side * 1.3]}
       debris="door"
       debrisColor={palette.body}

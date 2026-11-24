@@ -1,5 +1,5 @@
 import type { SideGlassPanelVisualProps } from "../../types";
-import { PICKUP } from "../../config/vehicle-visual.config";
+import { PICKUP, PICKUP_SIDE_WINDOW } from "../../config/vehicle-visual.config";
 import { GlassPanelVisual } from "./glass-panel";
 
 export function SideGlassPanelVisual({
@@ -9,10 +9,16 @@ export function SideGlassPanelVisual({
   crackMat,
   cracked,
 }: SideGlassPanelVisualProps) {
+  const x = side * (PICKUP.width / 2 + PICKUP_SIDE_WINDOW.xOffset);
+
   return (
     <GlassPanelVisual
-      position={[side * (PICKUP.width / 2 + 0.03), 1.17, z]}
-      size={[0.022, 0.32, 0.78]}
+      position={[x, PICKUP_SIDE_WINDOW.y, z]}
+      size={[
+        PICKUP_SIDE_WINDOW.thickness,
+        PICKUP_SIDE_WINDOW.height,
+        PICKUP_SIDE_WINDOW.length,
+      ]}
       glassMat={glassMat}
       crackMat={crackMat}
       cracked={cracked}

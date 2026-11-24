@@ -10,18 +10,13 @@ import {
 } from "../parts";
 
 const DOORS: readonly { part: VehiclePart; side: number; z: number }[] = [
-  { part: "doorFL", side: 1, z: 0.34 },
-  { part: "doorFR", side: -1, z: 0.34 },
-  { part: "doorRL", side: 1, z: -0.48 },
-  { part: "doorRR", side: -1, z: -0.48 },
+  { part: "doorFL", side: 1, z: Vehicle.PICKUP_DOOR.z },
 ];
 
 const SIDE_WINDOWS: readonly { part: VehiclePart; side: number; z: number }[] =
   [
-    { part: "windowFL", side: 1, z: 0.34 },
-    { part: "windowFR", side: -1, z: 0.34 },
-    { part: "windowRL", side: 1, z: -0.48 },
-    { part: "windowRR", side: -1, z: -0.48 },
+    { part: "windowFL", side: 1, z: Vehicle.PICKUP_SIDE_WINDOW.z },
+    { part: "windowFR", side: -1, z: Vehicle.PICKUP_SIDE_WINDOW.z },
   ];
 
 export function PickupCab({

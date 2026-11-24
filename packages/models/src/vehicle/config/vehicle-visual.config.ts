@@ -41,6 +41,33 @@ export const PICKUP_DERIVED = {
   rearAxleZ: WHEEL_VISUAL.axles[1].z,
 } as const;
 
+const PICKUP_DOOR_HEIGHT = 0.48;
+const PICKUP_SIDE_WINDOW_HEIGHT = 0.28;
+const PICKUP_SIDE_WINDOW_LENGTH = 0.54;
+const PICKUP_SIDE_WINDOW_BOTTOM_GAP = 0.01;
+
+export const PICKUP_DOOR = {
+  y: 0.76,
+  thickness: 0.045,
+  height: PICKUP_DOOR_HEIGHT,
+  length: 0.86,
+  xOffset: 0.025,
+  z: 0.34,
+} as const;
+
+export const PICKUP_SIDE_WINDOW = {
+  y:
+    PICKUP_DOOR.y +
+    PICKUP_DOOR.height / 2 +
+    PICKUP_SIDE_WINDOW_BOTTOM_GAP +
+    PICKUP_SIDE_WINDOW_HEIGHT / 2,
+  thickness: 0.022,
+  height: PICKUP_SIDE_WINDOW_HEIGHT,
+  length: PICKUP_SIDE_WINDOW_LENGTH,
+  xOffset: PICKUP_DOOR.xOffset,
+  z: PICKUP_DOOR.z - PICKUP_DOOR.length / 2 + PICKUP_SIDE_WINDOW_LENGTH / 2,
+} as const;
+
 export const CAB_PILLARS = {
   cowl: { z: 0.95, y: 0.86 },
   aPillarTop: { z: 0.38, y: 1.4 },
