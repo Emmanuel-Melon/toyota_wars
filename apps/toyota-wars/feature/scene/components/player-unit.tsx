@@ -8,7 +8,10 @@ import { useArena } from "@/context/arena-context";
 import { usePlayer } from "@/context/player-context";
 import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
 import { MOVEMENT_CONFIG } from "@/lib/movement/movement.config";
-import { groundVehicle, type ChassisPose } from "@/lib/tanks/tanks.grounding";
+import {
+  groundVehicle,
+  type ChassisPose,
+} from "@/lib/vehicles/vehicle.grounding";
 import { updateVehicleMotion } from "@/lib/vehicles/vehicle.motion";
 
 export function PlayerUnit() {

@@ -7,7 +7,7 @@ import type { HealthMap, PartHealthMap, Team } from "@/lib/combat/combat.types";
 import type { Obstacle, TankLeader } from "@/lib/movement/movement.types";
 import { createFireRequest } from "@/lib/weapons/weapon.math";
 import { resolveVehicleLoadout } from "@/lib/vehicles/vehicle.config";
-import { TANK_CONFIG } from "@/lib/tanks/tanks.config";
+import { TANK_CONFIG } from "@/lib/agents/agent-runtime.config";
 import {
   SQUAD_DIRECTIVE,
   type AllyAttackOrder,

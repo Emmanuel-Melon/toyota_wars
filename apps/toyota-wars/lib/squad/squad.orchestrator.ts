@@ -23,7 +23,7 @@ import {
 import type { VehicleLoadout } from "../vehicles/vehicle.types";
 import { WEAPONS } from "../weapons/weapon.config";
 import type { Vec2 } from "@toyota/missions";
-import type { TankIntent } from "@/lib/utility/utility.types";
+import type { AgentIntentId } from "@toyota/agents";
 
 export interface SquadTickState {
   directive: SquadDirective;
@@ -32,7 +32,7 @@ export interface SquadTickState {
   objectiveTarget?: Vec2 | null;
   targetStopDistance?: number;
   targetIsObjective?: boolean;
-  forcedIntent?: TankIntent;
+  forcedIntent?: AgentIntentId;
   attackOrder?: AllyAttackOrder | null;
   priorityTargetId?: string;
   priorityMemberIds?: ReadonlySet<string>;

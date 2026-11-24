@@ -3,7 +3,7 @@ import type { FormationType } from "@/lib/tactics/tactics.formation";
 import type { FireteamTactic } from "../meso/meso.types";
 import type { VehiclePlatform } from "../vehicles/vehicle.types";
 import type { WeaponConfig } from "../weapons/weapon.types";
-import type { TankIntent } from "../utility/utility.types";
+import type { AgentIntentId } from "@toyota/agents";
 
 export interface Point2D {
   x: number;
@@ -95,7 +95,7 @@ export interface SquadOrderContext {
   targetIsObjective?: boolean;
   rallyPoint: Point2D;
   isExplicitOrder: boolean;
-  forcedIntent?: TankIntent;
+  forcedIntent?: AgentIntentId;
   fireDesignation?: FireDesignation | null;
   attackOrder?: AllyAttackOrder | null;
   retreatingRatio: number;

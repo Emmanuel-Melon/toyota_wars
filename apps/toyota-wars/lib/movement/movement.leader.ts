@@ -1,6 +1,5 @@
-// lib/tanks/tanks.leader.ts
 import * as THREE from "three";
-import { wrapAngle } from "../movement/movement.math";
+import { wrapAngle } from "./movement.math";
 
 export class LeaderTracker {
   heading: number;

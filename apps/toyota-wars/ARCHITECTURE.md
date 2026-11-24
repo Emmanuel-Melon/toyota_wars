@@ -49,13 +49,9 @@ toyota-wars/
 │   │   ├── combat.targets.ts
 │   │   └── combat.types.ts
 │   ├── squad/             # Squad management
-│   ├── tanks/             # Tank AI nodes
+│   ├── agents/            # Host adapters for @toyota/agents
 │   ├── vehicles/          # Vehicle platforms & loadouts
 │   ├── weapons/           # Weapon profiles, effects & projectiles
-│   │   ├── tanks.config.ts
-│   │   ├── tanks.nodes.ts
-│   │   ├── tanks.types.ts
-│   │   └── tanks.utils.ts
 │   ├── app.js             # App utilities
 │   ├── palettes.ts        # Color palettes
 │   └── utils.ts           # General utilities
@@ -76,44 +72,16 @@ Located in `lib/combat/combat.config.ts`:
 - `MAX_TARGET_RANGE`: 50.0
 - Projectile speed and lifetime settings
 
-### Tank Config
+### Agent Config
 
-Located in `lib/tanks/tanks.config.ts`:
+Located in `lib/agents/agent-runtime.config.ts`:
 
-- Movement speed and steering
-- Combat settings (shoot interval, angle offset)
-- Avoidance parameters
+- `AGENT_CONFIG`: behavior tuning passed into `@toyota/agents`
+- `TANK_CONFIG`: app-only combat tuning
 
 ## AI Behavior Tree
 
-The AI system uses a behavior tree architecture for autonomous decision making.
-
-### Core Components
-
-- **BTNode**: Abstract base class for all nodes
-- **BTSelector**: OR logic - runs children until one succeeds
-- **BTSequence**: AND logic - runs children until one fails
-
-### Node States
-
-- `SUCCESS`: Node completed successfully
-- `FAILURE`: Node failed
-- `RUNNING`: Node is still processing
-
-### Tank-Specific Nodes
-
-#### Conditions
-
-- **CheckTargetInRange**: Verifies if a target is within specified range
-- **CheckAlignedWithTarget**: Checks if the tank is facing the target
-
-#### Actions
-
-- **ChaseTargetAction**: Drives straight toward the target with smooth steering
-- **ChaseWithAvoidanceAction**: Pursues target while avoiding obstacles
-- **ShootTargetAction**: Fires weapon when cooldown is ready
-- **PatrolAction**: Performs gentle circling patrol behavior
-- **AssignSquadTargetAction**: Assigns squad-level targets to individual units
+Behavior-tree primitives come from `@toyota/ai`; agent nodes, intents, and utility trees live in `@toyota/agents`. The app supplies only host adapters (`lib/agents/`) for config, ports, and decision mapping. Node state is `SUCCESS`, `FAILURE`, or `RUNNING`.
 
 ### Squad Management
 

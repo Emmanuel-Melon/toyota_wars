@@ -1,5 +1,3 @@
-// lib/tanks/tanks.grounding.ts
-
 import type { TerrainSampler } from "@/lib/map/map.terrain";
 import * as THREE from "three";
 
@@ -19,7 +17,6 @@ export interface ChassisTerrain {
   left: number;
 }
 
-/** Four-corner terrain sample used by the chassis; shared with debug overlays. */
 export function sampleChassisTerrain(
   x: number,
   z: number,
@@ -45,7 +42,6 @@ export function sampleChassisTerrain(
   };
 }
 
-/** Damps the chassis pitch/roll toward the sampled terrain slope. */
 export function updateChassisPose(
   pose: ChassisPose,
   terrain: ChassisTerrain,
@@ -77,7 +73,6 @@ export function groundVehicle(
 
   updateChassisPose(pose, terrain, dt);
 
-  // Copy the movement body position verbatim (it already includes ride height).
   group.position.set(pos.x, pos.y, pos.z);
   group.rotation.set(pose.pitch, heading, pose.roll, "YXZ");
 }

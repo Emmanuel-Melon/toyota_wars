@@ -26,7 +26,7 @@ import {
   SQUAD_DIRECTIVE,
   type SquadOrderContext,
 } from "@/lib/squad/squad.types";
-import { TANK_INTENT } from "@/lib/utility/utility.types";
+import { AgentIntent } from "@toyota/agents";
 import type { VehicleLoadout } from "@/lib/vehicles/vehicle.types";
 import type { SquadShared } from "../../squad/components/squad-vehicles";
 
@@ -187,7 +187,7 @@ export function useSquadOrchestration({
         targetIsObjective: attackOrderActive
           ? false
           : strategic.targetIsObjective,
-        forcedIntent: attackOrderActive ? TANK_INTENT.ATTACK : undefined,
+        forcedIntent: attackOrderActive ? AgentIntent.Attack : undefined,
         attackOrder: attackOrderActive ? attackOrder : null,
         priorityTargetId:
           team === "enemy"
@@ -210,17 +210,17 @@ export function useSquadOrchestration({
       registry,
       orders: squadOrdersRef.current,
       leaderPosition: shared?.leader?.position,
-      attackIntent: TANK_INTENT.ATTACK,
+      attackIntent: AgentIntent.Attack,
     });
 
     applyForcedIntents(squadOrdersRef.current, situational, {
-      retreat: TANK_INTENT.RETREAT,
-      attack: TANK_INTENT.ATTACK,
+      retreat: AgentIntent.Retreat,
+      attack: AgentIntent.Attack,
     });
 
     if (shared?.holdFormation && leaderId) {
       for (const [id, order] of squadOrdersRef.current) {
-        if (id !== leaderId) order.forcedIntent = TANK_INTENT.FOLLOW_LEADER;
+        if (id !== leaderId) order.forcedIntent = AgentIntent.FollowLeader;
       }
     }
   }, "squadCommand");

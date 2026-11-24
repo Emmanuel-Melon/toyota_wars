@@ -1,5 +1,5 @@
 import { ENEMY_TACTICAL_ROLES, type SquadOrderContext } from "./squad.types";
-import type { TankIntent } from "../utility/utility.types";
+import type { AgentIntentId } from "@toyota/agents";
 import type { SquadSituational } from "./squad.situational";
 
 /**
@@ -9,7 +9,7 @@ import type { SquadSituational } from "./squad.situational";
 export function applyForcedIntents(
   orders: Map<string, SquadOrderContext>,
   situational: Pick<SquadSituational, "priorityMemberIds" | "retreatMemberIds">,
-  intent: { retreat: TankIntent; attack: TankIntent },
+  intent: { retreat: AgentIntentId; attack: AgentIntentId },
 ): void {
   for (const [id, order] of orders) {
     const roleManaged =

@@ -7,7 +7,7 @@ import {
 } from "./squad.types";
 import type { VehicleLoadout } from "../vehicles/vehicle.types";
 import { SQUAD_CONFIG } from "./squad.config";
-import type { TankIntent } from "../utility/utility.types";
+import type { AgentIntentId } from "@toyota/agents";
 
 type ApplyFireDesignationParams = {
   designation: FireDesignation | null | undefined;
@@ -18,7 +18,7 @@ type ApplyFireDesignationParams = {
   registry: UnitRegistry;
   orders: Map<string, SquadOrderContext>;
   leaderPosition?: { x: number; z: number } | null;
-  attackIntent: TankIntent;
+  attackIntent: AgentIntentId;
 };
 
 export function applyFireDesignation({

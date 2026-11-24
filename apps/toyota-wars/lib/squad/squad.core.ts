@@ -9,7 +9,7 @@ import {
   type SquadMemberTelemetry,
   type SquadOrderContext,
 } from "./squad.types";
-import type { TankIntent } from "../utility/utility.types";
+import type { AgentIntentId } from "@toyota/agents";
 import { getDirectiveStrategy } from "@/lib/squad/directives/strategy";
 import { buildDirectiveContext } from "./directives/common";
 
@@ -22,7 +22,7 @@ export interface EvaluateSquadParams {
   targetIsObjective?: boolean;
   rallyPoint: Point2D;
   isExplicitOrder: boolean;
-  forcedIntent?: TankIntent;
+  forcedIntent?: AgentIntentId;
   attackOrder?: AllyAttackOrder | null;
   retreatAllowed: boolean;
   spacing?: number;

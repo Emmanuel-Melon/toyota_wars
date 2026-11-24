@@ -2,10 +2,10 @@
 "use client";
 
 import React, { useMemo, useRef } from "react";
-import { resetAgentDecision } from "@toyota/agents";
+import { fireRangeForOrder, resetAgentDecision } from "@toyota/agents";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { TANK_CONFIG } from "@/lib/tanks/tanks.config";
+import { AGENT_CONFIG, TANK_CONFIG } from "@/lib/agents/agent-runtime.config";
 import { isCombatActive } from "@/lib/combat/combat.activity";
 import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
 import { hasAssignedTarget } from "@/lib/combat/combat.targets";
@@ -22,7 +22,6 @@ import {
 } from "@/lib/movement/movement.types";
 import { nearestThreatDistance } from "@/lib/movement/movement.resolver";
 import { mapAgentDecision } from "@/lib/agents/agent-decision";
-import { AGENT_CONFIG } from "@/lib/agents/agent-runtime.config";
 import { useBattle, useRegisterUnit } from "@/context/battle-context";
 import { useAITankRuntime } from "@/hooks/use-ai-tank-runtime";
 import { WEAPONS } from "@/lib/weapons/weapon.config";
@@ -35,7 +34,7 @@ import {
   sampleChassisTerrain,
   updateChassisPose,
   type ChassisPose,
-} from "@/lib/tanks/tanks.grounding";
+} from "@/lib/vehicles/vehicle.grounding";
 import {
   updateVehicleMotion,
   type VehicleMotion,
@@ -47,7 +46,6 @@ import {
   type SquadOrderContext,
 } from "@/lib/squad/squad.types";
 import { FIRETEAM_TACTIC } from "@/lib/meso/meso.types";
-import { fireRangeForOrder } from "@/lib/intents/intent.utils";
 import type { VehiclePartHealth } from "./components/vehicle";
 import type { VehicleSpawn } from "@/lib/map/map.types";
 import { VehicleVisuals } from "./components/vehicle-visuals";
@@ -273,6 +271,7 @@ export function AIVehicle({
     runtime.weaponExecutor.setRange(
       fireRangeForOrder(
         weapon,
+        AGENT_CONFIG,
         effectiveSquadOrder.attackOrder,
         effectiveSquadOrder.fireDesignation,
       ),

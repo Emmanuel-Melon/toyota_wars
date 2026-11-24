@@ -8,9 +8,9 @@ import type {
 import type { Vec2 } from "@toyota/missions";
 import type { UnitRegistry } from "./squad.registry";
 import { MESO_CONFIG } from "../meso/meso.config";
-import { TANK_CONFIG } from "../tanks/tanks.config";
+import { TANK_CONFIG } from "../agents/agent-runtime.config";
 import type { SquadOrderContext } from "./squad.types";
-import type { TankIntent } from "../utility/utility.types";
+import type { AgentIntentId } from "@toyota/agents";
 
 export type SquadSituational = {
   squadCenter: Vec2;

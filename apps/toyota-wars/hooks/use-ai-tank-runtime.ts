@@ -1,13 +1,20 @@
 // feature/vehciles/use-ai-tank-runtime.ts
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createAgentDecision } from "@toyota/agents";
+import {
+  buildUtilityAgentTree,
+  createAgentDecision,
+  type AgentFormationState,
+} from "@toyota/agents";
 import * as THREE from "three";
 import { Weapon } from "@/lib/weapons/weapon.timer";
 import { WeaponBloomSystem } from "@/lib/weapons/weapon.bloom";
 import { WEAPONS } from "@/lib/weapons/weapon.config";
 import type { WeaponId } from "@/lib/weapons/weapon.types";
-import { TANK_CONFIG } from "@/lib/tanks/tanks.config";
-import type { FormationState } from "@/lib/tanks/tanks.types";
+import {
+  AGENT_CONFIG,
+  AGENT_UTILITY_DEBUG,
+  TANK_CONFIG,
+} from "@/lib/agents/agent-runtime.config";
 import type {
   Obstacle,
   TankLeader,
@@ -27,8 +34,7 @@ import {
   type WorldMovement,
 } from "@/lib/movement/movement.types";
 import { agentPorts } from "@/lib/agents/agent-ports";
-import { buildUtilityTankTree } from "@/lib/tanks/tanks.trees";
-import { LeaderTracker } from "@/lib/tanks/tanks.leader";
+import { LeaderTracker } from "@/lib/movement/movement.leader";
 import type { Team } from "@/lib/combat/combat.types";
 import {
   getVehicleDamageEffects,
@@ -115,7 +121,7 @@ export function useAITankRuntime({
         weapon,
         {
           range: weaponConfig.engagementRange,
-          alignmentToleranceRad: TANK_CONFIG.combat.defaultMaxAngleOffsetRad,
+          alignmentToleranceRad: AGENT_CONFIG.defaultMaxAngleOffsetRad,
         },
         new AutoAimingStrategy(),
       ),
@@ -138,11 +144,25 @@ export function useAITankRuntime({
   const leaderTracker = useRef(
     new LeaderTracker(MOVEMENT_CONFIG.follow.fallbackLeaderHeading),
   );
-  const formationState = useRef<FormationState>({ standby: false });
+  const formationState = useRef<AgentFormationState>({ standby: false });
 
   // One utility tree per tank: its selector memory and stateful children
   // (patrol goal, flank orbit) must not be shared between vehicles.
-  const tree = useMemo(() => buildUtilityTankTree(unitId), [unitId]);
+  const tree = useMemo(
+    () =>
+      buildUtilityAgentTree(
+        AGENT_CONFIG,
+        AGENT_UTILITY_DEBUG
+          ? {
+              now: () => performance.now(),
+              table: (rows) => console.table(rows),
+              debug: (message) => console.debug(message),
+            }
+          : undefined,
+        unitId,
+      ),
+    [unitId],
+  );
 
   useEffect(() => {
     if (health === undefined) return;

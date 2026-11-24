@@ -6,11 +6,11 @@ Overview of the Toyota Wars monorepo: how the apps and packages fit together, ho
 
 Next.js 16 (App Router) + React 19 + React Three Fiber. Self-contained game code under:
 
-- `lib/` — pure TypeScript game logic, no React: combat, movement, AI (`selector/`, `tanks/`, `squad/`), weapons, map generation, missions, FX bus
+- `lib/` — pure TypeScript game logic, no React: combat, movement, squad, weapons, map generation, missions, FX bus; agent behavior comes from `@toyota/agents` via `lib/agents/`
 - `feature/` — React layer: R3F scene components, HUD, contexts bridging `lib/` state into React
 - `app/` — Next.js routes only
 
-Currently **no workspace dependencies** — it does not import `@toyota/client` yet.
+Workspace dependencies: `@toyota/agents`, `@toyota/ai`, `@toyota/client`, and `@toyota/missions`.
 
 ### `apps/server` — API server (`api`)
 
@@ -31,6 +31,10 @@ Typed SDK generated/consumed by frontend apps:
 - `src/api/clients/` — axios instance, error handling
 - `src/hooks/api/` — TanStack Query hooks, React Query devtools, Sentry
 
+### `packages/agents` — `@toyota/agents`
+
+Source-only behavior trees, nodes, intents, and utility selection for game agents. App-specific movement and pathfinding stay in host adapters such as `apps/toyota-wars/lib/agents/`.
+
 ## Dependency direction
 
 ```
@@ -45,11 +49,11 @@ Rules of thumb:
 
 ## Turborepo pipeline (`turbo.json`)
 
-| Task          | `dependsOn`     | Purpose                                    |
-| ------------- | --------------- | ------------------------------------------ |
-| `build`       | `^build`        | Build packages in topological order        |
-| `check-types` | `^check-types`  | Typecheck respecting package boundaries    |
-| `dev`         | —               | Long-running dev servers, uncached         |
+| Task          | `dependsOn`    | Purpose                                 |
+| ------------- | -------------- | --------------------------------------- |
+| `build`       | `^build`       | Build packages in topological order     |
+| `check-types` | `^check-types` | Typecheck respecting package boundaries |
+| `dev`         | —              | Long-running dev servers, uncached      |
 
 Caching: `build` outputs `.next/**` (excluding cache/dev dirs); `dev` and other tasks are uncached.
 
