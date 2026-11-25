@@ -85,12 +85,6 @@ export function QteOverlay() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!qte?.outcome) return;
-    setPressedLabel(null);
-    if (clearPress.current) clearTimeout(clearPress.current);
-  }, [qte?.outcome]);
-
   if (!qte) return null;
 
   const hitCount = prompts.filter(
@@ -155,14 +149,15 @@ export function QteOverlay() {
         </div>
       </div>
 
-      {!outcomeLabel && actionPrompt ? (
+      {statusPrompt && (!outcomeLabel || pressedLabel) ? (
         <div className="pointer-events-auto absolute left-1/2 top-1/2 flex w-[min(420px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 flex-wrap justify-center gap-[14px]">
-          {actionPrompt.inputs.map((input) => {
+          {statusPrompt.inputs.map((input) => {
             const pressed = pressedLabel === input.label;
             return (
               <button
-                key={`${actionPrompt.id}-${input.id}-${pressed ? pressId : "idle"}`}
+                key={`${statusPrompt.id}-${input.id}-${pressed ? pressId : "idle"}`}
                 type="button"
+                disabled={Boolean(outcomeLabel)}
                 aria-label={`Press ${input.label}`}
                 className={cn(
                   styles.key,
