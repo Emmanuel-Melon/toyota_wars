@@ -28,12 +28,7 @@ export * from "./components/wheels/wheel";
 
 export * from "./components/radar/radar-dish";
 
-export * from "./components/gunner/crew-gunner.palette";
 export * from "./components/gunner/crew-gunner";
-export * from "./components/gunner/gunner-lower-body";
-export * from "./components/gunner/gunner-torso";
-export * from "./components/gunner/gunner-arms";
-export * from "./components/gunner/gunner-head";
 
 export * from "./components/mounts/pedestal";
 export * from "./components/mounts/turret-shield";

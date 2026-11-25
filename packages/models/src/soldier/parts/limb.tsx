@@ -7,7 +7,7 @@ import {
   SphereGeometry,
   Vector3,
 } from "three";
-import type { V3 } from "../../types";
+import { V3 } from "../soldier.types";
 
 const _a = new Vector3();
 const _b = new Vector3();
