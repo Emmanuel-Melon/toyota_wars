@@ -24,13 +24,22 @@ describe("mission schemas", () => {
     expect(mission.timeOfDay).toBe("day");
   });
 
-  it("parses night missions", () => {
-    const input = makeMissionInput();
-    input.timeOfDay = "night";
+  it.each(["dawn", "day", "dusk", "night"] as const)(
+    "parses %s missions",
+    (timeOfDay) => {
+      const input = makeMissionInput();
+      input.timeOfDay = timeOfDay;
 
-    const mission = MissionSchema.parse(input);
+      const mission = MissionSchema.parse(input);
 
-    expect(mission.timeOfDay).toBe("night");
+      expect(mission.timeOfDay).toBe(timeOfDay);
+    },
+  );
+
+  it("rejects unknown times of day", () => {
+    const input = { ...makeMissionInput(), timeOfDay: "noon" };
+
+    expect(() => MissionSchema.parse(input)).toThrow();
   });
 
   it("rejects objectives that reference unknown zones", () => {

@@ -41,7 +41,9 @@ export const PersonalitySchema = z.object({
 export const TeamSchema = z.enum([TEAM.ALLY, TEAM.ENEMY]);
 
 export const TimeOfDaySchema = z.enum([
+  TIME_OF_DAY.DAWN,
   TIME_OF_DAY.DAY,
+  TIME_OF_DAY.DUSK,
   TIME_OF_DAY.NIGHT,
 ]);
 

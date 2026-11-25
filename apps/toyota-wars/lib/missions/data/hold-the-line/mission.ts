@@ -1,6 +1,6 @@
 // apps/toyota-wars/lib/missions/data/hold-the-line/mission.ts
 import type { MissionInput } from "@toyota/missions";
-import { waveEffects } from "@toyota/missions";
+import { TIME_OF_DAY, waveEffects } from "@toyota/missions";
 import type { FlowScript } from "@/lib/mission-flow/mission-flow.types";
 import type { GameMissionBundle } from "../../missions.registry";
 import { flankCutscene } from "./cutscenes";
@@ -18,8 +18,9 @@ export const holdTheLine: MissionInput = {
   order: 2,
   title: "Hold the Line",
   briefing:
-    "Two allied tanks are joining you. Enemy forces are pushing through in waves. Stay alive until reinforcements arrive, and try to bring your allies home.",
+    "At dawn, two allied tanks are joining you. Enemy forces are pushing through in waves. Stay alive until reinforcements arrive, and try to bring your allies home.",
   difficulty: 2,
+  timeOfDay: TIME_OF_DAY.DAWN,
   requires: ["first-contact"],
   arena: {
     seed: 2002,

@@ -30,6 +30,17 @@ const ENVIRONMENT_PRESETS: Record<
   (typeof TIME_OF_DAY)[keyof typeof TIME_OF_DAY],
   EnvironmentPreset
 > = {
+  [TIME_OF_DAY.DAWN]: {
+    background: "#d2a97f",
+    fogColor: "#d8b38c",
+    ambientIntensity: 1.1,
+    lightPosition: [-16, 8, 12],
+    lightIntensity: 2,
+    lightColor: "#ffc38f",
+    sunPosition: [-10, 0.8, 6],
+    turbidity: 10,
+    rayleigh: 2.6,
+  },
   [TIME_OF_DAY.DAY]: {
     background: "#c7b18b",
     fogColor: "#c7b18b",
@@ -40,6 +51,17 @@ const ENVIRONMENT_PRESETS: Record<
     sunPosition: [-8, 4, -10],
     turbidity: 8,
     rayleigh: 2.2,
+  },
+  [TIME_OF_DAY.DUSK]: {
+    background: "#49374f",
+    fogColor: "#5b455f",
+    ambientIntensity: 0.7,
+    lightPosition: [16, 8, -12],
+    lightIntensity: 1.5,
+    lightColor: "#ff9d78",
+    sunPosition: [10, 0.4, -8],
+    turbidity: 12,
+    rayleigh: 3,
   },
   [TIME_OF_DAY.NIGHT]: {
     background: "#070b16",

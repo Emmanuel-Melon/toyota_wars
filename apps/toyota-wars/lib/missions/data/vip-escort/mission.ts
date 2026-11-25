@@ -1,5 +1,5 @@
 import type { MissionInput } from "@toyota/missions";
-import { noEffects } from "@toyota/missions";
+import { noEffects, TIME_OF_DAY } from "@toyota/missions";
 import type { GameMissionBundle } from "../../missions.registry";
 import { failConditions } from "./failure";
 import { objectives } from "./success";
@@ -13,6 +13,7 @@ export const vipEscort: MissionInput = {
   briefing:
     "A command vehicle must reach the southern extraction point. Keep it alive, clear the ambush corridor, and stay with it as it moves.",
   difficulty: 4,
+  timeOfDay: TIME_OF_DAY.DAY,
   requires: [],
   arena: {
     seed: 6006,

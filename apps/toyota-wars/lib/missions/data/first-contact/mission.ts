@@ -1,6 +1,6 @@
 // apps/toyota-wars/lib/missions/data/first-contact/mission.ts
 import type { MissionInput } from "@toyota/missions";
-import { noEffects } from "@toyota/missions";
+import { noEffects, TIME_OF_DAY } from "@toyota/missions";
 import type { FlowScript } from "@/lib/mission-flow/mission-flow.types";
 import type { GameMissionBundle } from "../../missions.registry";
 import { failConditions } from "./failure";
@@ -15,8 +15,9 @@ export const firstContact: MissionInput = {
   order: 1,
   title: "First Contact",
   briefing:
-    "A small scout patrol has crossed into the plains. Two allied tanks are joining you, so use the rocks for cover and take the scouts down together.",
+    "At dusk, a small scout patrol has crossed into the plains. Two allied tanks are joining you, so use the rocks for cover and take the scouts down together.",
   difficulty: 1,
+  timeOfDay: TIME_OF_DAY.DUSK,
   requires: [],
   arena: {
     seed: 1001,

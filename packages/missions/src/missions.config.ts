@@ -14,7 +14,9 @@ export const TEAM = {
 } as const;
 
 export const TIME_OF_DAY = {
+  DAWN: "dawn",
   DAY: "day",
+  DUSK: "dusk",
   NIGHT: "night",
 } as const;
 

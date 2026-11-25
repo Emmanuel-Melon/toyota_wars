@@ -1,4 +1,5 @@
 import type { MissionInput } from "@toyota/missions";
+import { TIME_OF_DAY } from "@toyota/missions";
 import type { GameMissionBundle } from "../../missions.registry";
 import { failConditions } from "./failure";
 import { objectives } from "./success";
@@ -11,6 +12,7 @@ export const cutTheHead: MissionInput = {
   briefing:
     "An enemy warband is massing under a heavy commander. Destroy the leader and the rest will lose coordination. You're outnumbered, and you have fifteen minutes.",
   difficulty: 3,
+  timeOfDay: TIME_OF_DAY.DAY,
   requires: ["hold-the-line"],
   arena: {
     seed: 3003,
