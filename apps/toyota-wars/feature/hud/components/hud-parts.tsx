@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronDown } from "lucide-react";
 import { useId, useState } from "react";
 import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
