@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Button } from "@/components/ui/button";
 import { usePlayer } from "@/context/player-context";
 import layout from "@/feature/hud/components/hud-layout.module.css";
 import { HudPanel } from "@/feature/hud/components/hud-parts";
@@ -12,6 +11,7 @@ import { tutorialMissionId } from "@/lib/missions/missions.registry";
 import { cn } from "@/lib/utils";
 import {
   MenuActions,
+  MenuButton,
   MenuHeading,
   MenuShell,
 } from "@/feature/menu/components/menu-parts";
@@ -187,17 +187,13 @@ export function MissionResultMenu({
         ))}
       </ul>
       <MenuActions>
-        <Button variant="game-primary" size="lg" onClick={onRetry}>
+        <MenuButton active onClick={onRetry}>
           {won ? "Replay" : "Retry"}
-        </Button>
+        </MenuButton>
         {won && onNext ? (
-          <Button variant="game-outline" size="lg" onClick={onNext}>
-            Next Mission
-          </Button>
+          <MenuButton onClick={onNext}>Next Mission</MenuButton>
         ) : null}
-        <Button variant="game-outline" size="lg" onClick={onExit}>
-          Menu
-        </Button>
+        <MenuButton onClick={onExit}>Menu</MenuButton>
       </MenuActions>
     </MenuShell>
   );

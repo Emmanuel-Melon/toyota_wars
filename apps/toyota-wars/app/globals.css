@@ -262,11 +262,40 @@
     background: linear-gradient(#2a1a0c, #1a1008);
   }
 
+  .hud-command-menu[data-active="true"],
+  .hud-command-card[data-active="true"] {
+    color: var(--hud-active-top);
+    background:
+      var(--hud-rust-wash-small),
+      var(--hud-rust-drips-small),
+      rgb(var(--hud-bg) / 0.86);
+    border-color: var(--hud-active-border);
+  }
+
   .hud-command-icon {
     display: inline-flex;
     width: 14px;
     height: 14px;
     opacity: 0.9;
+  }
+
+  .hud-command-menu {
+    width: 210px;
+    min-height: 44px;
+    padding: 0 14px;
+    font: 700 13px/1 var(--font-mono, monospace);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .hud-command-card {
+    width: 100%;
+    min-height: 96px;
+    padding: 10px 12px;
+    font-family: var(--font-mono, monospace);
+    font-size: 12px;
+    line-height: 1.4;
+    text-align: left;
   }
 }
 

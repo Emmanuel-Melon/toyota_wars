@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import { VehiclePreview } from "@/feature/menu/components/weapon-preview";
 import {
   MenuActions,
+  MenuButton,
   MenuHeading,
   MenuHint,
   MenuShell,
@@ -121,23 +121,15 @@ export function GameMenu({
           <MenuHeading title="Toyota Wars" />
           <MenuActions>
             {canResume && (
-              <Button variant="game-primary" size="lg" onClick={onPlay}>
+              <MenuButton active onClick={onPlay}>
                 Resume
-              </Button>
+              </MenuButton>
             )}
-            <Button
-              variant={canResume ? "game-outline" : "game-primary"}
-              size="lg"
-              onClick={onNewGame}
-            >
+            <MenuButton active={!canResume} onClick={onNewGame}>
               New Game
-            </Button>
-            <Button variant="game-outline" size="lg" onClick={onHowToPlay}>
-              How to Play
-            </Button>
-            <Button variant="game-outline" size="lg" onClick={onOpenSettings}>
-              Settings
-            </Button>
+            </MenuButton>
+            <MenuButton onClick={onHowToPlay}>How to Play</MenuButton>
+            <MenuButton onClick={onOpenSettings}>Settings</MenuButton>
           </MenuActions>
           {canResume && <MenuHint>Press Esc to Resume</MenuHint>}
         </>
@@ -198,9 +190,7 @@ export function GameMenu({
             </tbody>
           </table>
           <MenuActions>
-            <Button variant="game-outline" size="lg" onClick={onBack}>
-              Back
-            </Button>
+            <MenuButton onClick={onBack}>Back</MenuButton>
           </MenuActions>
         </>
       )}
@@ -232,7 +222,8 @@ export function NewGameMenu({
       >
         <button
           type="button"
-          className="flex min-h-[170px] flex-col border border-ui-primary bg-ui-primary/15 p-4 text-left font-mono text-ui-primary shadow-[inset_0_0_0_1px_rgb(var(--ui-primary-rgb)/0.55)] transition duration-150 hover:-translate-y-0.5 hover:bg-ui-primary/20 focus-visible:border-ui-primary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ui-primary/30"
+          data-active="true"
+          className="hud-command hud-command-card flex min-h-[170px] flex-col p-4 text-hud-bone transition duration-150 hover:-translate-y-0.5"
           onClick={onCampaign}
         >
           <span className="text-[11px] font-semibold tracking-[0.22em] opacity-80">
@@ -247,10 +238,11 @@ export function NewGameMenu({
         </button>
         <button
           type="button"
-          className="flex min-h-[170px] flex-col border border-ui-secondary/30 bg-ui-panel/45 p-4 text-left font-mono text-ui-text transition duration-150 hover:-translate-y-0.5 hover:border-ui-primary/70 hover:bg-ui-primary/10 focus-visible:border-ui-primary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ui-primary/30"
+          data-active="false"
+          className="hud-command hud-command-card flex min-h-[170px] flex-col p-4 text-hud-bone transition duration-150 hover:-translate-y-0.5"
           onClick={onSurvival}
         >
-          <span className="text-[11px] font-semibold tracking-[0.22em] text-ui-primary opacity-80">
+          <span className="text-[11px] font-semibold tracking-[0.22em] opacity-80">
             02
           </span>
           <span className="mt-6 text-[20px] font-semibold uppercase tracking-[0.06em]">
@@ -262,9 +254,7 @@ export function NewGameMenu({
         </button>
       </div>
       <MenuActions row>
-        <Button variant="game-outline" size="lg" onClick={onBack}>
-          Back
-        </Button>
+        <MenuButton onClick={onBack}>Back</MenuButton>
       </MenuActions>
     </MenuShell>
   );
@@ -287,9 +277,9 @@ export function SurvivalMenu({ onBack }: { onBack: () => void }) {
         <p className="mt-3">This mode is currently a placeholder.</p>
       </div>
       <MenuActions row>
-        <Button variant="game-primary" size="lg" onClick={onBack}>
+        <MenuButton active onClick={onBack}>
           Back
-        </Button>
+        </MenuButton>
       </MenuActions>
     </MenuShell>
   );
@@ -401,10 +391,10 @@ export function VehicleSelectMenu({
                 thumbRefs.current[optionIndex] = node;
               }}
               type="button"
+              data-active={active}
               className={cn(
-                "grid grid-cols-[auto_1fr] items-center gap-x-3 border border-ui-secondary/30 bg-ui-panel/45 p-[10px_12px] text-left font-mono text-ui-text transition duration-150 hover:-translate-y-0.5 hover:bg-ui-primary/10 max-[919px]:gap-x-1.5 max-[919px]:p-2",
-                active &&
-                  "border-ui-primary bg-ui-primary/15 shadow-[inset_0_0_0_1px_rgb(var(--ui-primary-rgb)/0.55)]",
+                "hud-command hud-command-card hud-rust-medium grid grid-cols-[auto_1fr] items-center gap-x-3 p-[10px_12px] text-hud-bone transition duration-150 hover:-translate-y-0.5 max-[919px]:gap-x-1.5 max-[919px]:p-2",
+                active && "text-hud-active-top",
               )}
               aria-pressed={active}
               onClick={() => setIndex(optionIndex)}
@@ -430,16 +420,10 @@ export function VehicleSelectMenu({
       </div>
 
       <MenuActions row>
-        <Button
-          variant="game-primary"
-          size="lg"
-          onClick={() => onConfirm(chosen)}
-        >
+        <MenuButton rust active onClick={() => onConfirm(chosen)}>
           Select
-        </Button>
-        <Button variant="game-outline" size="lg" onClick={onBack}>
-          Back
-        </Button>
+        </MenuButton>
+        <MenuButton onClick={onBack}>Back</MenuButton>
       </MenuActions>
     </MenuShell>
   );
@@ -463,9 +447,9 @@ export function GameOverMenu({
         small
       />
       <MenuActions>
-        <Button variant="game-primary" size="lg" onClick={onReplay}>
+        <MenuButton active onClick={onReplay}>
           Replay
-        </Button>
+        </MenuButton>
       </MenuActions>
     </MenuShell>
   );

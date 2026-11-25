@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -100,6 +100,32 @@ export function MenuActions({
     >
       {children}
     </div>
+  );
+}
+
+type MenuButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  active?: boolean;
+  rust?: boolean;
+};
+
+export function MenuButton({
+  active = false,
+  rust = false,
+  type = "button",
+  className,
+  ...props
+}: MenuButtonProps) {
+  return (
+    <button
+      {...props}
+      type={type}
+      data-active={active}
+      className={cn(
+        "hud-command hud-command-menu",
+        rust && "hud-rust-medium",
+        className,
+      )}
+    />
   );
 }
 

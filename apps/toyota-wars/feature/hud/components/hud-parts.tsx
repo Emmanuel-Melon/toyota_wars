@@ -45,7 +45,7 @@ export function CollapsibleHudPanel({
   children,
   ...props
 }: CollapsibleHudPanelProps) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const bodyId = useId();
 
   return (

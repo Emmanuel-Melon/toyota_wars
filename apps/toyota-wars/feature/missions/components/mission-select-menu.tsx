@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import {
   MenuActions,
+  MenuButton,
   MenuHeading,
   MenuShell,
   StatBar,
@@ -181,10 +181,10 @@ export function MissionSelectMenu({
               type="button"
               aria-label={`Select ${mission.title}`}
               aria-pressed={active}
+              data-active={active}
               className={cn(
-                "grid grid-cols-[auto_1fr] items-center gap-x-3 border border-ui-secondary/30 bg-ui-panel/45 p-[10px_12px] text-left font-mono text-ui-text transition duration-150 hover:-translate-y-0.5 hover:bg-ui-primary/10 max-[919px]:gap-x-1.5 max-[919px]:p-2",
-                active &&
-                  "border-ui-primary bg-ui-primary/15 text-ui-primary shadow-[inset_0_0_0_1px_rgb(var(--ui-primary-rgb)/0.55)]",
+                "hud-command hud-command-card hud-rust-medium grid grid-cols-[auto_1fr] items-center gap-x-3 p-[10px_12px] text-hud-bone transition duration-150 hover:-translate-y-0.5 max-[919px]:gap-x-1.5 max-[919px]:p-2",
+                active && "text-hud-active-top",
               )}
               onClick={() => setSelectedIndex(index)}
             >
@@ -215,16 +215,10 @@ export function MissionSelectMenu({
       </div>
 
       <MenuActions row>
-        <Button
-          variant="game-primary"
-          size="lg"
-          onClick={() => onLaunch(selected)}
-        >
+        <MenuButton rust active onClick={() => onLaunch(selected)}>
           Continue
-        </Button>
-        <Button variant="game-outline" size="lg" onClick={onBack}>
-          Back
-        </Button>
+        </MenuButton>
+        <MenuButton onClick={onBack}>Back</MenuButton>
       </MenuActions>
     </MenuShell>
   );
