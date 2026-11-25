@@ -41,7 +41,7 @@
   right: calc(env(safe-area-inset-right) + 10px);
   bottom: calc(env(safe-area-inset-bottom) + 108px);
   z-index: 20;
-  width: min(300px, calc(100vw - 20px));
+  width: min(440px, calc(100vw - 20px));
   display: flex;
   flex-direction: column;
   gap: 12px;

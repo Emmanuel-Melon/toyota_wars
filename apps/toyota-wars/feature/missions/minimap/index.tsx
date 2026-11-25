@@ -21,6 +21,7 @@ export function MissionMinimap() {
 
   return (
     <HudPanel
+      rust="large"
       className="pointer-events-none relative aspect-square w-full p-0"
       style={{ borderRadius: "50%", overflow: "hidden" }}
       aria-label="Tactical minimap"
@@ -33,7 +34,7 @@ export function MissionMinimap() {
         />
       </div>
       <MinimapCanvas canvasRef={canvasRef} />
-      <div className="pointer-events-none absolute inset-[4px] z-[5] rounded-full border border-ui-secondary/50" />
+      <div className="pointer-events-none absolute inset-[4px] z-[5] rounded-full border border-hud-sand/35" />
     </HudPanel>
   );
 }

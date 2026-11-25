@@ -1,18 +1,52 @@
 .panel {
-  color: var(--ui-text);
-  background: linear-gradient(
-    180deg,
-    rgb(var(--ui-panel-rgb) / 0.88),
-    rgb(var(--ui-panel-rgb) / 0.72)
-  );
-  border: 1px solid rgb(var(--ui-secondary-rgb) / 0.3);
-  border-radius: 4px;
-  box-shadow:
-    0 12px 30px rgb(var(--ui-panel-rgb) / 0.35),
-    inset 0 1px 0 rgb(var(--ui-text-rgb) / 0.06);
-  text-shadow: 0 1px 8px rgb(var(--ui-panel-rgb) / 0.6);
+  text-shadow: 0 1px 8px rgb(0 0 0 / 0.6);
   backdrop-filter: blur(8px) saturate(0.9);
   -webkit-backdrop-filter: blur(8px) saturate(0.9);
+}
+
+.collapsiblePanel[data-collapsed="true"] {
+  width: auto;
+  min-width: 150px;
+}
+
+.collapsibleHeader {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 0 8px;
+  color: var(--hud-bone);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--hud-border);
+  font: 700 11px/1 var(--font-stencil, var(--font-mono, monospace));
+  letter-spacing: 0.16em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.collapsibleHeader:hover {
+  color: var(--hud-active-top);
+}
+
+.collapsiblePanel[data-collapsed="true"] .collapsibleHeader {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.collapsibleBody {
+  padding-top: 10px;
+}
+
+.chevron {
+  flex: none;
+  transition: transform 120ms ease-out;
+}
+
+.chevronCollapsed {
+  transform: rotate(-90deg);
 }
 
 .notice {

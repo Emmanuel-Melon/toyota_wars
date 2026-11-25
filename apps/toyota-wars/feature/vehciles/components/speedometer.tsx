@@ -1,86 +1,93 @@
-// apps/toyota-wars/feature/vehciles/components/speedometer.tsx
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { usePlayer } from "@/context/player-context";
 import layout from "@/feature/hud/components/hud-layout.module.css";
 import { HudPanel } from "@/feature/hud/components/hud-parts";
-import { createPlayerBodyConfig } from "@/lib/vehicles/vehicle.config";
+const MAX_KMH = 80; // TODO: take from vehicle config
+const DIGITS = 3;
 
 export function Speedometer({ compact = false }: { compact?: boolean }) {
-  const { playerBody, playerVehicle, playerDamageEffects } = usePlayer();
-  const bodyConfig = useMemo(
-    () => createPlayerBodyConfig(playerVehicle),
-    [playerVehicle],
-  );
-  const MIN_KMH = Math.round(bodyConfig.minForwardSpeed * 3.6);
-  const MAX_KMH = Math.round(
-    bodyConfig.maxSpeed * playerDamageEffects.maxSpeedFactor * 3.6,
-  );
-  const currentRef = useRef<HTMLSpanElement>(null);
-  const fillRef = useRef<HTMLDivElement>(null);
+  const { playerBody } = usePlayer();
+  const zerosRef = useRef<HTMLSpanElement>(null);
+  const valueRef = useRef<HTMLSpanElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const motionRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     let frame = 0;
+    let last = -1;
 
     const update = () => {
       const speed = Math.abs(playerBody.speedKmh);
-      if (currentRef.current) {
-        currentRef.current.textContent = `${Math.round(speed)}`;
-      }
-      if (fillRef.current) {
-        const percent = Math.min(100, (speed / MAX_KMH) * 100);
-        fillRef.current.style.width = `${percent}%`;
+      const rounded = Math.round(speed);
+
+      if (rounded !== last) {
+        last = rounded;
+        const value = String(rounded);
+        const zeros = "0".repeat(Math.max(0, DIGITS - value.length));
+        if (zerosRef.current) zerosRef.current.textContent = zeros;
+        if (valueRef.current) valueRef.current.textContent = value;
+        if (barRef.current) {
+          barRef.current.style.transform = `scaleX(${Math.min(1, speed / MAX_KMH)})`;
+        }
+        if (motionRef.current) motionRef.current.style.opacity = speed > 1 ? "1" : "0.3";
       }
       frame = requestAnimationFrame(update);
     };
 
     frame = requestAnimationFrame(update);
     return () => cancelAnimationFrame(frame);
-  }, [playerBody, MAX_KMH]);
+  }, [playerBody]);
+
+  const digits = (
+    <span className={compact ? "text-[18px] font-bold leading-none" : "text-[24px] font-bold leading-none tracking-[-0.04em]"}>
+      <span ref={zerosRef} className="opacity-25">00</span>
+      <span ref={valueRef}>0</span>
+    </span>
+  );
 
   return (
     <HudPanel
-      className={`pointer-events-none ${compact ? layout.mobileSpeed : layout.desktopSpeed}`}
+      rust="small"
+      className={`pointer-events-none ${compact ? layout.mobileSpeed : layout.mapSpeed}`}
       aria-label="Speed"
     >
       {compact ? (
         <div className="flex items-baseline justify-end gap-1.5 font-mono tabular-nums">
-          <span ref={currentRef} className="text-[18px] font-bold leading-none">
-            0
-          </span>
-          <span className="text-[9px] font-semibold tracking-[0.1em] opacity-70">
-            KM/H
-          </span>
+          {digits}
+          <span className="text-[9px] font-semibold tracking-[0.1em] opacity-70">KM/H</span>
         </div>
       ) : (
-        <>
-          <div className="flex justify-between font-mono text-[10px] font-semibold uppercase leading-[1.2] tracking-[0.16em] opacity-70">
-            <span>SPEED</span>
-            <span>KM/H</span>
+        <div className="flex items-center gap-2">
+          <svg
+            ref={motionRef}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            className="h-6 w-6 shrink-0 text-ui-primary opacity-30 transition-opacity duration-150"
+            aria-hidden="true"
+          >
+            <path d="M3 8h11" />
+            <path d="M3 13h15" />
+            <path d="M3 18h8" />
+          </svg>
+          <div className="flex flex-col gap-1">
+            <div className="flex items-baseline gap-1 font-mono tabular-nums">
+              {digits}
+              <span className="text-[8px] font-semibold tracking-[0.12em] opacity-70">KM/H</span>
+            </div>
+            <div className="h-[3px] w-full overflow-hidden bg-black/40">
+              <div
+                ref={barRef}
+                className="h-full origin-left bg-ui-primary"
+                style={{ transform: "scaleX(0)" }}
+              />
+            </div>
           </div>
-          <div className="mb-[10px] mt-[7px] flex items-baseline gap-1.5">
-            <span
-              ref={currentRef}
-              className="font-mono text-[32px] font-bold leading-[0.9] tabular-nums tracking-[-0.04em]"
-            >
-              0
-            </span>
-            <span className="ml-auto font-mono text-[11px] font-semibold tabular-nums tracking-[0.08em] opacity-60">
-              / {MAX_KMH}
-            </span>
-          </div>
-          <div className="relative h-1.5 w-full overflow-hidden rounded-[3px] bg-white/20">
-            <span
-              className="absolute inset-y-0 z-[1] w-px bg-ui-secondary/55"
-              style={{ left: `${(MIN_KMH / MAX_KMH) * 100}%` }}
-            />
-            <div
-              ref={fillRef}
-              className="h-full w-0 rounded-[inherit] bg-gradient-to-r from-ui-primary/80 to-ui-primary shadow-[0_0_10px_rgb(var(--ui-primary-rgb)/0.35)] transition-[width] duration-[80ms] ease-linear"
-            />
-          </div>
-        </>
+        </div>
       )}
     </HudPanel>
   );

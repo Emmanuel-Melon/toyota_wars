@@ -1,65 +1,48 @@
 "use client";
 
 import { useCombat } from "@/context/combat-context";
-import { usePlayer } from "@/context/player-context";
-import { HudStatRow } from "@/feature/hud/components/hud-parts";
-import layout from "@/feature/hud/components/hud-layout.module.css";
-import { VEHICLE_MODELS } from "@/lib/vehicles/vehicle.config";
+import { cn } from "@/lib/utils";
 
-export function CombatTelemetry({
-  compact = false,
-  showLoadout = false,
-}: {
-  compact?: boolean;
-  showLoadout?: boolean;
-}) {
-  const { stats, maxAmmo, livingAllies, livingEnemies } = useCombat();
-  const { playerWeapon, playerVehicle, playerModel } = usePlayer();
-  const { enemiesDestroyed, currentAmmo } = stats;
-  const ammoPercent = (currentAmmo / maxAmmo) * 100;
-  const rowClass = compact ? layout.compactRow : undefined;
+export function CombatTelemetry({ compact = false }: { compact?: boolean }) {
+  const { stats, livingAllies, livingEnemies } = useCombat();
+  const { enemiesDestroyed } = stats;
 
   return (
-    <div className={compact ? layout.mobileTelemetryInner : undefined}>
-      <div className="flex flex-col gap-1">
-        <HudStatRow
-          className={rowClass}
-          label="ALLIES"
-          value={livingAllies}
-          tone="ally"
-        />
-        <HudStatRow
-          className={rowClass}
-          label="ENEMIES"
-          value={livingEnemies}
-          tone="enemy"
-        />
-        <HudStatRow
-          className={rowClass}
-          label="DESTROYED"
-          value={enemiesDestroyed}
-        />
-      </div>
-      {showLoadout && (
-        <div className="flex flex-col gap-1">
-          <HudStatRow
-            label="VEHICLE"
-            value={VEHICLE_MODELS[playerModel].label}
-          />
-          <HudStatRow label="WEAPON" value={playerWeapon.label} />
-          <HudStatRow
-            label="PLATFORM"
-            value={`${playerVehicle.id.toUpperCase()} · FRONTLINE ${Math.round(playerVehicle.frontlineDurability * 100)}%`}
-          />
+    <div className="flex min-w-0 items-center">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={cn(
+          "shrink-0 text-ui-primary",
+          compact ? "h-4 w-4" : "h-5 w-5",
+        )}
+        aria-hidden="true"
+      >
+        <rect x="7" y="3" width="10" height="18" rx="2" />
+        <path d="M9 7h6" />
+        <path d="M9 17h6" />
+        <path d="M5 8v8" />
+        <path d="M19 8v8" />
+      </svg>
+      <div
+        role="group"
+        aria-label={`${livingAllies} allies, ${livingEnemies} enemies, ${enemiesDestroyed} destroyed`}
+        className={cn(
+          "ml-2 flex min-w-0 flex-1 overflow-hidden rounded-[3px] border border-ui-secondary/30 bg-ui-panel/45 font-mono font-bold tabular-nums",
+          compact ? "text-[12px]" : "text-[16px]",
+        )}
+      >
+        <div className="flex basis-2/3 items-center justify-center gap-1.5 px-1 py-1">
+          <span className="text-[#d27a38]">{livingAllies}</span>
+          <span className="opacity-40">/</span>
+          <span className="text-[#c0392b]">{livingEnemies}</span>
         </div>
-      )}
-      <div className="flex flex-col gap-1">
-        <HudStatRow className={rowClass} label="AMMO" value={currentAmmo} />
-        <div className="h-1 w-full overflow-hidden rounded-[2px] bg-white/20">
-          <div
-            className="h-full bg-gold transition-[width] duration-100 ease-out"
-            style={{ width: `${ammoPercent}%` }}
-          />
+        <div className="flex basis-1/3 items-center justify-center border-l border-ui-secondary/25 px-1 py-1 text-gold">
+          {enemiesDestroyed}
         </div>
       </div>
     </div>

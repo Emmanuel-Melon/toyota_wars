@@ -13,6 +13,8 @@ import { useGameShortcuts } from "@/feature/game/hooks/use-game-shortcuts";
 import { useTutorialGates } from "@/feature/game/tutorial/tutorial-gates";
 import { TouchControls } from "@/feature/controls/components/touch-controls";
 import { useCameraTouchLook } from "@/feature/camera/hooks/use-camera-touch-look";
+import { RadioBridge } from "@/feature/radio/components/radio-bridge";
+import { RadioFeed } from "@/feature/radio/components/radio-feed";
 import { Render } from "@/render";
 import { GameScreenRouter } from "./game-screen-router";
 
@@ -101,6 +103,7 @@ export function GameView({
   });
 
   const screen = useGameScreen(game.mode);
+  const radioActive = game.hasActiveRound && screen.kind === "playing";
 
   useCameraTouchLook({
     targetRef: game.shellRef,
@@ -120,7 +123,14 @@ export function GameView({
     <>
       <Render onSceneReady={onSceneReady} />
       <MissionLaunchBridge game={game} />
+      <RadioBridge
+        active={radioActive}
+        round={game.round}
+        tutorialActive={game.tutorialActive}
+        tutorialStep={game.tutorialStep}
+      />
       <GameScreenRouter screen={screen} game={game} flow={flow} />
+      {radioActive && <RadioFeed />}
       {isMobile && screen.kind === "playing" && flow.phase === "gameplay" && (
         <TouchControls game={game} />
       )}

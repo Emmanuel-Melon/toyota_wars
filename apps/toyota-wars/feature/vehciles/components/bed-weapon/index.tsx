@@ -15,6 +15,9 @@ import { useTurretAim } from "../../hooks/use-turret-aim";
 import { MuzzleCluster } from "./muzzle-cluster";
 import { TankPart } from "../tank-part";
 
+// bed-weapon.tsx
+const LOADER_MOUNTS = new Set(["autocannon"]); // outside the component, typed from your mount union
+
 export function BedWeapon({
   palette,
   health,
@@ -47,6 +50,14 @@ export function BedWeapon({
     aimTargetRef,
   });
 
+   const crew =
+    mount === "rocketPod" ? null : (
+      <>
+        <Vehicle.CrewGunner role="gunner" />
+        {LOADER_MOUNTS.has(mount) && <Vehicle.CrewGunner role="loader" />}
+      </>
+    );
+
   return (
     <TankPart
       position={VEHICLE_MODELS[model].frame.mountPosition}
@@ -65,7 +76,7 @@ export function BedWeapon({
         muzzleRef={muzzleRef}
         muzzleZ={muzzleZ}
         weapon={<Weapons.WeaponMount kind={mount} palette={palette} />}
-        gunner={mount !== "rocketPod" ? <Vehicle.CrewGunner /> : null}
+        gunner={crew}
         effects={
           <MuzzleCluster muzzleZ={muzzleZ} muzzleOffsets={muzzleOffsets} />
         }

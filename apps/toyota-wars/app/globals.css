@@ -6,6 +6,8 @@
 
 :root {
   color-scheme: dark;
+
+  /* Existing UI tokens */
   --ui-panel: #252622;
   --ui-primary: #d98a3b;
   --ui-text: #c9c1ad;
@@ -14,6 +16,105 @@
   --ui-primary-rgb: 217 138 59;
   --ui-text-rgb: 201 193 173;
   --ui-secondary-rgb: 133 130 118;
+
+  /* Rusty HUD tokens (space-separated RGB triplets for rgb(var(--...) / alpha)) */
+  --hud-bg: 43 38 31;
+  --hud-rust: 150 70 25;
+  --hud-rust-deep: 110 50 20;
+  --hud-sand: 194 160 110;
+  --hud-bone: #e9dcc0;
+  --hud-border: #12100c;
+  --hud-active-fg: #1a1208;
+  --hud-active-top: #f0a24a;
+  --hud-active-bottom: #c9702a;
+  --hud-active-border: #5a2f10;
+
+  /* Reusable surface patterns */
+  --hud-rivet:
+    rgb(210 195 165 / 0.6) 0 1.2px,
+    rgb(0 0 0 / 0.55) 1.8px,
+    transparent 2.6px;
+
+  --hud-noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+
+  --hud-rust-drips-small:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 9px,
+      rgb(var(--hud-rust) / 0.34) 9px 10px,
+      transparent 10px 27px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 17px,
+      rgb(var(--hud-rust-deep) / 0.2) 17px 18px,
+      transparent 18px 43px
+    );
+
+  --hud-rust-drips-medium:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 19px,
+      rgb(var(--hud-rust) / 0.3) 19px 21px,
+      transparent 21px 53px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 41px,
+      rgb(var(--hud-rust-deep) / 0.22) 41px 42px,
+      transparent 42px 97px
+    );
+
+  --hud-rust-drips-large:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 31px,
+      rgb(var(--hud-rust) / 0.3) 31px 35px,
+      transparent 35px 88px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 53px,
+      rgb(var(--hud-rust-deep) / 0.24) 53px 56px,
+      transparent 56px 139px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 71px,
+      rgb(var(--hud-sand) / 0.08) 71px 73px,
+      transparent 73px 167px
+    );
+
+  --hud-rust-wash-small:
+    linear-gradient(0deg, rgb(var(--hud-sand) / 0.08), transparent 30%),
+    radial-gradient(120% 90% at 0% 100%, rgb(var(--hud-rust) / 0.18), transparent 55%);
+
+  --hud-rust-wash-medium:
+    linear-gradient(0deg, rgb(var(--hud-sand) / 0.12), transparent 38%),
+    radial-gradient(110% 80% at 0% 100%, rgb(var(--hud-rust) / 0.26), transparent 60%),
+    radial-gradient(70% 60% at 100% 0%, rgb(var(--hud-rust) / 0.18), transparent 65%);
+
+  --hud-rust-wash-large:
+    linear-gradient(0deg, rgb(var(--hud-sand) / 0.14), transparent 42%),
+    radial-gradient(130% 90% at 0% 100%, rgb(var(--hud-rust) / 0.32), transparent 62%),
+    radial-gradient(80% 65% at 100% 0%, rgb(var(--hud-rust) / 0.24), transparent 68%),
+    radial-gradient(60% 50% at 50% 0%, rgb(var(--hud-rust-deep) / 0.18), transparent 70%);
+
+  --hud-rust-drips: var(--hud-rust-drips-medium);
+  --hud-rust-wash: var(--hud-rust-wash-medium);
+
+  --hud-shadow-panel:
+    inset 0 1px 0 rgb(255 235 200 / 0.1),
+    inset 0 0 0 1px rgb(0 0 0 / 0.4),
+    inset 0 -16px 22px -14px rgb(0 0 0 / 0.7),
+    0 6px 14px rgb(0 0 0 / 0.45);
+
+  --hud-command-border: rgb(0 0 0 / 0.6);
+  --hud-shadow-command: inset 0 1px 0 rgb(255 235 200 / 0.06);
+  --hud-shadow-keycap:
+    inset 0 1px 0 rgb(255 235 200 / 0.25),
+    0 2px 0 var(--hud-border);
+
   --background: var(--ui-panel);
   --foreground: var(--ui-text);
 }
@@ -30,13 +131,162 @@
   --color-ui-primary: var(--ui-primary);
   --color-ui-text: var(--ui-text);
   --color-ui-secondary: var(--ui-secondary);
+
+  /* Rusty HUD theme utilities */
+  --color-hud-bg: rgb(var(--hud-bg));
+  --color-hud-rust: rgb(var(--hud-rust));
+  --color-hud-rust-deep: rgb(var(--hud-rust-deep));
+  --color-hud-sand: rgb(var(--hud-sand));
+  --color-hud-bone: var(--hud-bone);
+  --color-hud-border: var(--hud-border);
+  --color-hud-active-fg: var(--hud-active-fg);
+  --color-hud-active-top: var(--hud-active-top);
+  --color-hud-active-bottom: var(--hud-active-bottom);
+  --color-hud-active-border: var(--hud-active-border);
+
+  --shadow-hud-panel: var(--hud-shadow-panel);
+  --shadow-hud-command: var(--hud-shadow-command);
+
   --font-sans: var(--font-barlow-condensed), "Arial Narrow", Arial, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 }
 
-* {
+@layer components {
+  .hud-rust-small {
+    --hud-rust-drips: var(--hud-rust-drips-small);
+    --hud-rust-wash: var(--hud-rust-wash-small);
+  }
+
+  .hud-rust-medium {
+    --hud-rust-drips: var(--hud-rust-drips-medium);
+    --hud-rust-wash: var(--hud-rust-wash-medium);
+  }
+
+  .hud-rust-large {
+    --hud-rust-drips: var(--hud-rust-drips-large);
+    --hud-rust-wash: var(--hud-rust-wash-large);
+  }
+
+  .hud-rusted {
+    position: relative;
+    isolation: isolate;
+    color: var(--hud-bone);
+    border: 1px solid var(--hud-border);
+    border-radius: 3px;
+    background:
+      var(--hud-rust-wash),
+      var(--hud-noise),
+      rgb(var(--hud-bg) / 0.86);
+    box-shadow: var(--hud-shadow-panel);
+  }
+
+  .hud-rusted::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    background: var(--hud-rust-drips);
+    -webkit-mask-image: linear-gradient(180deg, #000, transparent 55%);
+    mask-image: linear-gradient(180deg, #000, transparent 55%);
+  }
+
+  .hud-rusted::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    background:
+      radial-gradient(circle at 7px 7px, var(--hud-rivet)),
+      radial-gradient(circle at calc(100% - 7px) 7px, var(--hud-rivet)),
+      radial-gradient(circle at 7px calc(100% - 7px), var(--hud-rivet)),
+      radial-gradient(circle at calc(100% - 7px) calc(100% - 7px), var(--hud-rivet));
+  }
+
+  .hud-keycap {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    padding: 0 0.4rem;
+    font: 700 11px/1 var(--font-mono, monospace);
+    color: var(--hud-bone);
+    background:
+      var(--hud-rust-wash),
+      linear-gradient(#5b5244, #3a342a);
+    border: 1px solid var(--hud-border);
+    border-radius: 3px;
+    box-shadow: var(--hud-shadow-keycap);
+  }
+
+  .hud-command {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.6rem 0.3rem 0.3rem;
+    font: 600 11px/1 var(--font-stencil, var(--font-mono, monospace));
+    letter-spacing: 0.12em;
+    color: var(--hud-bone);
+    background: rgb(0 0 0 / 0.28);
+    border: 1px solid var(--hud-command-border);
+    border-radius: 3px;
+    box-shadow: var(--hud-shadow-command);
+    cursor: pointer;
+    transition: transform 60ms, background-color 120ms;
+  }
+
+  .hud-command:hover:not(:disabled) {
+    background: rgb(255 235 200 / 0.08);
+  }
+
+  .hud-command:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  .hud-command:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .hud-command[data-active="true"] {
+    color: var(--hud-active-fg);
+    background: linear-gradient(var(--hud-active-top), var(--hud-active-bottom));
+    border-color: var(--hud-active-border);
+  }
+
+  .hud-command[data-active="true"] .hud-keycap {
+    color: var(--hud-active-top);
+    background: linear-gradient(#2a1a0c, #1a1008);
+  }
+
+  .hud-command-icon {
+    display: inline-flex;
+    width: 14px;
+    height: 14px;
+    opacity: 0.9;
+  }
+}
+
+@media (hover: none) {
+  .hud-keycap {
+    display: none;
+  }
+
+  .hud-command {
+    padding-left: 0.6rem;
+  }
+}
+
+/* Note: `*` (not `-`) for universal box-sizing */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
+
 html,
 body {
   margin: 0;

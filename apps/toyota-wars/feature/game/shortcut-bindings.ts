@@ -30,6 +30,25 @@ export const DESIGNATION_KEYS: Record<string, FireDesignationGroup> = {
 
 export const CLEAR_DESIGNATION_KEY = "r";
 
+function keyForAction<T extends string>(
+  bindings: Record<string, T>,
+  action: T,
+): string | undefined {
+  return Object.entries(bindings).find(([, value]) => value === action)?.[0]?.toUpperCase();
+}
+
+export function getDirectiveKey(directive: SquadDirective) {
+  return keyForAction(DIRECTIVE_KEYS, directive);
+}
+
+export function getFormationKey(formation: FormationType) {
+  return keyForAction(FORMATION_KEYS, formation);
+}
+
+export function getDesignationKey(group: FireDesignationGroup) {
+  return keyForAction(DESIGNATION_KEYS, group);
+}
+
 /** Escape-back-stack — pure so it can be tested without a keyboard. */
 export function resolveEscape(
   current: GameMode,

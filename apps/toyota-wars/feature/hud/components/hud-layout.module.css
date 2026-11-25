@@ -11,29 +11,47 @@
   pointer-events: none;
 }
 
+.desktopFormationPanel {
+  position: absolute;
+  top: 104px;
+  left: 38px;
+  z-index: 5;
+  width: min(312px, calc(100vw - 48px));
+  padding: 14px 12px;
+}
+
 .desktopOrdersPanel {
   position: absolute;
   top: 32px;
   right: 38px;
   z-index: 5;
   display: flex;
-  width: min(320px, calc(100vw - 48px));
+  width: min(456px, calc(100vw - 48px));
   flex-direction: column;
   gap: 12px;
-  padding: 14px 16px;
-  pointer-events: none;
+  padding: 14px 12px;
 }
 
-.desktopMapColumn {
+.desktopMapCluster {
   position: absolute;
   bottom: 32px;
   left: 38px;
   z-index: 5;
   display: flex;
-  width: min(210px, calc(100vw - 48px));
-  flex-direction: column;
+  width: min(252px, calc(100vw - 48px));
+  align-items: flex-end;
   gap: 8px;
   pointer-events: none;
+}
+
+.desktopMap {
+  width: min(140px, 55%);
+  flex: none;
+}
+
+.mapSpeed {
+  flex: 1;
+  padding: 8px 10px;
 }
 
 .desktopHealth {
@@ -46,12 +64,12 @@
   transform: translateX(-50%);
 }
 
-.desktopSpeed {
+.desktopVehiclePanel {
   position: absolute;
   right: 38px;
   bottom: 32px;
   z-index: 5;
-  width: min(220px, calc(100vw - 48px));
+  width: min(240px, calc(100vw - 48px));
   padding: 12px 14px;
 }
 
@@ -109,12 +127,22 @@
   text-align: right;
 }
 
+.mobileVehiclePanel {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 108px);
+  right: calc(env(safe-area-inset-right) + 10px);
+  z-index: 5;
+  width: min(150px, calc(100vw - 32px));
+  padding: 6px 8px;
+}
+
 @media (max-width: 920px), (pointer: coarse) {
   .desktopStatsPanel,
+  .desktopFormationPanel,
   .desktopOrdersPanel,
-  .desktopMapColumn,
+  .desktopMapCluster,
   .desktopHealth,
-  .desktopSpeed {
+  .desktopVehiclePanel {
     display: none;
   }
 }
@@ -123,7 +151,8 @@
   .mobileTelemetry,
   .mobileMission,
   .mobileHealth,
-  .mobileSpeed {
+  .mobileSpeed,
+  .mobileVehiclePanel {
     display: none;
   }
 }

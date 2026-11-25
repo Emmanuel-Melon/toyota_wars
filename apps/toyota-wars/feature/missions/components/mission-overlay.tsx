@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { usePlayer } from "@/context/player-context";
 import layout from "@/feature/hud/components/hud-layout.module.css";
-import { HudNotice, HudPanel } from "@/feature/hud/components/hud-parts";
+import { HudPanel } from "@/feature/hud/components/hud-parts";
 import { cardinalBearing, distance2D, formatDistance } from "@toyota/missions";
 import { useMission } from "@/context/missions.context";
 import type { MissionObjective } from "@toyota/missions";
@@ -68,7 +68,7 @@ function ObjectiveNavReadout({
 }
 
 export function MissionHud({ compact = false }: { compact?: boolean }) {
-  const { status, mission, elapsed, objectives, activeObjective, notice } =
+  const { status, mission, elapsed, objectives, activeObjective } =
     useMission();
   if (
     !mission ||
@@ -94,6 +94,7 @@ export function MissionHud({ compact = false }: { compact?: boolean }) {
 
     return (
       <HudPanel
+        rust="large"
         className={`pointer-events-none ${layout.mobileMission}`}
         aria-label="Mission status"
       >
@@ -111,6 +112,7 @@ export function MissionHud({ compact = false }: { compact?: boolean }) {
 
   return (
     <HudPanel
+      rust="large"
       className="pointer-events-none absolute left-1/2 top-8 z-[6] w-[min(420px,calc(100vw-48px))] -translate-x-1/2 px-[14px] py-3 max-[919px]:top-[136px] max-[919px]:w-[calc(100vw-16px)] max-[919px]:px-2 max-[919px]:py-2"
       aria-label="Mission status"
     >
@@ -118,17 +120,6 @@ export function MissionHud({ compact = false }: { compact?: boolean }) {
         <span>{mission.title}</span>
         <span>{formatSeconds(elapsed)}</span>
       </div>
-      {notice && (
-        <HudNotice
-          key={notice.id}
-          className="mb-2 flex justify-between gap-3 border border-ui-primary/45 bg-ui-primary/15 px-2 py-1.5 font-mono text-[11px] font-bold uppercase leading-[1.4] tracking-[0.12em]"
-        >
-          <span>{notice.title}</span>
-          <span className="text-right text-[10px] text-ui-primary">
-            {notice.detail}
-          </span>
-        </HudNotice>
-      )}
       <ObjectiveNavReadout objective={activeObjective} />
       <ul className="m-0 flex list-none flex-col gap-1 p-0 max-[919px]:max-h-[86px] max-[919px]:overflow-hidden">
         {visible.map((objective) => (
