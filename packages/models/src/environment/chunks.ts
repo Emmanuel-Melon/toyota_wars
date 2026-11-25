@@ -36,3 +36,15 @@ export function chunksAround(
   }
   return chunks;
 }
+
+export function chunksInBounds(bound: number, chunkSize: number): string[] {
+  const min = worldToChunk(-bound, -bound, chunkSize);
+  const max = worldToChunk(bound, bound, chunkSize);
+  const chunks: string[] = [];
+  for (let x = min.x; x <= max.x; x++) {
+    for (let z = min.z; z <= max.z; z++) {
+      chunks.push(chunkKey(x, z));
+    }
+  }
+  return chunks;
+}

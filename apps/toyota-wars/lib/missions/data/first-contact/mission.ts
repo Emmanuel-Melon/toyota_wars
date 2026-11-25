@@ -1,9 +1,13 @@
 // apps/toyota-wars/lib/missions/data/first-contact/mission.ts
 import type { MissionInput } from "@toyota/missions";
 import { noEffects } from "@toyota/missions";
+import type { FlowScript } from "@/lib/mission-flow/mission-flow.types";
 import type { GameMissionBundle } from "../../missions.registry";
 import { failConditions } from "./failure";
 import { objectives } from "./success";
+import { FIRST_CONTACT_FLOW_ID } from "./ids";
+import { hostileContactCutscene, patrolOpening } from "./cutscenes";
+import { acknowledgeContactQte } from "./qtes";
 
 export const firstContact: MissionInput = {
   id: "first-contact",
@@ -65,6 +69,12 @@ export const firstContact: MissionInput = {
   rewards: { xp: 100, unlocks: ["hold-the-line"] },
 };
 
+export const flow: FlowScript = {
+  id: FIRST_CONTACT_FLOW_ID,
+  steps: [patrolOpening, hostileContactCutscene, acknowledgeContactQte],
+};
+
 export const firstContactBundle: GameMissionBundle = {
   mission: firstContact,
+  flow,
 };

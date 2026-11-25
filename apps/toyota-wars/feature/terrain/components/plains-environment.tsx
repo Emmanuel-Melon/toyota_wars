@@ -3,8 +3,10 @@
 
 import { Sky } from "@react-three/drei";
 import { Environment } from "@toyota/models";
+import { TIME_OF_DAY } from "@toyota/missions";
 import { useArena } from "@/context/arena-context";
 import { useCameraMode } from "@/context/camera-mode-context";
+import { useMission } from "@/context/missions.context";
 import { usePlayer } from "@/context/player-context";
 import { isRoamMode } from "@/feature/camera/camera.types";
 import { useDroneRoam } from "@/feature/camera/drone-roam.context";
@@ -12,41 +14,83 @@ import { TerrainManager } from "./terrain-manager";
 import { GrassPatches } from "./grass-patches";
 import { RoadNetworkManager } from "../../roads/components/road-network-manager";
 
+type EnvironmentPreset = {
+  background: string;
+  fogColor: string;
+  ambientIntensity: number;
+  lightPosition: [number, number, number];
+  lightIntensity: number;
+  lightColor: string;
+  sunPosition: [number, number, number];
+  turbidity: number;
+  rayleigh: number;
+};
+
+const ENVIRONMENT_PRESETS: Record<
+  (typeof TIME_OF_DAY)[keyof typeof TIME_OF_DAY],
+  EnvironmentPreset
+> = {
+  [TIME_OF_DAY.DAY]: {
+    background: "#c7b18b",
+    fogColor: "#c7b18b",
+    ambientIntensity: 1.8,
+    lightPosition: [-18, 28, 12],
+    lightIntensity: 3.2,
+    lightColor: "#ffe0a1",
+    sunPosition: [-8, 4, -10],
+    turbidity: 8,
+    rayleigh: 2.2,
+  },
+  [TIME_OF_DAY.NIGHT]: {
+    background: "#070b16",
+    fogColor: "#0a1020",
+    ambientIntensity: 0.35,
+    lightPosition: [-12, 18, 8],
+    lightIntensity: 0.5,
+    lightColor: "#8fa9ff",
+    sunPosition: [8, -4, -10],
+    turbidity: 2,
+    rayleigh: 0.6,
+  },
+};
+
 export function PlainsEnvironment() {
   const { playerBody } = usePlayer();
   const { mode } = useCameraMode();
   const { streamingFocus } = useDroneRoam();
   const arena = useArena();
+  const { mission } = useMission();
+  const preset = ENVIRONMENT_PRESETS[mission?.timeOfDay ?? TIME_OF_DAY.DAY];
   const focus = isRoamMode(mode) ? streamingFocus : playerBody;
 
   return (
     <>
-      <color attach="background" args={["#c7b18b"]} />
-      <fog attach="fog" args={["#c7b18b", 50, 200]} />
-      <ambientLight intensity={1.8} />
+      <color attach="background" args={[preset.background]} />
+      <fog attach="fog" args={[preset.fogColor, 50, 200]} />
+      <ambientLight intensity={preset.ambientIntensity} />
       <directionalLight
         castShadow
-        position={[-18, 28, 12]}
-        intensity={3.2}
-        color="#ffe0a1"
+        position={preset.lightPosition}
+        intensity={preset.lightIntensity}
+        color={preset.lightColor}
       />
-      <Sky sunPosition={[-8, 4, -10]} turbidity={8} rayleigh={2.2} />
+      <Sky
+        sunPosition={preset.sunPosition}
+        turbidity={preset.turbidity}
+        rayleigh={preset.rayleigh}
+      />
 
-      {/* Infinite Chunk Manager streams terrain around the player */}
       <TerrainManager
-        playerBody={focus}
+        bound={arena.bound}
         terrain={arena.terrain}
         chunkSize={arena.chunks.size}
-        renderRadius={arena.chunks.renderRadius}
         segments={arena.chunks.segments}
       />
 
-      {/* Road Network */}
       <RoadNetworkManager
-        playerBody={focus}
+        bound={arena.bound}
         network={arena.roads}
         terrain={arena.terrain}
-        roadRadius={280}
       />
 
       {/* Arena obstacles */}

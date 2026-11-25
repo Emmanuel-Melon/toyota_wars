@@ -6,6 +6,7 @@ import {
   OBJECTIVE_TYPE,
   SQUAD_EFFECT_TYPE,
   TEAM,
+  TIME_OF_DAY,
   TRIGGER_TYPE,
 } from "./missions.config";
 import { noEffects, waveEffects } from "./missions.presets";
@@ -38,6 +39,11 @@ export const PersonalitySchema = z.object({
 });
 
 export const TeamSchema = z.enum([TEAM.ALLY, TEAM.ENEMY]);
+
+export const TimeOfDaySchema = z.enum([
+  TIME_OF_DAY.DAY,
+  TIME_OF_DAY.NIGHT,
+]);
 
 /**
  * A unit template id from the game's registry. Kept as a plain string so this file stays
@@ -259,6 +265,7 @@ export const MissionBaseSchema = z.object({
   title: z.string(),
   briefing: z.string(),
   difficulty: z.number().int().min(1).max(5),
+  timeOfDay: TimeOfDaySchema.default(TIME_OF_DAY.DAY),
   requires: z.array(z.string()).default([]),
   zones: z.array(MissionZoneSchema).default([]),
   arena: ArenaSchema,

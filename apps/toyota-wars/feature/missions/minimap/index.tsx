@@ -21,15 +21,19 @@ export function MissionMinimap() {
 
   return (
     <HudPanel
-      className="pointer-events-none w-full p-3 max-[919px]:p-1"
+      className="pointer-events-none relative aspect-square w-full p-0"
+      style={{ borderRadius: "50%", overflow: "hidden" }}
       aria-label="Tactical minimap"
     >
-      <MinimapHeader
-        title={title}
-        distanceRef={distanceRef}
-        bearingRef={bearingRef}
-      />
+      <div className="pointer-events-none absolute inset-x-[14%] top-[18%] z-10">
+        <MinimapHeader
+          title={title}
+          distanceRef={distanceRef}
+          bearingRef={bearingRef}
+        />
+      </div>
       <MinimapCanvas canvasRef={canvasRef} />
+      <div className="pointer-events-none absolute inset-[4px] z-[5] rounded-full border border-ui-secondary/50" />
     </HudPanel>
   );
 }

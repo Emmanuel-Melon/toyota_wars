@@ -1,8 +1,10 @@
+import type { QteSpec, QteState } from "./qte/qte.types";
+
 export type FlowPhase = "gameplay" | "cutscene" | "qte";
 
 export type FlowCameraMode = "player" | "scripted";
 
-export type QteOutcome = "success" | "failure" | null;
+export type QteOutcome = "success" | "failure" | "skipped" | null;
 
 export type FlowVec3 = readonly [number, number, number];
 
@@ -25,14 +27,6 @@ export type FlowCameraContext = {
 
 export type FlowCameraResolver = (context: FlowCameraContext) => FlowCameraShot;
 
-export type FlowQteConfig = {
-  prompt: string;
-  detail: string;
-  keys: readonly string[];
-  labels: readonly string[];
-  durationMs: number;
-};
-
 type FlowStepBase = {
   id: string;
   durationMs: number;
@@ -43,10 +37,11 @@ type FlowStepBase = {
 
 export type FlowCutsceneStep = FlowStepBase & { type: "cutscene" };
 
-export type FlowQteStep = FlowStepBase & {
+export interface FlowQteStep extends FlowStepBase {
   type: "qte";
-  qte: FlowQteConfig;
-};
+  camera: FlowCameraResolver;
+  qte: QteSpec;   // replaces { prompt, detail, keys, labels, durationMs }
+}
 
 export type FlowStep = FlowCutsceneStep | FlowQteStep;
 
@@ -55,8 +50,10 @@ export type FlowScript = {
   steps: readonly FlowStep[];
 };
 
-export type FlowQteSnapshot = FlowQteConfig & {
+export type FlowQteSnapshot = {
   id: string;
+  spec: QteSpec;
+  state: QteState;
   outcome: QteOutcome;
 };
 
@@ -65,7 +62,7 @@ export type FlowSnapshot = {
   sequenceId: string | null;
   stepId: string | null;
   title: string | null;
-  caption: string | null;
+  caption?: string;
   camera: FlowCameraMode;
   cameraEpoch: number;
   qte: FlowQteSnapshot | null;

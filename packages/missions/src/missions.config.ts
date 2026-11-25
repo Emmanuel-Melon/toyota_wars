@@ -13,6 +13,11 @@ export const TEAM = {
   ENEMY: "enemy",
 } as const;
 
+export const TIME_OF_DAY = {
+  DAY: "day",
+  NIGHT: "night",
+} as const;
+
 /**
  * The single order a squad starts with. Phase 5 replaces this with multi-step plans
  * (ORDER_TYPE), at which point these values become the plan's first step.

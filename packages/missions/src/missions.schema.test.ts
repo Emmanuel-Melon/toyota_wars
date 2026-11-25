@@ -18,6 +18,21 @@ describe("mission schemas", () => {
     ]);
   });
 
+  it("defaults timeOfDay to day", () => {
+    const mission = MissionSchema.parse(makeMissionInput());
+
+    expect(mission.timeOfDay).toBe("day");
+  });
+
+  it("parses night missions", () => {
+    const input = makeMissionInput();
+    input.timeOfDay = "night";
+
+    const mission = MissionSchema.parse(input);
+
+    expect(mission.timeOfDay).toBe("night");
+  });
+
   it("rejects objectives that reference unknown zones", () => {
     const input = makeMissionInput();
     input.objectives = [

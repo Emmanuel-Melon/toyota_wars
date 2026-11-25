@@ -8,9 +8,25 @@ import type {
   FlowStep,
   QteOutcome,
 } from "@/lib/mission-flow/mission-flow.types";
+import type { FlowEffect } from "@/lib/mission-flow/flow.effects";
+import { createQteMachine } from "@/lib/mission-flow/qte/qte.machine";
+import type {
+  QteEvent,
+  QteOutcome as MachineQteOutcome,
+  QteState,
+} from "@/lib/mission-flow/qte/qte.types";
 
 const QTE_RESOLVE_HOLD_MS = 420;
 const MAX_FRAME_MS = 100;
+
+const FLOW_OUTCOME: Record<
+  MachineQteOutcome,
+  Exclude<QteOutcome, null>
+> = {
+  succeeded: "success",
+  failed: "failure",
+  skipped: "skipped",
+};
 
 type LiveQte = {
   id: string;
@@ -27,9 +43,13 @@ export class MissionFlowRunner {
   private camera: FlowCameraMode = "player";
   private cameraEpoch = 0;
   private qte: LiveQte | null = null;
+  private qteMachine: ReturnType<typeof createQteMachine> | null = null;
+  private qteState: QteState | null = null;
   private outcomes: Record<string, QteOutcome> = {};
   private listeners = new Set<() => void>();
   private snapshot = this.createSnapshot();
+
+  constructor(private onEffect?: (effect: FlowEffect) => void) {}
 
   subscribe = (listener: () => void) => {
     this.listeners.add(listener);
@@ -88,9 +108,7 @@ export class MissionFlowRunner {
         return;
       }
 
-      if (this.elapsedMs >= step.durationMs) {
-        this.setQteOutcome("failure");
-      }
+      this.dispatchQte({ type: "tick", deltaMs: frameMs });
       return;
     }
 
@@ -98,23 +116,8 @@ export class MissionFlowRunner {
   }
 
   resolveQte(key: string) {
-    const step = this.currentStep();
-    if (
-      this.phase !== "qte" ||
-      !step ||
-      step.type !== "qte" ||
-      !this.qte ||
-      this.qte.outcome
-    ) {
-      return;
-    }
-
-    const candidate = key.toLowerCase();
-    if (!step.qte.keys.some((allowed) => allowed.toLowerCase() === candidate)) {
-      return;
-    }
-
-    this.setQteOutcome("success");
+    if (this.phase !== "qte" || !this.qte || this.qte.outcome) return;
+    this.dispatchQte({ type: "input", key });
   }
 
   skip() {
@@ -122,7 +125,8 @@ export class MissionFlowRunner {
 
     const step = this.currentStep();
     if (step?.type === "qte" && this.qte && !this.qte.outcome) {
-      this.setQteOutcome("failure");
+      this.dispatchQte({ type: "skip" });
+      if (!this.qte.outcome) this.setQteOutcome("failure");
     }
     this.finish();
   }
@@ -137,6 +141,8 @@ export class MissionFlowRunner {
     this.camera = "player";
     this.cameraEpoch += 1;
     this.qte = null;
+    this.qteMachine = null;
+    this.qteState = null;
     this.outcomes = {};
     this.emit();
   }
@@ -158,7 +164,16 @@ export class MissionFlowRunner {
     this.elapsedMs = 0;
     this.qteResolvedMs = 0;
     this.phase = step.type;
-    this.qte = step.type === "qte" ? { id: step.id, outcome: null } : null;
+    if (step.type === "qte") {
+      this.qte = { id: step.id, outcome: null };
+      this.qteMachine = createQteMachine(step.qte);
+      this.qteState = this.qteMachine.initial();
+      this.dispatchQte({ type: "start" });
+    } else {
+      this.qte = null;
+      this.qteMachine = null;
+      this.qteState = null;
+    }
     this.emit();
   }
 
@@ -172,6 +187,34 @@ export class MissionFlowRunner {
     this.camera = "player";
     this.cameraEpoch += 1;
     this.qte = null;
+    this.qteMachine = null;
+    this.qteState = null;
+    this.emit();
+  }
+
+  private dispatchQte(event: QteEvent) {
+    const step = this.currentStep();
+    if (
+      step?.type !== "qte" ||
+      !this.qte ||
+      !this.qteMachine ||
+      !this.qteState ||
+      this.qte.outcome
+    ) {
+      return;
+    }
+
+    const { state: next, effects } = this.qteMachine.reduce(
+      this.qteState,
+      event,
+    );
+    if (next === this.qteState) return;
+
+    this.qteState = next;
+    for (const effect of effects) this.onEffect?.(effect);
+    if (next.outcome && !this.qte.outcome) {
+      this.setQteOutcome(FLOW_OUTCOME[next.outcome]);
+    }
     this.emit();
   }
 
@@ -193,14 +236,11 @@ export class MissionFlowRunner {
     const qteStep = step?.type === "qte" ? step : null;
     let qte: FlowQteSnapshot | null = null;
 
-    if (qteStep && this.qte) {
+    if (qteStep && this.qte && this.qteState) {
       qte = {
         id: this.qte.id,
-        prompt: qteStep.qte.prompt,
-        detail: qteStep.qte.detail,
-        keys: qteStep.qte.keys,
-        labels: qteStep.qte.labels,
-        durationMs: qteStep.qte.durationMs,
+        spec: qteStep.qte,
+        state: this.qteState,
         outcome: this.qte.outcome,
       };
     }
@@ -210,7 +250,7 @@ export class MissionFlowRunner {
       sequenceId: this.sequenceId,
       stepId: step?.id ?? null,
       title: step?.title ?? null,
-      caption: step?.caption ?? null,
+      caption: step?.caption ?? undefined,
       camera: this.camera,
       cameraEpoch: this.cameraEpoch,
       qte,

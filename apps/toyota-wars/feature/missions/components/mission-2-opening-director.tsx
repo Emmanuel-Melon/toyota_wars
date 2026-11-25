@@ -15,9 +15,9 @@ import { WEAPONS } from "@/lib/weapons/weapon.config";
 import { createFireRequest } from "@/lib/weapons/weapon.math";
 import {
   ARTILLERY_SQUAD_ID,
+  EVADE_QTE_ID,
   HOLD_THE_LINE_MISSION_ID,
-} from "@/lib/missions/data/hold-the-line/mission";
-import { EVADE_QTE_ID } from "@/lib/missions/data/hold-the-line/qtes";
+} from "@/lib/missions/data/hold-the-line/ids";
 import { useGameFrame } from "@/render-loop";
 
 const SHOTS = [

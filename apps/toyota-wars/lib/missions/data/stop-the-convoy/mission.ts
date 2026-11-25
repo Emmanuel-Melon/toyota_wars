@@ -1,5 +1,5 @@
 import type { MissionInput } from "@toyota/missions";
-import { noEffects } from "@toyota/missions";
+import { noEffects, TIME_OF_DAY } from "@toyota/missions";
 import type { GameMissionBundle } from "../../missions.registry";
 import { failConditions } from "./failure";
 import { objectives } from "./success";
@@ -11,8 +11,9 @@ export const stopTheConvoy: MissionInput = {
   order: 7,
   title: "Stop the Convoy",
   briefing:
-    "An enemy convoy is pushing toward the southern base. Destroy it before the lead vehicles reach the approach road.",
+    "Under cover of darkness, an enemy convoy is pushing toward the southern base. Destroy it before the lead vehicles reach the approach road.",
   difficulty: 4,
+  timeOfDay: TIME_OF_DAY.NIGHT,
   requires: [],
   arena: {
     seed: 7007,

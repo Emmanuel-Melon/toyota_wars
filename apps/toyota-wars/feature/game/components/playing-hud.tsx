@@ -7,7 +7,6 @@ import { CombatStats } from "@/feature/combat/components/combat-stats";
 import { DangerVignette } from "@/feature/combat/components/danger-vignette";
 import { DamageIndicatorHud } from "@/feature/combat/components/damage-indicator-hud";
 import { PlayerHealthBar } from "@/feature/combat/components/player-health-bar";
-import { AimCameraControls } from "@/feature/controls/components/aim-camera-controls";
 import type { GameState } from "@/feature/game/game.types";
 import { TacticalDrawer } from "@/feature/game/components/tactical-drawer";
 import { MissionMinimap } from "@/feature/missions/components/mission-minimap";
@@ -43,7 +42,6 @@ export function PlayingHud({ game, shellRef }: Props) {
           <MissionHud />
           <div className={layout.desktopMapColumn}>
             <MissionMinimap />
-            <AimCameraControls />
           </div>
           <CombatStats />
           <PlayerHealthBar />
