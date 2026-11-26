@@ -25,7 +25,11 @@ export const dshkWeapon: WeaponConfig = {
     hitRadius: 1.6,
     damage: 18,
   },
-  audio: { kind: "heavyMg" },
+  audio: {
+    kind: "sample",
+    src: "/audio/dshk.mp3",
+    fallback: "heavyMg",
+  },
   fx: {
     tracer: { every: 3, length: 7, width: 0.1, igniteDist: 10, burnTime: 3 },
     casing: {
