@@ -26,7 +26,11 @@ export const zu23Weapon: WeaponConfig = {
     hitRadius: 1.6,
     damage: 18,
   },
-  audio: { kind: "autocannon" },
+  audio: {
+    kind: "sample",
+    src: "/audio/zu23.mp3",
+    fallback: "autocannon",
+  },
   fx: {
     tracer: {
       every: 1,

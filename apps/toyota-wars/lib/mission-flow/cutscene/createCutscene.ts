@@ -1,5 +1,8 @@
 // cutscene/createCutscene.ts
-import type { FlowCutsceneStep } from "../mission-flow.types";
+import type {
+  FlowCutsceneActor,
+  FlowCutsceneStep,
+} from "../mission-flow.types";
 import type { CameraShotSpec } from "../camera/camera.types";
 import { createCameraResolver } from "../camera/camera.resolve";
 
@@ -9,6 +12,7 @@ export interface CutsceneSpec {
     caption?: string;
     durationMs: number;
     shot: CameraShotSpec;
+    actors?: readonly FlowCutsceneActor[];
     // storyline hooks, add these fields to FlowCutsceneStep when you're ready:
     // dialogue?: { speaker: string; text: string; atMs: number }[];
     // skippable?: boolean;

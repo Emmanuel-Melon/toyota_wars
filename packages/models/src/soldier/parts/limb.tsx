@@ -56,8 +56,8 @@ export function Limb({
   }, [from[0], from[1], from[2], to[0], to[1], to[2]]);
 
   const geometry = useMemo(
-    () => new CylinderGeometry(radiusTo, radiusFrom, length, 10),
-    [radiusTo, radiusFrom, length],
+    () => new CylinderGeometry(radiusTo, radiusFrom, 1, 10),
+    [radiusTo, radiusFrom],
   );
 
   const fallbackMaterial = useMemo(
@@ -84,6 +84,7 @@ export function Limb({
     <mesh
       position={position}
       quaternion={quaternion}
+      scale={[1, length, 1]}
       geometry={geometry}
       material={material ?? fallbackMaterial!}
       castShadow

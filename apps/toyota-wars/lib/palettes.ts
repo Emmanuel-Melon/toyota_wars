@@ -1,6 +1,29 @@
-import { Vehicle } from "@toyota/models";
+import { Soldier, Vehicle } from "@toyota/models";
 
 export type VehiclePalette = Vehicle.VehiclePalette;
+export type SoldierPalette = Soldier.SoldierPalette;
+
+export const ALLY_SOLDIER_PALETTE: SoldierPalette = {
+  skin: "#8d5b4c",
+  helmet: "#2b3028",
+  lens: "#2f5560",
+  boots: "#1c1a17",
+  glove: "#2a2d26",
+  vest: "#1f241d",
+  uniform: "#343d31",
+  gear: "#3b4036",
+};
+
+export const ENEMY_SOLDIER_PALETTE: SoldierPalette = {
+  skin: "#a06f5a",
+  helmet: "#303a3c",
+  lens: "#7b3f3f",
+  boots: "#201d1d",
+  glove: "#252a2b",
+  vest: "#2b3436",
+  uniform: "#3d4a4d",
+  gear: "#4b5557",
+};
 
 export const PLAYER_PALETTE: VehiclePalette = {
   body: "#7f8a5a",

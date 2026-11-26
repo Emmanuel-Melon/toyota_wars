@@ -27,6 +27,19 @@ export type FlowCameraContext = {
 
 export type FlowCameraResolver = (context: FlowCameraContext) => FlowCameraShot;
 
+export type FlowActorAnchor =
+  | { at: "relative"; side: number; forward: number }
+  | { at: "world"; position: FlowVec3 };
+
+export type FlowActorPalette = "ally" | "enemy";
+
+export type FlowCutsceneActor = {
+  id: string;
+  from: FlowActorAnchor;
+  to: FlowActorAnchor;
+  palette: FlowActorPalette;
+};
+
 type FlowStepBase = {
   id: string;
   durationMs: number;
@@ -35,7 +48,10 @@ type FlowStepBase = {
   camera: FlowCameraResolver;
 };
 
-export type FlowCutsceneStep = FlowStepBase & { type: "cutscene" };
+export type FlowCutsceneStep = FlowStepBase & {
+  type: "cutscene";
+  actors?: readonly FlowCutsceneActor[];
+};
 
 export interface FlowQteStep extends FlowStepBase {
   type: "qte";

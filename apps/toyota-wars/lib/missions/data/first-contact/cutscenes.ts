@@ -1,9 +1,29 @@
 import { createCutscene } from "@/lib/mission-flow/cutscene/createCutscene";
 import { rel, onPlayer, type CameraShotSpec } from "@/lib/mission-flow/camera/camera.types";
+import type { FlowCutsceneActor } from "@/lib/mission-flow/mission-flow.types";
 import {
   PATROL_OPENING_ID,
   HOSTILE_CONTACT_ID,
 } from "./ids";
+
+const allyRunner = (
+  id: string,
+  fromSide: number,
+  fromForward: number,
+  toSide: number,
+  toForward: number,
+): FlowCutsceneActor => ({
+  id,
+  from: { at: "relative", side: fromSide, forward: fromForward },
+  to: { at: "relative", side: toSide, forward: toForward },
+  palette: "ally",
+});
+
+const patrolActors: FlowCutsceneActor[] = [
+  allyRunner("runner-1", -17, 22, -6, -1),
+  allyRunner("runner-2", -20, 24, -9, -3),
+  allyRunner("runner-3", -23, 20, -12, -2),
+];
 
 const patrolOpeningShot: CameraShotSpec = {
   from: {
@@ -37,6 +57,7 @@ export const patrolOpening = createCutscene({
   caption: "The northern sector has been quiet for days.",
   durationMs: 4200,
   shot: patrolOpeningShot,
+  actors: patrolActors,
 });
 
 export const hostileContactCutscene = createCutscene({

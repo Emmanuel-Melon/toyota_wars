@@ -1,9 +1,13 @@
 // lib/audio/audio.gunshot.ts
 import { WEAPONS } from "@/lib/weapons/weapon.config";
-import type { WeaponId } from "@/lib/weapons/weapon.types";
+import type {
+  ProceduralWeaponAudioKind,
+  WeaponId,
+} from "@/lib/weapons/weapon.types";
 
 export class ProceduralGunshot {
   private static audioCtx: AudioContext | null = null;
+  private static sampleBuffers = new Map<string, Promise<AudioBuffer | null>>();
 
   private static getContext(): AudioContext | null {
     if (typeof window === "undefined") return null;
@@ -25,7 +29,16 @@ export class ProceduralGunshot {
   }
 
   public static play(weapon: WeaponId): void {
-    switch (WEAPONS[weapon].audio.kind) {
+    const audio = WEAPONS[weapon].audio;
+    if (audio.kind === "sample") {
+      void this.playSample(audio.src, audio.volume, audio.fallback);
+      return;
+    }
+    this.playProcedural(audio.kind);
+  }
+
+  private static playProcedural(kind: ProceduralWeaponAudioKind): void {
+    switch (kind) {
       case "heavyMg":
         this.playHeavyMg();
         break;
@@ -35,6 +48,57 @@ export class ProceduralGunshot {
       case "rocket":
         this.playRocket();
         break;
+    }
+  }
+
+  private static loadSample(
+    ctx: AudioContext,
+    src: string,
+  ): Promise<AudioBuffer | null> {
+    let pending = this.sampleBuffers.get(src);
+    if (!pending) {
+      pending = fetch(src)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Failed to load weapon audio: ${src}`);
+          }
+          return response.arrayBuffer();
+        })
+        .then((data) => ctx.decodeAudioData(data))
+        .catch((error) => {
+          console.warn("Unable to decode weapon audio:", error);
+          return null;
+        });
+      this.sampleBuffers.set(src, pending);
+    }
+    return pending;
+  }
+
+  private static async playSample(
+    src: string,
+    volume = 1,
+    fallback?: ProceduralWeaponAudioKind,
+  ): Promise<void> {
+    try {
+      const ctx = this.getContext();
+      if (!ctx) return;
+
+      const buffer = await this.loadSample(ctx, src);
+      if (!buffer) {
+        if (fallback) this.playProcedural(fallback);
+        return;
+      }
+
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      const gainNode = ctx.createGain();
+      gainNode.gain.value = volume;
+      source.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      source.start();
+    } catch (error) {
+      console.warn("Weapon audio playback failed:", error);
+      if (fallback) this.playProcedural(fallback);
     }
   }
 

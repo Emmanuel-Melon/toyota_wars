@@ -5,8 +5,16 @@ export type WeaponId = "dshk" | "zu23" | "type63";
 
 export type WeaponMechanism = "projectile" | "rocket";
 
+export type ProceduralWeaponAudioKind = "heavyMg" | "autocannon" | "rocket";
+
 export type WeaponAudioSpec =
-  { kind: "heavyMg" } | { kind: "autocannon" } | { kind: "rocket" };
+  | { kind: ProceduralWeaponAudioKind }
+  | {
+      kind: "sample";
+      src: string;
+      volume?: number;
+      fallback?: ProceduralWeaponAudioKind;
+    };
 
 export type WeaponProjectileVisual = {
   size: number;

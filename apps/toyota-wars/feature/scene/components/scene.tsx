@@ -31,6 +31,7 @@ import { WreckMarkers } from "@/feature/combat/components/wreck-markers";
 import { WreckPickupSystem } from "@/feature/combat/components/wreck-pickup-system";
 import { KeyboardNavigator } from "@/feature/controls/components/keyboard-navigator";
 import { PlayerController } from "@/feature/controls/components/player-controller";
+import { CutsceneSoldiers } from "@/feature/mission-flow/components/cutscene-soldiers";
 import { FlowCameraController } from "@/feature/mission-flow/components/flow-camera-controller";
 import { MissionObjectiveMarker } from "@/feature/missions/components/mission-objective-marker";
 import { MissionPositionBridge } from "@/feature/missions/components/mission-position-bridge";
@@ -118,6 +119,7 @@ export function SceneContent() {
       </VehicleProvider>
       <PlayerCamera />
       <DroneRoamController />
+      <CutsceneSoldiers />
       <FlowCameraController />
       {!isMobile && <KeyboardNavigator />}
       <PlayerController />
