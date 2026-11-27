@@ -73,6 +73,6 @@ export interface AgentObstacle {
   readonly halfDepth?: number;
   readonly yaw?: number;
   readonly height?: number;
-  readonly structure?: "building" | "watchtower";
+  readonly structure?: "building" | "watchtower" | "checkpoint" | "base";
   readonly locationId?: string;
 }

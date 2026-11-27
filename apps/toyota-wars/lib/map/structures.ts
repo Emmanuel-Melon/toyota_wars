@@ -1,14 +1,15 @@
 import * as THREE from "three";
+import type { MissionArena } from "@toyota/missions";
 import type { PlacedLocation, RoadNetwork } from "./map.network";
 import { createRng } from "./map.spawns";
 import type { TerrainSampler } from "./map.terrain";
 import type { MapPosition } from "./map.types";
-import type { LocationId } from "./map.world";
+import { LOCATION_IDS, type LocationId } from "./map.world";
 
 export type ArenaStructure = {
   id: string;
   locationId: LocationId;
-  structure: "building" | "watchtower";
+  structure: "building" | "watchtower" | "checkpoint" | "base";
   position: THREE.Vector3;
   shape: "box";
   width: number;
@@ -29,6 +30,7 @@ export type StructurePlacementInput = {
   bound: number;
   spawnPoints: readonly MapPosition[];
   seed?: number;
+  seedStructures?: readonly ArenaStructure[];
 };
 
 type Rng = ReturnType<typeof createRng>;
@@ -42,7 +44,7 @@ type RoadFrame = {
 
 type StructureSpec = {
   id: string;
-  structure: "building" | "watchtower";
+  structure: "building" | "watchtower" | "checkpoint" | "base";
   width: number;
   depth: number;
   height: number;
@@ -258,18 +260,65 @@ function placeStructure(
   return null;
 }
 
+function nearestLocationId(
+  x: number,
+  z: number,
+  roads: RoadNetwork,
+): LocationId {
+  let nearest: LocationId = LOCATION_IDS.crossroads;
+  let bestDistance = Infinity;
+  for (const [id, location] of roads.locations) {
+    const distance = Math.hypot(x - location.x, z - location.z);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      nearest = id;
+    }
+  }
+  return nearest;
+}
+
+export function createAuthoredStructures(
+  authored: MissionArena["structures"],
+  roads: RoadNetwork,
+  terrain: TerrainSampler,
+): ArenaStructure[] {
+  return authored.map((entry) => {
+    const halfWidth = entry.width / 2;
+    const halfDepth = entry.depth / 2;
+    const { x, z } = entry.position;
+    return {
+      id: entry.id,
+      locationId: nearestLocationId(x, z, roads),
+      structure: entry.structure,
+      position: new THREE.Vector3(x, terrain.getHeight(x, z), z),
+      shape: "box",
+      width: entry.width,
+      depth: entry.depth,
+      height: entry.height,
+      yaw: entry.yaw,
+      halfWidth,
+      halfDepth,
+      radius: Math.hypot(halfWidth, halfDepth),
+      destructible: false,
+    };
+  });
+}
+
 export function createStructures(
   input: StructurePlacementInput,
 ): ArenaStructure[] {
-  const structures: ArenaStructure[] = [];
+  const placed: ArenaStructure[] = [...(input.seedStructures ?? [])];
+  const generated: ArenaStructure[] = [];
   const rng = input.seed === undefined ? undefined : createRng(input.seed);
 
   for (const location of input.locations) {
     for (const spec of structureSpecs(location, rng)) {
-      const structure = placeStructure(spec, location, structures, input, rng);
-      if (structure) structures.push(structure);
+      const structure = placeStructure(spec, location, placed, input, rng);
+      if (!structure) continue;
+      placed.push(structure);
+      generated.push(structure);
     }
   }
 
-  return structures;
+  return generated;
 }

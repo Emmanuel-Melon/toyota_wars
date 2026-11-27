@@ -244,14 +244,34 @@ export const RoadConfigSchema = z.object({
   width: z.number().positive().default(24),
 });
 
+export const StructureTypeSchema = z.enum([
+  "building",
+  "watchtower",
+  "checkpoint",
+  "base",
+]);
+export const StructureAnchorSchema = z.enum(["world", "spawn"]);
+
+export const ArenaStructureSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  structure: StructureTypeSchema.default("building"),
+  anchor: StructureAnchorSchema.default("world"),
+  position: Vec2Schema,
+  yaw: z.number().default(0),
+  width: z.number().positive().default(12),
+  depth: z.number().positive().default(10),
+  height: z.number().positive().default(6),
+});
+
 export const ArenaSchema = z.object({
   levelId: z.string().optional(),
   seed: z.number().int(),
   size: z.number().positive(),
-  obstacleDensity: z.number().min(0).max(1),
+  obstacleDensity: z.number().min(0).max(1).default(0.3),
   playerSpawn: Vec2Schema,
   heading: z.number().optional(),
   roads: RoadConfigSchema.optional(),
+  structures: z.array(ArenaStructureSchema).default([]),
 });
 
 export const MissionRewardsSchema = z.object({

@@ -14,7 +14,11 @@ import type {
   MapTerrainConfig,
 } from "./map.types";
 import { PLAINS_MAP } from "./maps/plains";
-import { createStructures, type ArenaStructure } from "./structures";
+import {
+  createAuthoredStructures,
+  createStructures,
+  type ArenaStructure,
+} from "./structures";
 
 export const ARENA_LEVEL_IDS = ["plains"] as const;
 
@@ -48,7 +52,7 @@ export type ArenaObstacle = {
   halfDepth?: number;
   yaw?: number;
   height?: number;
-  structure?: "building" | "watchtower";
+  structure?: "building" | "watchtower" | "checkpoint" | "base";
   locationId?: string;
 };
 
@@ -107,6 +111,7 @@ export const DEFAULT_ARENA: ArenaSource = {
       ],
       width: 24,
     },
+    structures: [],
   },
   clearancePoints: DEFAULT_CLEARANCE_POINTS,
 };
@@ -306,7 +311,12 @@ export function createArenaRuntime(source: ArenaSource): ArenaRuntime {
     source.arena.playerSpawn.x,
     source.arena.playerSpawn.z,
   ];
-  const structures = createStructures({
+  const authoredStructures = createAuthoredStructures(
+    source.arena.structures ?? [],
+    roads,
+    terrain,
+  );
+  const generatedStructures = createStructures({
     locations: [...roads.locations.values()],
     roads,
     terrain,
@@ -314,7 +324,9 @@ export function createArenaRuntime(source: ArenaSource): ArenaRuntime {
     bound: source.arena.size / 2,
     spawnPoints: spawnPoints(source),
     seed: source.structureSeed,
+    seedStructures: authoredStructures,
   });
+  const structures = [...authoredStructures, ...generatedStructures];
   const obstacles = createObstacles(
     source,
     terrain,

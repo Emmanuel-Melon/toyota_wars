@@ -1,7 +1,9 @@
+// apps/toyota-wars/lib/missions/data/secure-the-crossroads/mission.ts
 import type { MissionInput } from "@toyota/missions";
 import { noEffects } from "@toyota/missions";
 import type { GameMissionBundle } from "../../missions.registry";
 import { failConditions } from "./failure";
+import { structures } from "./structures";
 import { objectives } from "./success";
 import { ROAD_WAYPOINTS, zones } from "./zones";
 
@@ -24,6 +26,7 @@ export const secureTheCrossroads: MissionInput = {
       waypoints: ROAD_WAYPOINTS,
       width: 24,
     },
+    structures,
   },
   squads: [
     {

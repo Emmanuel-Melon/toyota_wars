@@ -1,3 +1,4 @@
+// apps/toyota-wars/lib/missions/data/secure-the-crossroads/success.ts
 import type { MissionInput } from "@toyota/missions";
 
 export const objectives: MissionInput["objectives"] = [

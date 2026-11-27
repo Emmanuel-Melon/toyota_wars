@@ -50,6 +50,11 @@ function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
+function wrapAngle(value: number): number {
+  const fullTurn = Math.PI * 2;
+  return (((value + Math.PI) % fullTurn) + fullTurn) % fullTurn - Math.PI;
+}
+
 function average(points: readonly Vec2[], fallback: Vec2): Vec2 {
   if (points.length === 0) return fallback;
   let x = 0;
@@ -319,6 +324,55 @@ export function applyMissionLayout(mission: MissionInput): MissionInput {
     }),
   );
 
+  const authoredRoadWaypoints = mission.arena.roads?.waypoints ?? [
+    mission.arena.playerSpawn,
+    { x: 0, z: 0 },
+  ];
+  const authoredRoadStart =
+    authoredRoadWaypoints[0] ?? mission.arena.playerSpawn;
+  const authoredRoadNext = authoredRoadWaypoints[1] ?? { x: 0, z: 0 };
+  const generatedRoadStart = roadWaypoints[0] ?? playerPoint;
+  const generatedRoadNext = roadWaypoints[1] ?? enemySpawnCenter;
+  const authoredRoadHeading = Math.atan2(
+    authoredRoadNext.x - authoredRoadStart.x,
+    authoredRoadNext.z - authoredRoadStart.z,
+  );
+  const generatedRoadHeading = Math.atan2(
+    generatedRoadNext.x - generatedRoadStart.x,
+    generatedRoadNext.z - generatedRoadStart.z,
+  );
+  const structureRotation = wrapAngle(
+    generatedRoadHeading - authoredRoadHeading,
+  );
+  const structureCos = Math.cos(structureRotation);
+  const structureSin = Math.sin(structureRotation);
+
+  const structures = mission.arena.structures?.map((structure) => {
+    if (structure.anchor !== "spawn") return structure;
+
+    const dx = structure.position.x - authoredRoadStart.x;
+    const dz = structure.position.z - authoredRoadStart.z;
+    const radius = Math.hypot(structure.width / 2, structure.depth / 2);
+    const limit = half - radius - SPAWN_BOUND_MARGIN;
+
+    return {
+      ...structure,
+      position: {
+        x: clamp(
+          generatedRoadStart.x + dx * structureCos + dz * structureSin,
+          -limit,
+          limit,
+        ),
+        z: clamp(
+          generatedRoadStart.z - dx * structureSin + dz * structureCos,
+          -limit,
+          limit,
+        ),
+      },
+      yaw: wrapAngle(structure.yaw + structureRotation),
+    };
+  });
+
   return {
     ...mission,
     arena: {
@@ -330,6 +384,7 @@ export function applyMissionLayout(mission: MissionInput): MissionInput {
         width: roadWidth,
         waypoints: roadWaypoints,
       },
+      structures: structures ?? [],
     },
     squads,
   };

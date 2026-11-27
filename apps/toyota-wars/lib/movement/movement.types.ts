@@ -77,7 +77,7 @@ export type Obstacle = Disc & {
   halfDepth?: number;
   yaw?: number;
   height?: number;
-  structure?: "building" | "watchtower";
+  structure?: "building" | "watchtower" | "checkpoint" | "base";
   locationId?: string;
 };
 

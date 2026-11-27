@@ -4,6 +4,7 @@ import { noEffects, TIME_OF_DAY } from "@toyota/missions";
 import type { FlowScript } from "@/lib/mission-flow/mission-flow.types";
 import type { GameMissionBundle } from "../../missions.registry";
 import { failConditions } from "./failure";
+import { structures } from "./structures";
 import { objectives } from "./success";
 import { FIRST_CONTACT_FLOW_ID } from "./ids";
 import { hostileContactCutscene, patrolOpening } from "./cutscenes";
@@ -24,6 +25,7 @@ export const firstContact: MissionInput = {
     size: 600,
     obstacleDensity: 0.35,
     playerSpawn: { x: 0, z: 240 },
+    structures,
   },
   squads: [
     {

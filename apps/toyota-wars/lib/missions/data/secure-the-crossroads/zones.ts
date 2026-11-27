@@ -1,3 +1,4 @@
+// apps/toyota-wars/lib/missions/data/secure-the-crossroads/zones.ts
 import type { MissionInput, Vec2 } from "@toyota/missions";
 
 export const CROSSROADS: Vec2 = { x: 0, z: -120 };
