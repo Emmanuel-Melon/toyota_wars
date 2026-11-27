@@ -81,12 +81,11 @@ export function fireRangeForWeapon(
   config: AgentConfig,
   designated = false,
 ): number {
-  return designated
-    ? Math.min(
-        weapon.preferredRange,
-        weapon.engagementRange * config.designatedFireRangeMultiplier,
-      )
-    : weapon.engagementRange;
+  if (!designated) return weapon.engagementRange;
+  const baseRange = Math.max(weapon.engagementRange, weapon.preferredRange);
+  const scaledRange =
+    weapon.engagementRange * config.designatedFireRangeMultiplier;
+  return Math.min(baseRange, Math.max(weapon.engagementRange, scaledRange));
 }
 
 export function fireRangeForOrder(
@@ -95,7 +94,9 @@ export function fireRangeForOrder(
   attackOrder?: AgentAttackOrder | null,
   fireDesignation?: AgentFireDesignation | null,
 ): number {
-  if (attackOrder?.mode === AgentAttackMode.Seek) return weapon.preferredRange;
+  if (attackOrder?.mode === AgentAttackMode.Seek) {
+    return Math.max(weapon.engagementRange, weapon.preferredRange);
+  }
   if (attackOrder?.mode === AgentAttackMode.Focus || fireDesignation) {
     return fireRangeForWeapon(weapon, config, true);
   }
@@ -109,10 +110,11 @@ export function engagementRanges(ctx: AgentContext) {
     ctx.squadOrder.attackOrder,
     ctx.squadOrder.fireDesignation,
   );
+  const standoff = Math.max(fire * 0.92, ctx.config.fightingDistance * 0.9);
   return {
     fire,
-    standoff: fire * 0.9,
-    retreat: fire * 0.65,
+    standoff: Math.min(standoff, fire),
+    retreat: fire * 0.7,
   };
 }
 

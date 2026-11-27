@@ -39,7 +39,7 @@ export function createAttackIntent(_config: AgentConfig) {
           if (ctx.squadOrder.targetIsObjective) return 1;
           const { fire } = engagementRanges(ctx);
           if (!Number.isFinite(ctx.targetDistance)) return 0;
-          const close = 1 - remap(ctx.targetDistance, fire, fire * 1.5);
+          const close = 1 - remap(ctx.targetDistance, fire, fire * 1.25);
           return RANGE_FLOOR + (1 - RANGE_FLOOR) * close;
         },
         curve: curves.linear(),

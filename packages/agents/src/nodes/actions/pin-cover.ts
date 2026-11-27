@@ -39,7 +39,8 @@ export class PinCoverAction extends BTNode<AgentContext> {
     }
 
     const distance = distanceXZ(ctx.position, ctx.targetPosition);
-    const inRange = distance <= engagementRanges(ctx).fire;
+    const inRange =
+      distance <= Math.max(engagementRanges(ctx).fire, ctx.config.fireRange);
     ctx.decision.weapon =
       ctx.lineOfSightClear && inRange
         ? {

@@ -10,8 +10,8 @@ const ORDERED_FLANK_WEIGHT = 1.5;
 const ORBIT_SPEED = 0.4;
 
 export function createFlankIntent(config: AgentConfig) {
-  const fireRange = config.fireRange;
-  const orbitRadius = fireRange * 0.8;
+  const fireRange = Math.max(config.fireRange, config.fightingDistance * 1.1);
+  const orbitRadius = Math.min(config.fightingDistance, fireRange * 0.85);
 
   const flankOption: AgentOptionFor<typeof AgentIntent.Flank> = {
     id: AgentIntent.Flank,
@@ -28,7 +28,7 @@ export function createFlankIntent(config: AgentConfig) {
       {
         name: "outOfRange",
         input: (ctx) =>
-          0.35 + 0.65 * remap(ctx.targetDistance, fireRange, fireRange * 3),
+          0.35 + 0.65 * remap(ctx.targetDistance, fireRange, fireRange * 1.75),
         curve: curves.linear(),
       },
       {

@@ -22,8 +22,10 @@ export class StandoffCombatAction extends BTNode<AgentContext> {
       standoff,
       retreat: retreatRange,
     } = engagementRanges(ctx);
-    const fightingDistance = this.fightingDistance ?? standoff;
-    const retreatDistance = this.retreatDistance ?? retreatRange;
+    const fightingDistance =
+      this.fightingDistance ?? Math.min(ctx.config.fightingDistance, standoff);
+    const retreatDistance =
+      this.retreatDistance ?? Math.max(retreatRange, fireRange * 0.5);
     const approachSpeed = this.approachSpeed ?? ctx.config.chaseSpeed;
     const isObjective = ctx.squadOrder.targetIsObjective;
     const distance = distanceXZ(ctx.position, ctx.targetPosition);

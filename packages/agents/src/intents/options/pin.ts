@@ -32,7 +32,7 @@ export function createPinIntent(_config: AgentConfig) {
         name: "fireRange",
         input: (ctx) => {
           const { fire } = engagementRanges(ctx);
-          return 0.4 + 0.6 * (1 - remap(ctx.targetDistance, fire, fire * 1.5));
+          return 0.4 + 0.6 * (1 - remap(ctx.targetDistance, fire, fire * 1.25));
         },
         curve: curves.linear(),
       },

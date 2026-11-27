@@ -9,13 +9,14 @@ export class CheckTargetInRange extends BTNode<AgentContext> {
   }
 
   evaluate(ctx: AgentContext): NodeState {
-    if (!ctx.targetPosition) return NodeState.FAILURE;
+    const target = ctx.targetPosition ?? ctx.lastKnownPosition;
+    if (!target) return NodeState.FAILURE;
     const range =
       this.range ??
       (ctx.squadOrder.targetIsObjective
         ? (ctx.squadOrder.targetStopDistance ?? 0)
-        : engagementRanges(ctx).fire);
-    const distance = distanceXZ(ctx.position, ctx.targetPosition);
+        : Math.max(engagementRanges(ctx).fire, ctx.config.fireRange));
+    const distance = distanceXZ(ctx.position, target);
     return distance <= range ? NodeState.SUCCESS : NodeState.FAILURE;
   }
 }
