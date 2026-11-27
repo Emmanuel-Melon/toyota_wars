@@ -1,7 +1,7 @@
 // apps/toyota-wars/feature/terrain/components/plains-environment.tsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Environment } from "@toyota/models";
 import { TIME_OF_DAY } from "@toyota/missions";
 import { useArena } from "@/context/arena-context";
@@ -13,6 +13,7 @@ import { WORLD_FOG_CONFIG } from "@/feature/camera/camera.config";
 import { useDroneRoam } from "@/feature/camera/drone-roam.context";
 import { useGameFrame } from "@/render-loop";
 import { TerrainManager } from "./terrain-manager";
+import { useWheelEmitters, WHEEL_IDS } from "../hooks/use-wheel-emitters";
 import { RoadNetworkManager } from "../../roads/components/road-network-manager";
 import { ENVIRONMENT_PRESETS } from "./plains-environment.config";
 import { GrassPatches } from "./grass-patches";
@@ -50,6 +51,42 @@ export function PlainsEnvironment() {
     arena.chunks.size * (arena.chunks.renderRadius + 0.5),
   );
 
+  const trackSystem = useMemo(
+    () =>
+      new Environment.TrackSystem(
+        -arena.bound,
+        -arena.bound,
+        Math.max(1, arena.bound * 2),
+      ),
+    [arena.bound],
+  );
+
+  useEffect(() => () => trackSystem.dispose(), [trackSystem]);
+
+  const isOffRoad = useCallback(() => {
+    const { x, z } = playerBody.position;
+    return arena.roads.distanceToRoad(x, z) > arena.roadWidth / 2 + 2;
+  }, [arena.roads, arena.roadWidth, playerBody]);
+
+  const getEmitters = useWheelEmitters(playerBody, isOffRoad);
+
+  useGameFrame((_, dt) => {
+    const emitters = getEmitters();
+    if (emitters.length === 0) {
+      trackSystem.clearWheelHistory();
+    } else {
+      trackSystem.recordWheels(
+        emitters.map((emitter, index) => ({
+          id: WHEEL_IDS[index] ?? `wheel-${index}`,
+          x: emitter.x,
+          z: emitter.z,
+        })),
+        emitters[0]?.strength ?? 0,
+      );
+    }
+    trackSystem.update(dt);
+  }, "vfx");
+
   useEffect(() => {
     const next = snapFocus(focus, snapStep);
     if (samePoint(focusPointRef.current, next)) return;
@@ -84,9 +121,15 @@ export function PlainsEnvironment() {
         bound={arena.bound}
         terrain={arena.terrain}
         network={arena.roads}
+        wheelTrackMap={trackSystem.texture}
         chunkSize={arena.chunks.size}
         segments={arena.chunks.segments}
         renderRadius={arena.chunks.renderRadius}
+      />
+
+      <Environment.WheelDust
+        getEmitters={getEmitters}
+        terrain={arena.terrain}
       />
 
       <RoadNetworkManager

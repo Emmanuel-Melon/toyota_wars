@@ -4,6 +4,15 @@ export type TerrainSampler = {
   readonly getVehicleHeight: (worldX: number, worldZ: number) => number;
 };
 
+export type WheelEmitter = {
+  readonly x: number;
+  readonly z: number;
+  readonly speed: number;
+  readonly dirX: number;
+  readonly dirZ: number;
+  readonly strength: number;
+};
+
 export type RoadClearance = {
   readonly distanceToRoad: (worldX: number, worldZ: number) => number;
 };

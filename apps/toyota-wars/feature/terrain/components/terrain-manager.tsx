@@ -14,6 +14,7 @@ interface TerrainManagerProps {
   bound: number;
   terrain: TerrainSampler;
   network: RoadNetwork;
+  wheelTrackMap: THREE.Texture;
   chunkSize?: number;
   segments?: number;
   renderRadius?: number;
@@ -82,6 +83,7 @@ export const TerrainManager = memo(function TerrainManager({
   bound,
   terrain,
   network,
+  wheelTrackMap,
   chunkSize = 120,
   segments = 64,
   renderRadius = 2,
@@ -132,6 +134,7 @@ export const TerrainManager = memo(function TerrainManager({
           worldMin={worldMin}
           worldSpan={worldSpan}
           trackMap={trackMap}
+          wheelTrackMap={wheelTrackMap}
         />
       ))}
     </group>

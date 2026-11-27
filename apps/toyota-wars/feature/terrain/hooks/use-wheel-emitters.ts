@@ -1,15 +1,6 @@
 // feature/terrain/hooks/use-wheel-emitters.ts
 import { useCallback } from "react";
-import { Vehicle } from "@toyota/models";
-
-export type WheelEmitter = {
-  x: number;
-  z: number;
-  speed: number; // m/s
-  dirX: number; // normalized velocity dir (0 if speed ~ 0)
-  dirZ: number;
-  strength: number; // 0 on road, 1 off-road
-};
+import { Vehicle, type WheelEmitter } from "@toyota/models";
 
 type PlayerBodyLike = {
   position: { x: number; y: number; z: number };

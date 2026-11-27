@@ -13,6 +13,7 @@ type TerrainChunkProps = {
   worldMin: [number, number];
   worldSpan: number;
   trackMap: THREE.Texture;
+  wheelTrackMap: THREE.Texture;
 };
 
 const geometryCaches = new WeakMap<
@@ -92,6 +93,7 @@ export const TerrainChunk = memo(function TerrainChunk({
   worldMin,
   worldSpan,
   trackMap,
+  wheelTrackMap,
 }: TerrainChunkProps) {
   const originX = chunkX * size;
   const originZ = chunkZ * size;
@@ -126,6 +128,7 @@ export const TerrainChunk = memo(function TerrainChunk({
         worldMin={worldMin}
         worldSpan={worldSpan}
         trackMap={trackMap}
+        wheelTrackMap={wheelTrackMap}
       />
     </mesh>
   );

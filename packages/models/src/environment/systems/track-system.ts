@@ -1,10 +1,5 @@
 import * as THREE from "three";
 
-/**
- * World-space canvas: wheels draw dark strokes into it,
- * the terrain material samples it to darken the ground.
- * Old tracks slowly fade via destination-out fills.
- */
 export class TrackSystem {
   readonly texture: THREE.CanvasTexture;
   private ctx: CanvasRenderingContext2D;
@@ -25,12 +20,10 @@ export class TrackSystem {
     this.scale = resolution / span;
     this.texture = new THREE.CanvasTexture(canvas);
     this.texture.wrapS = this.texture.wrapT = THREE.ClampToEdgeWrapping;
+    this.texture.flipY = false;
   }
 
-  recordWheels(
-    points: { id: string; x: number; z: number }[],
-    intensity = 1,
-  ) {
+  recordWheels(points: { id: string; x: number; z: number }[], intensity = 1) {
     const ctx = this.ctx;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
@@ -41,7 +34,8 @@ export class TrackSystem {
       const last = this.last.get(p.id);
       this.last.set(p.id, { x: p.x, z: p.z });
       if (!last) continue;
-      const dx = p.x - last.x, dz = p.z - last.z;
+      const dx = p.x - last.x,
+        dz = p.z - last.z;
       if (dx * dx + dz * dz < 0.001) continue; // skip sub-centimeter jitter
       ctx.beginPath();
       ctx.moveTo(
@@ -63,8 +57,21 @@ export class TrackSystem {
     this.fadeTimer = 0;
     this.ctx.globalCompositeOperation = "destination-out";
     this.ctx.fillStyle = "rgba(0,0,0,0.04)"; // ~fade out over a couple of minutes
-    this.ctx.fillRect(0, 0, this.texture.image.width as number, this.texture.image.height as number);
+    this.ctx.fillRect(
+      0,
+      0,
+      this.texture.image.width as number,
+      this.texture.image.height as number,
+    );
     this.ctx.globalCompositeOperation = "source-over";
     this.texture.needsUpdate = true;
+  }
+
+  clearWheelHistory(): void {
+    this.last.clear();
+  }
+
+  dispose(): void {
+    this.texture.dispose();
   }
 }

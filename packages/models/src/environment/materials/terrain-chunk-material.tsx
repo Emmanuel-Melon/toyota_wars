@@ -9,6 +9,7 @@ type Props = {
   worldMin: [number, number]; // arena bound min corner
   worldSpan: number;
   trackMap: THREE.Texture;
+  wheelTrackMap: THREE.Texture;
 };
 
 export function TerrainChunkMaterial({
@@ -18,6 +19,7 @@ export function TerrainChunkMaterial({
   worldMin,
   worldSpan,
   trackMap,
+  wheelTrackMap,
 }: Props) {
   const layers = useMemo(() => getGroundLayers(), []);
 
@@ -33,6 +35,7 @@ export function TerrainChunkMaterial({
       shader.uniforms.uDirt = { value: layers.dirt };
       shader.uniforms.uRock = { value: layers.rock };
       shader.uniforms.uTrack = { value: trackMap };
+      shader.uniforms.uWheelTrack = { value: wheelTrackMap };
       shader.uniforms.uWorldMin = { value: new THREE.Vector2(...worldMin) };
       shader.uniforms.uWorldSpan = { value: worldSpan };
       shader.uniforms.uChunkOffset = {
@@ -68,6 +71,7 @@ export function TerrainChunkMaterial({
           uniform sampler2D uDirt;
           uniform sampler2D uRock;
           uniform sampler2D uTrack;
+          uniform sampler2D uWheelTrack;
           uniform vec2 uWorldMin;
           uniform float uWorldSpan;`,
         )
@@ -86,16 +90,26 @@ export function TerrainChunkMaterial({
           float slope = 1.0 - normalize(vWNormal).y;
           ground = mix(ground, rockC, smoothstep(0.18, 0.5, slope));
 
-          // wheel tracks darken the ground
           vec2 trackUv = (vWorldXZ - uWorldMin) / uWorldSpan;
-          float track = texture2D(uTrack, trackUv).r;
+          float roadTrack = texture2D(uTrack, trackUv).r;
+          float wheelTrack = texture2D(uWheelTrack, trackUv).a;
+          float track = max(roadTrack, wheelTrack);
           ground *= mix(1.0, 0.45, track);
 
           diffuseColor.rgb *= ground;`,
         );
     };
     return mat;
-  }, [layers, trackMap, worldMin, worldSpan, chunkX, chunkZ, size]);
+  }, [
+    layers,
+    trackMap,
+    wheelTrackMap,
+    worldMin,
+    worldSpan,
+    chunkX,
+    chunkZ,
+    size,
+  ]);
 
   useEffect(() => () => material.dispose(), [material]);
   return <primitive object={material} attach="material" />;
