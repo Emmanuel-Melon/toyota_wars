@@ -31,6 +31,7 @@ export interface SquadTickState {
   objectiveTarget?: Vec2 | null;
   targetStopDistance?: number;
   targetIsObjective?: boolean;
+  holdPosition?: boolean;
   forcedIntent?: AgentIntentId;
   attackOrder?: AllyAttackOrder | null;
   priorityTargetId?: string;
@@ -106,6 +107,7 @@ export class SquadOrchestrator {
       targetIsObjective: state.objectiveTarget
         ? (state.targetIsObjective ?? true)
         : false,
+      holdPosition: state.holdPosition,
       rallyPoint: { x: state.rallyPoint.x, y: state.rallyPoint.z },
       isExplicitOrder: state.isExplicitOrder,
       forcedIntent: state.forcedIntent,

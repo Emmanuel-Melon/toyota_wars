@@ -1,78 +1,12 @@
 // apps/toyota-wars/lib/missions/data/first-contact/mission.ts
-import type { MissionInput } from "@toyota/missions";
-import { noEffects, TIME_OF_DAY } from "@toyota/missions";
 import type { FlowScript } from "@/lib/mission-flow/mission-flow.types";
+import { loadMissionData } from "../mission-data";
 import type { GameMissionBundle } from "../../missions.registry";
-import { checkpointGarrison } from "./checkpoint-garrison";
-import { failConditions } from "./failure";
-import { structures } from "./structures";
-import { objectives } from "./success";
 import { FIRST_CONTACT_FLOW_ID } from "./ids";
 import { hostileContactCutscene, patrolOpening } from "./cutscenes";
 import { acknowledgeContactQte } from "./qtes";
 
-export const firstContact: MissionInput = {
-  id: "first-contact",
-  schemaVersion: 2,
-  order: 1,
-  title: "First Contact",
-  briefing:
-    "At dusk, a small scout patrol has crossed into the plains. Two allied tanks are joining you, so use the rocks for cover and take the scouts down together.",
-  difficulty: 1,
-  timeOfDay: TIME_OF_DAY.DUSK,
-  requires: [],
-  arena: {
-    seed: 1001,
-    size: 2000,
-    obstacleDensity: 0.35,
-    playerSpawn: { x: 0, z: 240 },
-    structures,
-  },
-  squads: [
-    {
-      id: "support",
-      team: "ally",
-      units: [{ template: "medium" }, { template: "medium" }],
-      spawnPoints: [
-        { x: -36, z: 258 },
-        { x: 36, z: 258 },
-      ],
-      personality: { aggression: 0.5, caution: 0.6 },
-      initialOrder: "follow",
-      ...noEffects(),
-    },
-    checkpointGarrison,
-    {
-      id: "intel",
-      team: "ally",
-      units: [{ template: "radar" }],
-      spawnPoints: [{ x: 0, z: 290 }],
-      personality: { aggression: 0.2, caution: 0.9 },
-      initialOrder: "follow",
-      ...noEffects(),
-    },
-    {
-      id: "scouts",
-      team: "enemy",
-      units: [
-        { template: "light" },
-        { template: "light" },
-        { template: "light" },
-      ],
-      spawnPoints: [
-        { x: -120, z: -180 },
-        { x: 0, z: -210 },
-        { x: 120, z: -180 },
-      ],
-      personality: { aggression: 0.3, caution: 0.6 },
-      initialOrder: "patrol",
-      ...noEffects(),
-    },
-  ],
-  objectives,
-  failConditions,
-  rewards: { xp: 100, unlocks: ["hold-the-line"] },
-};
+export const firstContact = loadMissionData("first-contact");
 
 export const flow: FlowScript = {
   id: FIRST_CONTACT_FLOW_ID,

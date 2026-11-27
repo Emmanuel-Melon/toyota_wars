@@ -1,0 +1,110 @@
+{
+  "id": "first-contact",
+  "schemaVersion": 2,
+  "order": 1,
+  "title": "First Contact",
+  "briefing": "At dusk, a small scout patrol has crossed into the plains. Two allied tanks are joining you, so use the rocks for cover and take the scouts down together.",
+  "difficulty": 1,
+  "timeOfDay": "dusk",
+  "requires": [],
+  "arena": {
+    "seed": 1001,
+    "size": 2000,
+    "obstacleDensity": 0.35,
+    "playerSpawn": { "x": 0, "z": 240 },
+    "structures": [
+      {
+        "id": "first-contact-checkpoint",
+        "structure": "checkpoint",
+        "anchor": "spawn",
+        "position": { "x": 28, "z": 215 },
+        "yaw": 3.141592653589793,
+        "width": 20,
+        "depth": 16,
+        "height": 3
+      }
+    ]
+  },
+  "squads": [
+    {
+      "id": "support",
+      "team": "ally",
+      "units": [{ "template": "medium" }, { "template": "medium" }],
+      "spawnPoints": [
+        { "x": -36, "z": 258 },
+        { "x": 36, "z": 258 }
+      ],
+      "personality": { "aggression": 0.5, "caution": 0.6 },
+      "initialOrder": "follow",
+      "onSpawned": [],
+      "onDestroyed": []
+    },
+    {
+      "id": "checkpoint-garrison",
+      "team": "ally",
+      "units": [{ "template": "medium" }, { "template": "medium" }],
+      "spawnPoints": [
+        { "x": -6.5, "z": -1.6, "yaw": 0.3 },
+        { "x": 6.5, "z": -1.6, "yaw": -0.3 }
+      ],
+      "spawnLayout": "authored",
+      "spawnAnchor": {
+        "structureId": "first-contact-checkpoint",
+        "role": "vehicle",
+        "holdPosition": true
+      },
+      "formation": "line",
+      "spacing": 13,
+      "holdFormation": true,
+      "personality": { "aggression": 0.35, "caution": 0.8 },
+      "initialOrder": "patrol",
+      "onSpawned": [],
+      "onDestroyed": []
+    },
+    {
+      "id": "intel",
+      "team": "ally",
+      "units": [{ "template": "radar" }],
+      "spawnPoints": [{ "x": 0, "z": 290 }],
+      "personality": { "aggression": 0.2, "caution": 0.9 },
+      "initialOrder": "follow",
+      "onSpawned": [],
+      "onDestroyed": []
+    },
+    {
+      "id": "scouts",
+      "team": "enemy",
+      "units": [
+        { "template": "light" },
+        { "template": "light" },
+        { "template": "light" }
+      ],
+      "spawnPoints": [
+        { "x": -120, "z": -180 },
+        { "x": 0, "z": -210 },
+        { "x": 120, "z": -180 }
+      ],
+      "personality": { "aggression": 0.3, "caution": 0.6 },
+      "initialOrder": "patrol",
+      "onSpawned": [],
+      "onDestroyed": []
+    }
+  ],
+  "objectives": [
+    {
+      "id": "clear-scouts",
+      "title": "Destroy the scout patrol",
+      "type": "destroyCount",
+      "params": { "team": "enemy", "count": 3 }
+    },
+    {
+      "id": "support-alive",
+      "title": "Keep both allies alive",
+      "type": "keepAlive",
+      "required": false,
+      "params": { "squadId": "support", "minAlive": 2 }
+    }
+  ],
+  "failConditions": [{ "type": "playerDestroyed" }],
+  "rewards": { "xp": 100, "unlocks": ["hold-the-line"] }
+}

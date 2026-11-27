@@ -19,6 +19,7 @@ export interface EvaluateSquadParams {
   targetPosition: Point2D | null;
   targetStopDistance?: number;
   targetIsObjective?: boolean;
+  holdPosition?: boolean;
   rallyPoint: Point2D;
   isExplicitOrder: boolean;
   forcedIntent?: AgentIntentId;
@@ -57,6 +58,7 @@ export class SquadManager {
         targetPosition: params.targetPosition,
         targetStopDistance: params.targetStopDistance,
         targetIsObjective: params.targetIsObjective,
+        holdPosition: params.holdPosition,
         rallyPoint: params.rallyPoint,
         isExplicitOrder: params.isExplicitOrder,
         forcedIntent: params.forcedIntent,

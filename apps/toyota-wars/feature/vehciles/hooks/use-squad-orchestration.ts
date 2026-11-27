@@ -196,6 +196,7 @@ export function useSquadOrchestration({
         targetIsObjective: attackOrderActive
           ? false
           : strategic.targetIsObjective,
+        holdPosition: holdingPosition && attackOrder === null,
         forcedIntent: attackOrderActive ? AgentIntent.Attack : undefined,
         attackOrder: attackOrderActive ? attackOrder : null,
         priorityTargetId:

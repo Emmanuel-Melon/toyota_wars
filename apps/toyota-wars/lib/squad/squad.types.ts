@@ -93,6 +93,7 @@ export interface SquadOrderContext {
   targetPosition: Point2D | null;
   targetStopDistance?: number;
   targetIsObjective?: boolean;
+  holdPosition?: boolean;
   rallyPoint: Point2D;
   isExplicitOrder: boolean;
   forcedIntent?: AgentIntentId;

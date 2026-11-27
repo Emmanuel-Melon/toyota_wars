@@ -8,6 +8,7 @@ import * as THREE from "three";
 import {
   AutoAimingStrategy,
   aimHeading,
+  calculateBallisticPitch,
   calculatePredictedIntercept,
   createFireRequest,
   DefaultWeaponExecutor,
@@ -225,7 +226,13 @@ export function PlayerWeapon() {
       );
       const pitch =
         horizontal > 1e-6
-          ? Math.atan2(aimPoint.current.y - origin.y, horizontal)
+          ? calculateBallisticPitch(
+              origin,
+              aimPoint.current,
+              playerWeapon.projectile.speed,
+              playerWeapon.projectile.gravity,
+              playerWeapon.projectile.drag ?? 0,
+            )
           : 0;
       projectiles.current.fire(
         createFireRequest(

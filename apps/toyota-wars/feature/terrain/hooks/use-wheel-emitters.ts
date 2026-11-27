@@ -1,6 +1,6 @@
 // feature/terrain/hooks/use-wheel-emitters.ts
 import { useCallback } from "react";
-import { Vehicle, type WheelEmitter } from "@toyota/models";
+import { Environment, Vehicle } from "@toyota/models";
 
 type PlayerBodyLike = {
   position: { x: number; y: number; z: number };
@@ -23,7 +23,7 @@ export function useWheelEmitters(
   playerBody: PlayerBodyLike,
   isOffRoad: () => boolean,
 ) {
-  return useCallback((): WheelEmitter[] => {
+  return useCallback((): Environment.WheelEmitter[] => {
     const speed = playerBody.speed;
     const strength = Math.abs(speed) < 1.5 ? 0 : isOffRoad() ? 1 : 0.12;
     if (strength === 0) return [];

@@ -2,18 +2,16 @@ import * as THREE from "three";
 import { isSmokeOccluded } from "../fx/fx.smoke";
 
 export type TargetPosition =
-  | Readonly<THREE.Vector3>
-  | readonly [number, number, number];
+  Readonly<THREE.Vector3> | readonly [number, number, number];
 
 export function readTargetPosition(
   position: TargetPosition,
   out: THREE.Vector3,
 ): THREE.Vector3 {
-  if (Array.isArray(position)) {
-    const [x, y, z] = position as readonly [number, number, number];
-    return out.set(x, y, z);
-  }
-  return out.copy(position);
+  if ("x" in position) return out.copy(position);
+
+  const [x, y, z] = position;
+  return out.set(x, y, z);
 }
 
 export function isTargetVisible(

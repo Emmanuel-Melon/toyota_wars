@@ -83,6 +83,8 @@ export function useTurretAim({
       aimAlignedRef.current = isMuzzleAimedAt(
         muzzleRef?.current ?? null,
         aimTargetRef?.current ?? null,
+        undefined,
+        aimLimits.ballistic,
       );
     }
     if (slideRef.current && recoilRef) {

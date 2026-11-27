@@ -118,6 +118,5 @@ export function calculatePredictedIntercept(
   }
 
   outIntercept.copy(targetPos).addScaledVector(targetVelocity, timeOfFlight);
-  outIntercept.y += calculateGravityDrop(timeOfFlight, gravity);
   return outIntercept;
 }

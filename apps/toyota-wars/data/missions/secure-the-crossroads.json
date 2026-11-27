@@ -1,0 +1,123 @@
+{
+  "id": "secure-the-crossroads",
+  "schemaVersion": 2,
+  "order": 4,
+  "title": "Secure the Crossroads",
+  "briefing": "Move the allied squad up the road, take the crossroads, then hold it while you cover their flank.",
+  "difficulty": 2,
+  "requires": ["hold-the-line"],
+  "zones": [
+    { "id": "crossroads", "position": { "x": 0, "z": -120 }, "radius": 54 },
+    { "id": "crossroads-hold", "position": { "x": 0, "z": -120 }, "radius": 75 }
+  ],
+  "arena": {
+    "seed": 4004,
+    "size": 2000,
+    "obstacleDensity": 0.3,
+    "playerSpawn": { "x": 0, "z": 240 },
+    "roads": {
+      "waypoints": [
+        { "x": 0, "z": 240 },
+        { "x": 0, "z": -120 }
+      ],
+      "width": 24
+    },
+    "structures": [
+      {
+        "id": "crossroads-watchtower-nw",
+        "structure": "watchtower",
+        "position": { "x": -38, "z": -158 },
+        "yaw": 0.7853981633974483,
+        "width": 6,
+        "depth": 6,
+        "height": 11
+      },
+      {
+        "id": "crossroads-depot-ne",
+        "structure": "building",
+        "position": { "x": 42, "z": -150 },
+        "yaw": 0,
+        "width": 16,
+        "depth": 12,
+        "height": 6
+      },
+      {
+        "id": "crossroads-compound-sw",
+        "structure": "building",
+        "position": { "x": -44, "z": -84 },
+        "yaw": 1.5707963267948966,
+        "width": 14,
+        "depth": 10,
+        "height": 5.5
+      }
+    ]
+  },
+  "squads": [
+    {
+      "id": "guard",
+      "team": "ally",
+      "units": [{ "template": "medium" }, { "template": "medium" }],
+      "spawnPoints": [
+        { "x": -36, "z": 255 },
+        { "x": 36, "z": 255 }
+      ],
+      "personality": { "aggression": 0.6, "caution": 0.5 },
+      "initialOrder": "follow",
+      "onSpawned": [],
+      "onDestroyed": []
+    },
+    {
+      "id": "intel",
+      "team": "ally",
+      "units": [{ "template": "radar" }],
+      "spawnPoints": [{ "x": 0, "z": 290 }],
+      "personality": { "aggression": 0.2, "caution": 0.9 },
+      "initialOrder": "follow",
+      "onSpawned": [],
+      "onDestroyed": []
+    },
+    {
+      "id": "crossroads-guards",
+      "team": "enemy",
+      "units": [
+        { "template": "light" },
+        { "template": "light" },
+        { "template": "light" }
+      ],
+      "spawnPoints": [
+        { "x": -75, "z": -150 },
+        { "x": 0, "z": -180 },
+        { "x": 75, "z": -150 }
+      ],
+      "personality": { "aggression": 0.5, "caution": 0.5 },
+      "initialOrder": "patrol",
+      "onSpawned": [],
+      "onDestroyed": []
+    }
+  ],
+  "objectives": [
+    {
+      "id": "take-crossroads",
+      "title": "Get the squad to the crossroads",
+      "type": "capture",
+      "params": {
+        "squadId": "guard",
+        "zoneId": "crossroads",
+        "stopDistance": 18
+      }
+    },
+    {
+      "id": "hold-crossroads",
+      "title": "Hold the crossroads for 90 seconds",
+      "type": "defend",
+      "params": {
+        "squadId": "guard",
+        "zoneId": "crossroads-hold",
+        "seconds": 90,
+        "stopDistance": 24
+      }
+    }
+  ],
+  "failConditions": [{ "type": "playerDestroyed" }],
+  "rewards": { "xp": 250, "unlocks": [] }
+}

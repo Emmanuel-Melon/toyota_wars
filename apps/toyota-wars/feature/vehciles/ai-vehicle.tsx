@@ -95,6 +95,7 @@ const NO_SQUAD_ORDER: SquadOrderContext = {
   subGroupLeaderId: null,
   useOrbitTactic: false,
   targetPosition: null,
+  holdPosition: false,
   rallyPoint: { x: 0, y: 0 },
   isExplicitOrder: false,
   retreatingRatio: 0,
@@ -422,6 +423,25 @@ export function AIVehicle({
       ports: runtime.agentPorts,
     });
     runtime.decision.current = mapAgentDecision(runtime.agentDecision.current);
+
+    const holdingStation =
+      squadOrder.holdPosition === true &&
+      squadOrder.attackOrder == null &&
+      !scriptedMovement &&
+      !runtime.retreatActive.current;
+    if (holdingStation) {
+      const homeDistance = runtime.body.position.distanceTo(runtime.home);
+      runtime.decision.current.movement =
+        homeDistance > AGENT_CONFIG.patrolArriveRadius
+          ? {
+              type: MovementOrders.MoveTo,
+              point: runtime.home,
+              speed: AGENT_CONFIG.patrolSpeed,
+              stopDistance: AGENT_CONFIG.patrolArriveRadius,
+              slowRadius: AGENT_CONFIG.followSlowRadius,
+            }
+          : { type: MovementOrders.Idle };
+    }
 
     if (!combatActive) {
       aimTargetRef.current = null;
