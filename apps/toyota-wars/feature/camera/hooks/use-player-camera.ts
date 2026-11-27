@@ -7,7 +7,7 @@ import { useArena } from "@/context/arena-context";
 import { usePlayer } from "@/context/player-context";
 import { useViewport } from "@/context/viewport-context";
 import { useMissionFlow } from "@/feature/mission-flow/mission-flow.context";
-import { dampAngle } from "@/lib/aim/aim.math";
+import { dampAngle } from "@toyota/combat";
 import {
   MOBILE_CAMERA_LOOK_CONFIG,
   PLAYER_CAMERA_CONFIG,

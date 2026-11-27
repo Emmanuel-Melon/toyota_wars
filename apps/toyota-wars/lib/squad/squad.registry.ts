@@ -1,5 +1,5 @@
 // apps/toyota-wars/lib/squad/squad.registry.ts
-import type { Team } from "@/lib/combat/combat.types";
+import type { Team } from "@toyota/combat";
 import type { VehicleState } from "@/lib/movement/movement.types";
 import type { VehicleLoadout } from "@/lib/vehicles/vehicle.types";
 

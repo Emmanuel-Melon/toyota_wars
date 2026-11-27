@@ -11,7 +11,7 @@ import {
   MenuShell,
   StatBar,
 } from "@/feature/menu/components/menu-parts";
-import type { Team } from "@/lib/combat/combat.types";
+import { WEAPONS, type Team, type WeaponConfig } from "@toyota/combat";
 import {
   PLAYER_SELECTABLE_VEHICLE_MODEL_IDS,
   VEHICLE_MODELS,
@@ -22,8 +22,6 @@ import type {
   VehicleLoadout,
   VehiclePlatform,
 } from "@/lib/vehicles/vehicle.types";
-import { WEAPONS } from "@/lib/weapons/weapon.config";
-import type { WeaponConfig } from "@/lib/weapons/weapon.types";
 import { cn } from "@/lib/utils";
 
 import shellStyles from "./menu-shell.module.css";

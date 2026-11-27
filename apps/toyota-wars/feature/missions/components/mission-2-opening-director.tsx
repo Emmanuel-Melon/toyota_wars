@@ -7,12 +7,14 @@ import { useBattle, useProjectileSystem } from "@/context/battle-context";
 import { useCombat } from "@/context/combat-context";
 import { useMission } from "@/context/missions.context";
 import { useMissionFlow } from "@/feature/mission-flow/mission-flow.context";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
-import { calculateBallisticPitch } from "@/lib/combat/combat.ballistics";
+import {
+  COMBAT_CONFIG,
+  calculateBallisticPitch,
+  createFireRequest,
+  WEAPONS,
+} from "@toyota/combat";
 import { TEAM } from "@toyota/missions";
 import { rosterUnitId } from "@/lib/squad/squad.roster";
-import { WEAPONS } from "@/lib/weapons/weapon.config";
-import { createFireRequest } from "@/lib/weapons/weapon.math";
 import {
   ARTILLERY_SQUAD_ID,
   EVADE_QTE_ID,
@@ -98,6 +100,7 @@ export function Mission2OpeningDirector() {
         target,
         weapon.projectile.speed,
         weapon.projectile.gravity ?? 9.81,
+        weapon.projectile.drag ?? 0,
       );
       const angle = Math.atan2(target.x - origin.x, target.z - origin.z);
       projectiles.current?.fire(

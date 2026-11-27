@@ -10,10 +10,14 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
-import { resetCombatActivity } from "@/lib/combat/combat.activity";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
-import type { VehiclePart } from "@/lib/combat/combat.teams";
-import type { HealthMap, PartHealthMap, Team } from "@/lib/combat/combat.types";
+import {
+  resetCombatActivity,
+  COMBAT_CONFIG,
+  type VehiclePart,
+  type HealthMap,
+  type PartHealthMap,
+  type Team,
+} from "@toyota/combat";
 import { createGameEventBus } from "@toyota/missions";
 import type { EventBus } from "@toyota/missions";
 import type { GameEvents } from "@toyota/missions";

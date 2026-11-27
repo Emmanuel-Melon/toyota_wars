@@ -1,4 +1,4 @@
-import type { Team } from "@/lib/combat/combat.types";
+import type { Team } from "@toyota/combat";
 import type { SquadShared } from "@/feature/squad/components/squad-vehicles";
 import { SQUAD_DIRECTIVE, type SquadDirective } from "./squad.types";
 

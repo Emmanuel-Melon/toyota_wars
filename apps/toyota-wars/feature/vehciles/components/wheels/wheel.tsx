@@ -1,5 +1,5 @@
 import { Vehicle } from "@toyota/models";
-import { isPartDestroyed } from "@/lib/combat/combat.parts";
+import { isPartDestroyed } from "@toyota/combat";
 import { useVehicleContext } from "@/context/vehicle-context";
 import { useWheelSpin } from "./use-wheel-spin";
 import type { WheelProps } from "./types";

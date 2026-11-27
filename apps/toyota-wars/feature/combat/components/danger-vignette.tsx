@@ -2,7 +2,7 @@
 
 import type { CSSProperties } from "react";
 import { useCombat } from "@/context/combat-context";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
+import { COMBAT_CONFIG } from "@toyota/combat";
 import styles from "./danger-vignette.module.css";
 
 export function DangerVignette() {

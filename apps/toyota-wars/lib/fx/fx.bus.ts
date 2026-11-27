@@ -4,7 +4,7 @@ import type {
   FireRequest,
   ProjectileExplosionEvent,
   Team,
-} from "@/lib/combat/combat.types";
+} from "@toyota/combat";
 
 export type ShotEvent = {
   slot: number; // index into the projectile pool

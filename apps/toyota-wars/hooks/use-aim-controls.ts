@@ -1,8 +1,6 @@
 "use client";
 
-import { AIM_KEY_SPEED } from "@/lib/aim/aim.config";
-import { clampAim } from "@/lib/aim/aim.state";
-import type { AimState } from "@/lib/aim/aim.types";
+import { AIM_KEY_SPEED, clampAim, type AimState } from "@toyota/combat";
 import { useEffect, type RefObject } from "react";
 
 const AIM_KEYS = ["i", "j", "k", "l"];

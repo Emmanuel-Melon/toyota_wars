@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { isPartDestroyed } from "@/lib/combat/combat.parts";
+import { isPartDestroyed } from "@toyota/combat";
 import { useVehicleContext } from "../../../../context/vehicle-context";
 import { hashUnitId } from "@/feature/vehciles/hooks/use-wreck-visual";
 import { easeOutCubic } from "./helpers";

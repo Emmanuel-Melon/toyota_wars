@@ -33,10 +33,12 @@ export function AllyVehicles({ obstacles }: AllyVehiclesProps) {
 
   const buildShared = useCallback(
     (squad: RosterSquad): SquadShared => ({
-      leader: destroyed ? null : leader,
+      leader: squad.holdPosition || destroyed ? null : leader,
       obstacles: squadObstacles,
       bound: data.bound,
       formationType: allyFormation,
+      holdFormation: squad.holdFormation,
+      holdPosition: squad.holdPosition,
       directive: allyOrdersIssued
         ? allyDirective
         : directiveForInitialOrder(squad.initialOrder),

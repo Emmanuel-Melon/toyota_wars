@@ -2,9 +2,12 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { RapierRigidBody } from "@react-three/rapier";
-import { WRECK_LOOT, type WreckRegistry } from "@/lib/combat/wreck.registry";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
-import type { Team } from "@/lib/combat/combat.types";
+import {
+  COMBAT_CONFIG,
+  WRECK_LOOT,
+  type Team,
+  type WreckRegistry,
+} from "@toyota/combat";
 import type { TerrainSampler } from "@/lib/map/map.terrain";
 import type { useAITankRuntime } from "@/hooks/use-ai-tank-runtime";
 

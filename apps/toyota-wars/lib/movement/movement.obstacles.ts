@@ -4,7 +4,7 @@ import {
   sweepCircleAgainstObstacle,
   type ObstacleSurface,
   type ObstacleSweep,
-} from "@/lib/obstacles/obstacle-shape";
+} from "@toyota/combat";
 
 export type ObstacleResolution = {
   x: number;

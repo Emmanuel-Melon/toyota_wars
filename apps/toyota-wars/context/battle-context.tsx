@@ -15,11 +15,13 @@ import {
   type Unit,
   type UnitDef,
 } from "@/lib/squad/squad.registry";
-import type { ProjectileSystemHandle } from "@/lib/combat/combat.types";
-import { WreckRegistry } from "@/lib/combat/wreck.registry";
+import {
+  WreckRegistry,
+  clearDamageWarnings,
+  type ProjectileSystemHandle,
+} from "@toyota/combat";
 import { useCombat } from "@/context/combat-context";
 import { clearMissionUnitPositions } from "@toyota/missions";
-import { clearDamageWarnings } from "@/lib/combat/damage-warnings";
 
 interface Battle {
   registry: UnitRegistry;

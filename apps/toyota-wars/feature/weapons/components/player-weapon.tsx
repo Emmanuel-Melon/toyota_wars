@@ -5,18 +5,23 @@ import { useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import { useGameFrame } from "@/render-loop";
 import * as THREE from "three";
-import { aimHeading } from "@/lib/aim/aim.math";
-import { readMuzzleTransform } from "@/lib/aim/aim.muzzle";
-import { calculateBallisticPitch } from "@/lib/combat/combat.ballistics";
-import { Weapon } from "@/lib/weapons/weapon.timer";
-import { WeaponBloomSystem } from "@/lib/weapons/weapon.bloom";
-import { createFireRequest } from "@/lib/weapons/weapon.math";
+import {
+  AutoAimingStrategy,
+  aimHeading,
+  calculatePredictedIntercept,
+  createFireRequest,
+  DefaultWeaponExecutor,
+  readMuzzleTransform,
+  Weapon,
+  WeaponBloomSystem,
+} from "@toyota/combat";
+import { AGENT_CONFIG } from "@/lib/agents/agent-runtime.config";
 import { useArena } from "@/context/arena-context";
 import { useCombat } from "@/context/combat-context";
 import { useMissionFlow } from "@/feature/mission-flow/mission-flow.context";
 import { usePlayer } from "@/context/player-context";
 import { useTargets } from "@/context/targets-context";
-import { useProjectileSystem } from "@/context/battle-context";
+import { useBattle, useProjectileSystem } from "@/context/battle-context";
 import { kickRecoil } from "@/feature/vehciles/hooks/use-wreck-visual";
 import { FIRE_KEY_CODE } from "@/feature/controls/keyboard-bindings";
 import { useTutorialGates } from "@/feature/game/tutorial/tutorial-gates";
@@ -46,13 +51,26 @@ export function PlayerWeapon() {
   const arena = useArena();
   const { camera } = useThree();
   const projectiles = useProjectileSystem();
+  const { registry } = useBattle();
   const { capabilities, reportShot } = useTutorialGates();
   const controlsLockedRef = useRef(playerControlsLocked);
   const destroyedRef = useRef(destroyed);
   const weaponDisabledRef = useRef(playerDamageEffects.weaponDisabled);
   const weapon = useRef(new Weapon(playerWeapon.cooldown));
   const bloom = useRef(new WeaponBloomSystem());
+  const executor = useRef(
+    new DefaultWeaponExecutor(
+      weapon.current,
+      {
+        range: playerWeapon.engagementRange,
+        alignmentToleranceRad: AGENT_CONFIG.defaultMaxAngleOffsetRad,
+      },
+      new AutoAimingStrategy(),
+    ),
+  );
   const targetPoint = useRef(new THREE.Vector3());
+  const aimPoint = useRef(new THREE.Vector3());
+  const targetVelocity = useRef(new THREE.Vector3());
   const designatedPoint = useRef(new THREE.Vector3());
   const shotOrigin = useRef(new THREE.Vector3());
   const muzzlePosition = useRef(new THREE.Vector3());
@@ -78,8 +96,21 @@ export function PlayerWeapon() {
   useEffect(() => {
     weapon.current = new Weapon(playerWeapon.cooldown);
     bloom.current = new WeaponBloomSystem();
+    executor.current = new DefaultWeaponExecutor(
+      weapon.current,
+      {
+        range: playerWeapon.engagementRange,
+        alignmentToleranceRad: AGENT_CONFIG.defaultMaxAngleOffsetRad,
+      },
+      new AutoAimingStrategy(),
+    );
     nextBarrelRef.current = 0;
-  }, [arena, playerWeapon.cooldown, playerWeapon.id]);
+  }, [
+    arena,
+    playerWeapon.cooldown,
+    playerWeapon.engagementRange,
+    playerWeapon.id,
+  ]);
 
   useEffect(() => {
     if (stats.enemiesDestroyed < lastKillCount.current) {
@@ -163,29 +194,46 @@ export function PlayerWeapon() {
       nextBarrelRef.current = (barrel + 1) % count;
       return barrel;
     };
+    const spreadFor = (
+      fireOrigin: Readonly<THREE.Vector3>,
+      speed: number,
+      spreadScale: number,
+    ): number => {
+      const shotDistance = Math.max(1, fireOrigin.distanceTo(aimPoint.current));
+      const precisionSpread = Math.max(
+        0.0004,
+        (playerWeapon.projectile.hitRadius * 0.75) / shotDistance,
+      );
+      const rawSpread = bloom.current.getSpreadAngle(
+        speed,
+        playerWeapon.spread * spreadScale,
+      );
+      return Math.min(rawSpread, precisionSpread);
+    };
     const fireAtTarget = (
       speed: number,
       spreadScale: number,
       barrel: number,
     ): boolean => {
       if (!projectiles.current) return false;
-      const spread = bloom.current.getSpreadAngle(
-        speed,
-        playerWeapon.spread * spreadScale,
+      if (origin.distanceTo(aimPoint.current) > executor.current.getRange()) {
+        return false;
+      }
+      const horizontal = Math.hypot(
+        aimPoint.current.x - origin.x,
+        aimPoint.current.z - origin.z,
       );
-      const pitch = calculateBallisticPitch(
-        origin,
-        targetPoint.current,
-        playerWeapon.projectile.speed,
-        playerWeapon.projectile.gravity,
-      );
+      const pitch =
+        horizontal > 1e-6
+          ? Math.atan2(aimPoint.current.y - origin.y, horizontal)
+          : 0;
       projectiles.current.fire(
         createFireRequest(
           origin,
-          aimHeading(origin, targetPoint.current),
+          aimHeading(origin, aimPoint.current),
           "ally",
           playerWeapon.id,
-          spread,
+          spreadFor(origin, speed, spreadScale),
           pitch,
           undefined,
           undefined,
@@ -214,10 +262,10 @@ export function PlayerWeapon() {
       }
       const origin = muzzlePosition.current;
       const direction = muzzleDirection.current;
-      const spread = bloom.current.getSpreadAngle(
-        speed,
-        playerWeapon.spread * spreadScale,
-      );
+      if (origin.distanceTo(aimPoint.current) > executor.current.getRange()) {
+        return false;
+      }
+      const spread = spreadFor(origin, speed, spreadScale);
       projectiles.current.fire(
         createFireRequest(
           origin,
@@ -244,7 +292,7 @@ export function PlayerWeapon() {
         weapon.current,
         targetPoint.current,
       );
-      aimTargetRef.current = targetPoint.current;
+      aimTargetRef.current = aimPoint.current;
       if (fired && playerAmmo.current >= playerWeapon.ammoCost) {
         bloom.current.registerShot();
         fireAtTarget(0, 0.35, takeBarrel());
@@ -267,7 +315,7 @@ export function PlayerWeapon() {
     playerAimController.current.updateTarget(
       camera,
       aimRef.current,
-      body.position,
+      origin,
       body.heading,
       aiTargetPosition,
       playerWeapon.aimTargetHeight,
@@ -275,8 +323,33 @@ export function PlayerWeapon() {
       enemies,
       fireDesignation?.targetId ?? null,
       playerWeapon,
+      executor.current,
     );
-    aimTargetRef.current = targetPoint.current;
+
+    const targetId =
+      playerAimController.current.getTargetId() ??
+      fireDesignation?.targetId ??
+      null;
+    const targetUnit = targetId ? registry.get(targetId) : undefined;
+    if (targetUnit) {
+      targetVelocity.current.set(
+        Math.sin(targetUnit.body.heading) * targetUnit.body.speed,
+        0,
+        Math.cos(targetUnit.body.heading) * targetUnit.body.speed,
+      );
+    } else {
+      targetVelocity.current.set(0, 0, 0);
+    }
+    calculatePredictedIntercept(
+      origin,
+      targetPoint.current,
+      targetVelocity.current,
+      playerWeapon.projectile.speed,
+      aimPoint.current,
+      playerWeapon.projectile.gravity,
+      3,
+    );
+    aimTargetRef.current = aimPoint.current;
 
     if (
       firingRef.current &&

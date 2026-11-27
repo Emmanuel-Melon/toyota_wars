@@ -1,5 +1,5 @@
 import type { Dispatch, RefObject, SetStateAction } from "react";
-import type { Team } from "@/lib/combat/combat.types";
+import type { Team } from "@toyota/combat";
 import type { VehicleLoadout } from "@/lib/vehicles/vehicle.types";
 
 export type GameMode =

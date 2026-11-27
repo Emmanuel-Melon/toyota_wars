@@ -13,7 +13,7 @@ import {
   type TankLeader,
   type TankThreat,
 } from "@/lib/movement/movement.types";
-import type { WeaponOrder } from "@/lib/weapons/weapon.types";
+import type { WeaponOrder } from "@toyota/combat";
 
 function toVector3(point: AgentVec3): THREE.Vector3 {
   return new THREE.Vector3(point.x, point.y, point.z);

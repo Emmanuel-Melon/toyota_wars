@@ -1,12 +1,18 @@
 import type { AgentConfig } from "@toyota/agents";
 import { MOVEMENT_CONFIG } from "@/lib/movement/movement.config";
 import { SQUAD_CONFIG } from "@/lib/squad/squad.config";
+import { WEAPONS } from "@toyota/combat";
 
 export const AGENT_UTILITY_DEBUG = process.env.NODE_ENV !== "production";
 
+const MAX_ENGAGEMENT_RANGE = Math.max(
+  1000,
+  ...Object.values(WEAPONS).map((weapon) => weapon.engagementRange),
+);
+
 export const AGENT_CONFIG: AgentConfig = {
-  fireRange: 60,
-  fightingDistance: 55,
+  fireRange: MAX_ENGAGEMENT_RANGE,
+  fightingDistance: MAX_ENGAGEMENT_RANGE * 0.9,
   defaultMaxAngleOffsetRad: 0.25,
   designatedFireRangeMultiplier: SQUAD_CONFIG.designatedFireRangeMultiplier,
   leaderLeashDistance: 20,
@@ -34,9 +40,9 @@ export const TANK_CONFIG = {
     allyDamageScale: 0.85,
     retreatSpreadMultiplier: 3.5,
     squadRoutLossFraction: 0.5,
-    retreatSafeDistance: 75,
+    retreatSafeDistance: MAX_ENGAGEMENT_RANGE * 1.1,
     retreatMaxDuration: 12,
-    playerAggroRadius: 38,
+    playerAggroRadius: MAX_ENGAGEMENT_RANGE,
     playerAggroDamage: 30,
     lowHealthRetreatFraction: 0.35,
   },

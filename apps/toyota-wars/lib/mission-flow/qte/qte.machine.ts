@@ -1,7 +1,12 @@
 // qte/qte.machine.ts
 import type { FlowEffect } from "../flow.effects";
 import type {
-  PromptStatus, QteEvent, QteOutcome, QteSpec, QteState, QteTransition,
+  PromptStatus,
+  QteEvent,
+  QteOutcome,
+  QteSpec,
+  QteState,
+  QteTransition,
 } from "./qte.types";
 
 const isOpen = (s: PromptStatus) => s === "pending" || s === "active";
@@ -11,7 +16,9 @@ export function createQteMachine(spec: QteSpec) {
     status: "idle",
     outcome: null,
     elapsedMs: 0,
-    prompts: Object.fromEntries(spec.prompts.map((p) => [p.id, "pending" as PromptStatus])),
+    prompts: Object.fromEntries(
+      spec.prompts.map((p) => [p.id, "pending" as PromptStatus]),
+    ),
     pressed: {},
   });
 
@@ -23,33 +30,46 @@ export function createQteMachine(spec: QteSpec) {
         effects.push(...(p.onMiss ?? []));
       }
     }
-    const failed = spec.prompts.some((p) => (p.required ?? true) && prompts[p.id] !== "hit");
+    const failed = spec.prompts.some(
+      (p) => (p.required ?? true) && prompts[p.id] !== "hit",
+    );
     const outcome: QteOutcome = failed ? "failed" : "succeeded";
-    const outcomeEffects = (outcome === "succeeded" ? spec.on?.succeed : spec.on?.fail) ?? [];
+    const outcomeEffects =
+      (outcome === "succeeded" ? spec.on?.succeed : spec.on?.fail) ?? [];
     return {
       state: { ...state, prompts, status: "finished", outcome },
       effects: [...effects, ...outcomeEffects, ...(spec.on?.finish ?? [])],
     };
   }
 
-  function settle(state: QteState, effects: FlowEffect[], abort: boolean): QteTransition {
+  function settle(
+    state: QteState,
+    effects: FlowEffect[],
+    abort: boolean,
+  ): QteTransition {
     const open = spec.prompts.some((p) => isOpen(state.prompts[p.id]));
-    if (abort || !open || state.elapsedMs >= spec.durationMs) return finish(state, effects);
+    if (abort || !open || state.elapsedMs >= spec.durationMs)
+      return finish(state, effects);
     return { state, effects };
   }
 
   function reduce(state: QteState, event: QteEvent): QteTransition {
-    if (state.status === "finished" || state.status === "skipped") return { state, effects: [] };
+    if (state.status === "finished" || state.status === "skipped")
+      return { state, effects: [] };
     const effects: FlowEffect[] = [];
 
     switch (event.type) {
       case "start": {
         if (state.status !== "idle") return { state, effects };
-        return { state: { ...state, status: "started" }, effects: [...(spec.on?.start ?? [])] };
+        return {
+          state: { ...state, status: "started" },
+          effects: [...(spec.on?.start ?? [])],
+        };
       }
 
       case "skip": {
-        if (!spec.skippable || state.status === "idle") return { state, effects };
+        if (!spec.skippable || state.status === "idle")
+          return { state, effects };
         return {
           state: { ...state, status: "skipped", outcome: "skipped" },
           effects: [...(spec.on?.skip ?? []), ...(spec.on?.finish ?? [])],
@@ -62,14 +82,19 @@ export function createQteMachine(spec: QteSpec) {
         const prompts = { ...state.prompts };
         let abort = false;
         for (const p of spec.prompts) {
-          if (prompts[p.id] === "pending" && elapsedMs >= p.startMs) prompts[p.id] = "active";
+          if (prompts[p.id] === "pending" && elapsedMs >= p.startMs)
+            prompts[p.id] = "active";
           if (prompts[p.id] === "active" && elapsedMs > p.endMs) {
             prompts[p.id] = "missed";
             effects.push(...(p.onMiss ?? []));
             if (p.failFast) abort = true;
           }
         }
-        return settle({ ...state, status: "in-progress", elapsedMs, prompts }, effects, abort);
+        return settle(
+          { ...state, status: "in-progress", elapsedMs, prompts },
+          effects,
+          abort,
+        );
       }
 
       case "input": {

@@ -13,9 +13,6 @@ export interface RadioMessage {
   ttlMs: number;
 }
 
-export type RadioTransmission = Omit<
-  RadioMessage,
-  "receivedAt" | "ttlMs"
-> & {
+export type RadioTransmission = Omit<RadioMessage, "receivedAt" | "ttlMs"> & {
   ttlMs?: number;
 };

@@ -56,7 +56,7 @@ export type FlowCutsceneStep = FlowStepBase & {
 export interface FlowQteStep extends FlowStepBase {
   type: "qte";
   camera: FlowCameraResolver;
-  qte: QteSpec;   // replaces { prompt, detail, keys, labels, durationMs }
+  qte: QteSpec; // replaces { prompt, detail, keys, labels, durationMs }
 }
 
 export type FlowStep = FlowCutsceneStep | FlowQteStep;

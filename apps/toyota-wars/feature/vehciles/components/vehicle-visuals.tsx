@@ -15,13 +15,12 @@ import {
   type VehiclePartHealth,
 } from "./vehicle";
 import type { VehicleMotion } from "@/feature/vehciles/vehicles.utils";
-import type { Team } from "@/lib/combat/combat.types";
+import type { Team, WeaponConfig } from "@toyota/combat";
 import type {
   VehicleModelId,
   VehiclePlatformId,
 } from "@/lib/vehicles/vehicle.types";
 import { VEHICLE_MODELS } from "@/lib/vehicles/vehicle.config";
-import type { WeaponConfig } from "@/lib/weapons/weapon.types";
 import { VehicleProvider } from "@/context/vehicle-context";
 import type { RecoilRef } from "@/feature/vehciles/hooks/use-wreck-visual";
 import { useWreckVisual } from "@/feature/vehciles/hooks/use-wreck-visual";

@@ -8,13 +8,13 @@ import {
   type ReactNode,
   type RefObject,
 } from "react";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
-import type {
-  EnemyTarget,
-  HealthMap,
-  TargetPart,
-  Team,
-} from "@/lib/combat/combat.types";
+import {
+  COMBAT_CONFIG,
+  type EnemyTarget,
+  type HealthMap,
+  type TargetPart,
+  type Team,
+} from "@toyota/combat";
 import type { TerrainSampler } from "@/lib/map/map.terrain";
 import type { RosterUnit } from "@/lib/squad/squad.roster";
 import { resolveVehicleModel } from "@/lib/vehicles/vehicle.config";

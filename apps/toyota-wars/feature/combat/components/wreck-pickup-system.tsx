@@ -1,13 +1,13 @@
 "use client";
 
 import { useGameFrame } from "@/render-loop";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
 import {
+  COMBAT_CONFIG,
   partHealthRatio,
   projectPartHealth,
   VEHICLE_PARTS,
-} from "@/lib/combat/combat.parts";
-import { WRECK_LOOT } from "@/lib/combat/wreck.registry";
+  WRECK_LOOT,
+} from "@toyota/combat";
 import { useBattle } from "@/context/battle-context";
 import { useCombat } from "@/context/combat-context";
 import { usePlayer } from "@/context/player-context";

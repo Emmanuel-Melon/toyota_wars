@@ -9,15 +9,9 @@ import type {
   FlowActorPalette,
   FlowCutsceneActor,
 } from "@/lib/mission-flow/mission-flow.types";
-import {
-  ALLY_SOLDIER_PALETTE,
-  ENEMY_SOLDIER_PALETTE,
-} from "@/lib/palettes";
+import { ALLY_SOLDIER_PALETTE, ENEMY_SOLDIER_PALETTE } from "@/lib/palettes";
 import { useGameFrame } from "@/render-loop";
-import {
-  useMissionFlow,
-  useMissionFlowRunner,
-} from "../mission-flow.context";
+import { useMissionFlow, useMissionFlowRunner } from "../mission-flow.context";
 import type { MissionFlowRunner } from "../mission-flow.store";
 
 const RUN_CYCLES = 4;
@@ -122,7 +116,7 @@ export function CutsceneSoldiers() {
   const step = runner.getCurrentStep();
   const actors =
     flow.phase === "cutscene" && step?.type === "cutscene"
-      ? step.actors ?? []
+      ? (step.actors ?? [])
       : [];
 
   return (

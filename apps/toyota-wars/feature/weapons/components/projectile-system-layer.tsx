@@ -2,7 +2,7 @@
 "use client";
 
 import { useCallback } from "react";
-import type { VehiclePart } from "@/lib/combat/combat.teams";
+import type { VehiclePart } from "@toyota/combat";
 import { useCombat } from "@/context/combat-context";
 import { usePlayer } from "@/context/player-context";
 import { useTargets } from "@/context/targets-context";

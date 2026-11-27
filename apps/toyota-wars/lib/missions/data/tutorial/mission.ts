@@ -15,7 +15,7 @@ export const tutorial: MissionInput = {
   requires: [],
   arena: {
     seed: 3003,
-    size: 600,
+    size: 2000,
     obstacleDensity: 0.15,
     playerSpawn: { x: 0, z: 240 },
   },

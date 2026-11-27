@@ -1,5 +1,4 @@
-import { getFormationOffset } from "@/lib/tactics/tactics.formation"; // keep import for callers that rely on it indirectly?
-import type { FireteamTactic } from "../meso/meso.types";
+import type { FireteamTactic } from "@toyota/ai";
 import { SQUAD_CONFIG } from "./squad.config";
 import {
   SQUAD_DIRECTIVE,

@@ -1,4 +1,5 @@
 import { TEAM, type MissionInput, type Vec2 } from "@toyota/missions";
+import { Environment } from "@toyota/models";
 import { createRng, scatterPoints } from "./map.spawns";
 
 const AXES = [
@@ -52,7 +53,7 @@ function clamp(value: number, min: number, max: number): number {
 
 function wrapAngle(value: number): number {
   const fullTurn = Math.PI * 2;
-  return (((value + Math.PI) % fullTurn) + fullTurn) % fullTurn - Math.PI;
+  return ((((value + Math.PI) % fullTurn) + fullTurn) % fullTurn) - Math.PI;
 }
 
 function average(points: readonly Vec2[], fallback: Vec2): Vec2 {
@@ -95,6 +96,11 @@ export function applyMissionLayout(mission: MissionInput): MissionInput {
   const routes = mission.squads.flatMap((squad) =>
     squad.route && squad.route.length > 1 ? [squad.route] : [],
   );
+  const anchoredSquadIndices = new Set(
+    mission.squads.flatMap((squad, index) =>
+      squad.spawnAnchor ? [index] : [],
+    ),
+  );
 
   const isValidSpawn = (
     x: number,
@@ -134,7 +140,7 @@ export function applyMissionLayout(mission: MissionInput): MissionInput {
   const friendlyCount =
     1 +
     mission.squads
-      .filter((squad) => squad.team === TEAM.ALLY)
+      .filter((squad) => squad.team === TEAM.ALLY && !squad.spawnAnchor)
       .reduce((total, squad) => total + squadSpawnCount(squad), 0);
   const friendlyPoints = scatterPoints({
     rng,
@@ -207,7 +213,9 @@ export function applyMissionLayout(mission: MissionInput): MissionInput {
     .map((squad, index) => ({ squad, index }))
     .filter(
       ({ squad, index }) =>
-        squad.team === TEAM.ENEMY && !authoredIndices.has(index),
+        squad.team === TEAM.ENEMY &&
+        !authoredIndices.has(index) &&
+        !squad.spawnAnchor,
     )
     .reduce((total, { squad }) => total + squadSpawnCount(squad), 0);
   const enemyPoints = scatterPoints({
@@ -224,6 +232,7 @@ export function applyMissionLayout(mission: MissionInput): MissionInput {
   const cursors = { ally: 0, enemy: 0 };
 
   const squads = mission.squads.map((squad, index) => {
+    if (anchoredSquadIndices.has(index)) return squad;
     const authoredPoints = authoredPointsByIndex.get(index);
     if (authoredPoints) return { ...squad, spawnPoints: authoredPoints };
 
@@ -352,7 +361,9 @@ export function applyMissionLayout(mission: MissionInput): MissionInput {
 
     const dx = structure.position.x - authoredRoadStart.x;
     const dz = structure.position.z - authoredRoadStart.z;
-    const radius = Math.hypot(structure.width / 2, structure.depth / 2);
+    const width = structure.width ?? 12;
+    const depth = structure.depth ?? 10;
+    const radius = Math.hypot(width / 2, depth / 2);
     const limit = half - radius - SPAWN_BOUND_MARGIN;
 
     return {
@@ -369,8 +380,53 @@ export function applyMissionLayout(mission: MissionInput): MissionInput {
           limit,
         ),
       },
-      yaw: wrapAngle(structure.yaw + structureRotation),
+      width,
+      depth,
+      height: structure.height ?? 6,
+      yaw: wrapAngle((structure.yaw ?? 0) + structureRotation),
     };
+  });
+
+  const structureById = new Map(
+    (structures ?? []).map((structure) => [structure.id, structure]),
+  );
+  const resolvedSquads = squads.map((squad, index) => {
+    const anchor = squad.spawnAnchor;
+    if (!anchor || !anchoredSquadIndices.has(index)) return squad;
+
+    const structure = structureById.get(anchor.structureId);
+    if (!structure || structure.structure !== "checkpoint") return squad;
+
+    const visual = {
+      id: structure.id,
+      structure: structure.structure ?? "building",
+      position: { x: structure.position.x, y: 0, z: structure.position.z },
+      yaw: structure.yaw ?? 0,
+      width: structure.width ?? 12,
+      depth: structure.depth ?? 10,
+      height: structure.height ?? 6,
+    };
+    const slots = Environment.getStructureSlots(visual).filter(
+      (slot) => slot.role === anchor.role,
+    );
+    const points = Array.from(
+      { length: squadSpawnCount(squad) },
+      (_, slotIndex) => {
+        const slot =
+          slots.length > 0 ? slots[slotIndex % slots.length] : undefined;
+        const fallback = squad.spawnPoints[
+          slotIndex % squad.spawnPoints.length
+        ] ?? {
+          x: playerPoint.x,
+          z: playerPoint.z,
+        };
+        if (!slot) return fallback;
+        const world = Environment.slotToWorld(visual, slot);
+        return { x: world.position.x, z: world.position.z, yaw: world.yaw };
+      },
+    );
+
+    return { ...squad, spawnPoints: points };
   });
 
   return {
@@ -386,6 +442,6 @@ export function applyMissionLayout(mission: MissionInput): MissionInput {
       },
       structures: structures ?? [],
     },
-    squads,
+    squads: resolvedSquads,
   };
 }

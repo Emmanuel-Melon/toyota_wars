@@ -1,4 +1,4 @@
-import type { Team } from "@/lib/combat/combat.types";
+import type { Team } from "@toyota/combat";
 import type { RosterSquad, RosterUnit } from "@/lib/squad/squad.roster";
 
 export const EMPTY_UNITS: readonly RosterUnit[] = [];

@@ -4,10 +4,7 @@ import { useRef } from "react";
 import { useGameFrame } from "@/render-loop";
 import { ProceduralAudio } from "@/lib/audio/audio.procedural";
 import type { Unit } from "@/lib/squad/squad.registry";
-import {
-  COMBAT_CONFIG,
-  VEHICLE_COLLISION_CONFIG,
-} from "@/lib/combat/combat.config";
+import { COMBAT_CONFIG, VEHICLE_COLLISION_CONFIG } from "@toyota/combat";
 import { useBattle } from "@/context/battle-context";
 import { useCombat } from "@/context/combat-context";
 import { usePlayer } from "@/context/player-context";

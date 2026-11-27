@@ -2,10 +2,12 @@
 import { useFrame } from "@react-three/fiber";
 import { useRef, type RefObject } from "react";
 import type * as THREE from "three";
-import { applyTurretAim } from "@/lib/aim/aim.turret";
-import { isMuzzleAimedAt } from "@/lib/aim/aim.muzzle";
-import type { TurretAimLimits } from "@/lib/aim/aim.types";
-import type { WeaponMountKind } from "@/lib/weapons/weapon.types";
+import {
+  applyTurretAim,
+  isMuzzleAimedAt,
+  type TurretAimLimits,
+  type WeaponMountKind,
+} from "@toyota/combat";
 import { Vehicle } from "@toyota/models";
 import { useVehicleContext } from "../../../context/vehicle-context";
 

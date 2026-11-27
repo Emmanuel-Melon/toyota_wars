@@ -3,7 +3,7 @@
 import { useCombat } from "@/context/combat-context";
 import layout from "@/feature/hud/components/hud-layout.module.css";
 import { HudPanel } from "@/feature/hud/components/hud-parts";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
+import { COMBAT_CONFIG } from "@toyota/combat";
 import { cn } from "@/lib/utils";
 
 export function PlayerHealthBar({ compact = false }: { compact?: boolean }) {

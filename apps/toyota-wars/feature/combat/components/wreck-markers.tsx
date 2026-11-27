@@ -2,12 +2,12 @@
 
 import { Html } from "@react-three/drei";
 import { useSyncExternalStore } from "react";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
 import {
+  COMBAT_CONFIG,
   WRECK_LOOT,
   type Wreck,
   type WreckLootType,
-} from "@/lib/combat/wreck.registry";
+} from "@toyota/combat";
 import { useBattle } from "@/context/battle-context";
 import { cn } from "@/lib/utils";
 import styles from "./wreck-markers.module.css";

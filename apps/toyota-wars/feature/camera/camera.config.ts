@@ -5,15 +5,20 @@ export const PLAYER_CAMERA_CONFIG = {
   lookHeight: 1.2,
   positionDamping: 8,
   targetDamping: 10,
-  fovDamping: 8, // ← NEW: smooths fov transitions between modes
+  fovDamping: 8,
   fov: 58,
   near: 1,
-  far: 400,
+  far: 3200,
   terrainClearance: 1.5,
 } as const;
 
+export const WORLD_FOG_CONFIG = {
+  near: 150,
+  far: 2400,
+} as const;
+
 export const DRONE_CAMERA_CONFIG = {
-  offset: [0, 30, -12] as [number, number, number], // high, slightly behind
+  offset: [0, 30, -12] as [number, number, number],
   lookAhead: 4,
   lookHeight: 0,
   fov: 62,
@@ -21,13 +26,13 @@ export const DRONE_CAMERA_CONFIG = {
 } as const;
 
 export const DRONE_ROAM_CONFIG = {
-  initialAltitude: 30,
-  minAltitude: 18,
-  maxAltitude: 180,
-  moveSpeed: 70,
-  altitudeSpeed: 35,
-  edgeMargin: 8,
-  lookAhead: 12,
+  initialAltitude: 80,
+  minAltitude: 30,
+  maxAltitude: 800,
+  moveSpeed: 200,
+  altitudeSpeed: 120,
+  edgeMargin: 16,
+  lookAhead: 120,
   lookHeight: 1,
   fov: 68,
 } as const;

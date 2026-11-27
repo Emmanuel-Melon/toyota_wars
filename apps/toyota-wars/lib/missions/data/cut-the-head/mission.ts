@@ -16,7 +16,7 @@ export const cutTheHead: MissionInput = {
   requires: ["hold-the-line"],
   arena: {
     seed: 3003,
-    size: 600,
+    size: 2000,
     obstacleDensity: 0.45,
     playerSpawn: { x: 0, z: 255 },
   },

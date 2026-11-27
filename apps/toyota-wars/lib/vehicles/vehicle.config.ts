@@ -1,8 +1,7 @@
 // lib/vehicles/vehicle.config.ts
 import { MOVEMENT_CONFIG } from "../movement/movement.config";
 import type { TankBodyConfig } from "../movement/movement.types";
-import { DEFAULT_PLAYER_WEAPON_ID } from "../weapons/weapon.config";
-import type { WeaponId } from "../weapons/weapon.types";
+import { DEFAULT_PLAYER_WEAPON_ID, type WeaponId } from "@toyota/combat";
 import { hiluxVehicle } from "./definitions/hilux.vehicle";
 import { landCruiserVehicle } from "./definitions/land-cruiser.vehicle";
 import { hiaceVehicle } from "./definitions/hiace.vehicle";

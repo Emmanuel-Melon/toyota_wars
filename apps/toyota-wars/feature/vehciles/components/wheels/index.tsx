@@ -1,7 +1,7 @@
 // apps/toyota-wars/feature/vehciles/components/wheels/index.tsx
 "use client";
 
-import type { VehiclePart } from "@/lib/combat/combat.teams";
+import type { VehiclePart } from "@toyota/combat";
 import type { WheelsProps } from "./types";
 import { Wheel } from "./wheel";
 import { useVehicleContext } from "@/context/vehicle-context";

@@ -1,7 +1,7 @@
 "use client";
 
 import { Vehicle } from "@toyota/models";
-import type { VehiclePart } from "@/lib/combat/combat.teams";
+import type { VehiclePart } from "@toyota/combat";
 import {
   WindshieldPanel,
   RearWindowPanel,

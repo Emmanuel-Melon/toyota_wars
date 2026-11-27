@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useGameFrame } from "@/render-loop";
 import { useFx } from "@/context/fx-context";
 import { usePlayer } from "@/context/player-context";
-import { playerHeadingRef, report } from "@/lib/combat/damage-warnings";
+import { playerHeadingRef, report } from "@toyota/combat";
 
 const MAX_RANGE = 150; // metres
 const MIN_RANGE = 2; // ignore point-blank self-shots

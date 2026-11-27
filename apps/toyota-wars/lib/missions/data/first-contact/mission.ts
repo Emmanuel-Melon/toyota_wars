@@ -3,6 +3,7 @@ import type { MissionInput } from "@toyota/missions";
 import { noEffects, TIME_OF_DAY } from "@toyota/missions";
 import type { FlowScript } from "@/lib/mission-flow/mission-flow.types";
 import type { GameMissionBundle } from "../../missions.registry";
+import { checkpointGarrison } from "./checkpoint-garrison";
 import { failConditions } from "./failure";
 import { structures } from "./structures";
 import { objectives } from "./success";
@@ -22,7 +23,7 @@ export const firstContact: MissionInput = {
   requires: [],
   arena: {
     seed: 1001,
-    size: 600,
+    size: 2000,
     obstacleDensity: 0.35,
     playerSpawn: { x: 0, z: 240 },
     structures,
@@ -40,6 +41,7 @@ export const firstContact: MissionInput = {
       initialOrder: "follow",
       ...noEffects(),
     },
+    checkpointGarrison,
     {
       id: "intel",
       team: "ally",

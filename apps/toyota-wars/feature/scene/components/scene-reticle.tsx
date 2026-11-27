@@ -3,10 +3,7 @@
 import { useThree } from "@react-three/fiber";
 import { useRef, type RefObject } from "react";
 import { useGameFrame } from "@/render-loop";
-import {
-  projectWorldToScreen,
-  type ScreenPosition,
-} from "@/lib/combat/combat.hud";
+import { projectWorldToScreen, type ScreenPosition } from "@toyota/combat";
 import { usePlayer } from "@/context/player-context";
 import { useAimControls } from "@/hooks/use-aim-controls";
 import { cn } from "@/lib/utils";

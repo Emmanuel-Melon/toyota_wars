@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useBattle } from "@/context/battle-context";
 import { useCombat } from "@/context/combat-context";
 import { useFx } from "@/context/fx-context";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
+import { COMBAT_CONFIG } from "@toyota/combat";
 
 export function VehicleDestroyedFxBridge() {
   const { events } = useCombat();

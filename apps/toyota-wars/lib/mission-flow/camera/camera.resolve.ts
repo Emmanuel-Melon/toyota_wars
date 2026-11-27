@@ -1,10 +1,21 @@
 // camera/camera.resolve.ts
 import type {
-  FlowCameraContext, FlowCameraResolver, FlowVec3,
+  FlowCameraContext,
+  FlowCameraResolver,
+  FlowVec3,
 } from "../mission-flow.types";
-import type { CameraKeyframeSpec, CameraPoint, CameraShotSpec } from "./camera.types";
+import type {
+  CameraKeyframeSpec,
+  CameraPoint,
+  CameraShotSpec,
+} from "./camera.types";
 
-function anchoredPoint(ctx: FlowCameraContext, side: number, forward: number, height: number): FlowVec3 {
+function anchoredPoint(
+  ctx: FlowCameraContext,
+  side: number,
+  forward: number,
+  height: number,
+): FlowVec3 {
   const rightX = Math.cos(ctx.playerHeading);
   const rightZ = -Math.sin(ctx.playerHeading);
   const forwardX = Math.sin(ctx.playerHeading);
@@ -21,9 +32,12 @@ function playerPoint(ctx: FlowCameraContext, height: number): FlowVec3 {
 
 export function resolvePoint(ctx: FlowCameraContext, p: CameraPoint): FlowVec3 {
   switch (p.at) {
-    case "player":   return playerPoint(ctx, p.height ?? 2.4);
-    case "relative": return anchoredPoint(ctx, p.side, p.forward, p.height);
-    case "world":    return p.position;
+    case "player":
+      return playerPoint(ctx, p.height ?? 2.4);
+    case "relative":
+      return anchoredPoint(ctx, p.side, p.forward, p.height);
+    case "world":
+      return p.position;
   }
 }
 
@@ -34,5 +48,8 @@ const resolveKeyframe = (ctx: FlowCameraContext, k: CameraKeyframeSpec) => ({
 });
 
 export function createCameraResolver(shot: CameraShotSpec): FlowCameraResolver {
-  return (ctx) => ({ from: resolveKeyframe(ctx, shot.from), to: resolveKeyframe(ctx, shot.to) });
+  return (ctx) => ({
+    from: resolveKeyframe(ctx, shot.from),
+    to: resolveKeyframe(ctx, shot.to),
+  });
 }

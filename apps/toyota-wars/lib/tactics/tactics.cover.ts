@@ -1,9 +1,6 @@
 import * as THREE from "three";
 import type { Obstacle } from "@/lib/movement/movement.types";
-import {
-  findBlockingObstacle,
-  hasLineOfSight,
-} from "@/lib/weapons/weapon.obstacles";
+import { findBlockingObstacle, hasLineOfSight } from "@toyota/combat";
 import type { Point2D } from "@/lib/squad/squad.types";
 import {
   FULL_CIRCLE,

@@ -34,7 +34,9 @@ function keyForAction<T extends string>(
   bindings: Record<string, T>,
   action: T,
 ): string | undefined {
-  return Object.entries(bindings).find(([, value]) => value === action)?.[0]?.toUpperCase();
+  return Object.entries(bindings)
+    .find(([, value]) => value === action)?.[0]
+    ?.toUpperCase();
 }
 
 export function getDirectiveKey(directive: SquadDirective) {

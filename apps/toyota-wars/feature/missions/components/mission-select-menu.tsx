@@ -104,7 +104,7 @@ export function MissionSelectMenu({
           </div>
           <div className="mt-6 flex flex-wrap gap-x-4 gap-y-1 border-t border-ui-secondary/20 pt-3 font-mono text-[10px] font-semibold uppercase leading-[1.4] tracking-[0.14em] opacity-70">
             <span>{selected.arena.seed} seed</span>
-            <span>{selected.arena.size} arena</span>
+            <span>{(selected.arena.size / 1000).toFixed(1)} km arena</span>
             <span>{selected.failConditions.length} fail conditions</span>
           </div>
         </section>

@@ -18,7 +18,16 @@ export interface CameraShotSpec {
 }
 
 // authoring helpers
-export const rel = (side: number, forward: number, height: number): CameraPoint =>
-  ({ at: "relative", side, forward, height });
-export const onPlayer = (height?: number): CameraPoint => ({ at: "player", height });
-export const atWorld = (position: FlowVec3): CameraPoint => ({ at: "world", position });
+export const rel = (
+  side: number,
+  forward: number,
+  height: number,
+): CameraPoint => ({ at: "relative", side, forward, height });
+export const onPlayer = (height?: number): CameraPoint => ({
+  at: "player",
+  height,
+});
+export const atWorld = (position: FlowVec3): CameraPoint => ({
+  at: "world",
+  position,
+});

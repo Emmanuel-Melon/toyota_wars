@@ -12,15 +12,6 @@ import {
   type RefObject,
 } from "react";
 import { type Object3D, Vector3 } from "three";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
-import { AIM_START, DEFAULT_FALLBACK_AIM_DISTANCE } from "@/lib/aim/aim.config";
-import { AimController } from "@/lib/aim/aim.controller";
-import type { AimingMode, AimState } from "@/lib/aim/aim.types";
-import {
-  getVehicleDamageEffects,
-  projectPartHealth,
-  type VehicleDamageEffects,
-} from "@/lib/combat/combat.parts";
 import { createTankBody } from "@/lib/movement/movement.body";
 import type { DriveCommand } from "@/lib/movement/movement.types";
 import {
@@ -33,9 +24,6 @@ import type {
   VehicleModelId,
   VehiclePlatform,
 } from "@/lib/vehicles/vehicle.types";
-import { WEAPONS } from "@/lib/weapons/weapon.config";
-import { WeaponCelebrationSystem } from "@/lib/weapons/weapon.celebration";
-import type { WeaponConfig } from "@/lib/weapons/weapon.types";
 import { SQUAD_CONFIG } from "@/lib/squad/squad.config";
 import type { FireDesignationGroup } from "@/lib/squad/squad.types";
 import type { VehicleMotion } from "@/lib/vehicles/vehicle.motion";
@@ -49,6 +37,20 @@ import { useArena } from "./arena-context";
 import { useCameraMode } from "./camera-mode-context";
 import { useCombat } from "./combat-context";
 import { useTargets } from "./targets-context";
+import {
+  AIM_START,
+  AimController,
+  COMBAT_CONFIG,
+  DEFAULT_FALLBACK_AIM_DISTANCE,
+  WEAPONS,
+  WeaponCelebrationSystem,
+  getVehicleDamageEffects,
+  projectPartHealth,
+  type AimingMode,
+  type AimState,
+  type VehicleDamageEffects,
+  type WeaponConfig,
+} from "@toyota/combat";
 
 type PlayerContextValue = {
   playerLoadout: VehicleLoadout;

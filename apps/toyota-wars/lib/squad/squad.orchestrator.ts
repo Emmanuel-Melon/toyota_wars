@@ -1,10 +1,11 @@
 import * as THREE from "three";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
-import type {
-  HealthMap,
-  PotentialTarget,
-  Team,
-} from "@/lib/combat/combat.types";
+import {
+  COMBAT_CONFIG,
+  WEAPONS,
+  type HealthMap,
+  type PotentialTarget,
+  type Team,
+} from "@toyota/combat";
 import type { UnitRegistry } from "./squad.registry";
 import type { TargetAllocationOptions } from "./squad.targets";
 import type {
@@ -14,14 +15,12 @@ import type {
   SquadOrderContext,
 } from "./squad.types";
 import { SquadManager } from "./squad.core";
-import { MESO_CONFIG } from "../meso/meso.config";
-import { MesoEvaluator } from "../meso/meso.evaluator";
+import { MESO_CONFIG, MesoEvaluator } from "@toyota/ai";
 import {
   DEFAULT_VEHICLE_LOADOUT,
   VEHICLE_PLATFORMS,
 } from "../vehicles/vehicle.config";
 import type { VehicleLoadout } from "../vehicles/vehicle.types";
-import { WEAPONS } from "../weapons/weapon.config";
 import type { Vec2 } from "@toyota/missions";
 import type { AgentIntentId } from "@toyota/agents";
 

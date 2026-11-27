@@ -7,10 +7,7 @@ import { useBattle } from "@/context/battle-context";
 import { usePlayer } from "@/context/player-context";
 import { useRadar } from "@/context/radar-context";
 import { useTargets } from "@/context/targets-context";
-import {
-  projectWorldToScreen,
-  type ScreenPosition,
-} from "@/lib/combat/combat.hud";
+import { projectWorldToScreen, type ScreenPosition } from "@toyota/combat";
 import styles from "./enemy-marker.module.css";
 
 const ENEMY_MARKER_HEIGHT = 3.2;

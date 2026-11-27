@@ -1,11 +1,11 @@
 import * as THREE from "three";
 import type { Obstacle } from "@/lib/movement/movement.types";
-import { DEFAULT_ROCK_RADIUS } from "@/lib/weapons/weapon.obstacles";
 import {
+  DEFAULT_ROCK_RADIUS,
   closestObstacleSurface,
   segmentTouchesObstacleXZ,
   type ObstacleSurface,
-} from "@/lib/obstacles/obstacle-shape";
+} from "@toyota/combat";
 
 const TAU = Math.PI * 2;
 const surface: ObstacleSurface = {

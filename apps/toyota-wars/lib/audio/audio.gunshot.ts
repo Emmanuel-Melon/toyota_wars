@@ -1,9 +1,9 @@
 // lib/audio/audio.gunshot.ts
-import { WEAPONS } from "@/lib/weapons/weapon.config";
-import type {
-  ProceduralWeaponAudioKind,
-  WeaponId,
-} from "@/lib/weapons/weapon.types";
+import {
+  WEAPONS,
+  type ProceduralWeaponAudioKind,
+  type WeaponId,
+} from "@toyota/combat";
 
 export class ProceduralGunshot {
   private static audioCtx: AudioContext | null = null;

@@ -1,8 +1,14 @@
 // apps/toyota-wars/lib/squad/squad.roster.ts
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
-import { partMaxHealth, VEHICLE_PARTS } from "@/lib/combat/combat.parts";
-import { partId, type VehiclePart } from "@/lib/combat/combat.teams";
-import type { HealthMap, PartHealthMap, Team } from "@/lib/combat/combat.types";
+import {
+  COMBAT_CONFIG,
+  partMaxHealth,
+  VEHICLE_PARTS,
+  partId,
+  type VehiclePart,
+  type HealthMap,
+  type PartHealthMap,
+  type Team,
+} from "@toyota/combat";
 import type { VehicleSpawn } from "@/lib/map/map.types";
 import type {
   InitialOrder,
@@ -36,6 +42,7 @@ export type RosterSquadSpawn = {
   formationType?: FormationType;
   formationSpacing?: number;
   holdFormation?: boolean;
+  holdPosition?: boolean;
   fireMode?: SquadFireMode;
 };
 
@@ -61,6 +68,7 @@ export type RosterSquad = {
   formationType: FormationType;
   formationSpacing: number;
   holdFormation: boolean;
+  holdPosition: boolean;
   fireMode: SquadFireMode;
 };
 
@@ -211,6 +219,7 @@ export class BattleRoster {
       formationType: spawn.formationType ?? "wedge",
       formationSpacing: spawn.formationSpacing ?? 8,
       holdFormation: spawn.holdFormation ?? false,
+      holdPosition: spawn.holdPosition ?? false,
       fireMode: spawn.fireMode ?? "normal",
     });
     this.rebuildLists();

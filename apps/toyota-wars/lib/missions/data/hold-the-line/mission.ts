@@ -24,7 +24,7 @@ export const holdTheLine: MissionInput = {
   requires: ["first-contact"],
   arena: {
     seed: 2002,
-    size: 600,
+    size: 2000,
     obstacleDensity: 0.3,
     playerSpawn: { x: 0, z: 240 },
   },

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import type { Obstacle } from "@/lib/movement/movement.types";
-import { hasLineOfSight } from "@/lib/weapons/weapon.obstacles";
+import { hasLineOfSight } from "@toyota/combat";
 import {
   FULL_CIRCLE,
   clamp01,

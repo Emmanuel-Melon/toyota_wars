@@ -3,7 +3,7 @@ import type {
   VehicleModelId,
   VehiclePlatformId,
 } from "../vehicles/vehicle.types";
-import type { WeaponId } from "../weapons/weapon.types";
+import type { WeaponId } from "@toyota/combat";
 
 export type MapPosition = [number, number];
 

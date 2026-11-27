@@ -10,7 +10,7 @@ import { usePlayer } from "@/context/player-context";
 import type { GameState } from "@/feature/game/game.types";
 import { useTutorialGates } from "@/feature/game/tutorial/tutorial-gates";
 import { TUTORIAL_STEP_COUNT } from "@/feature/game/tutorial/tutorial-steps";
-import { clampAim } from "@/lib/aim/aim.state";
+import { clampAim } from "@toyota/combat";
 import styles from "./touch-controls.module.css";
 
 const STICK_RADIUS = 40;

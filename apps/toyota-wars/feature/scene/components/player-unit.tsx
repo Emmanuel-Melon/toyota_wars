@@ -6,7 +6,7 @@ import type * as THREE from "three";
 import { useRegisterUnit } from "../../../context/battle-context";
 import { useArena } from "@/context/arena-context";
 import { usePlayer } from "@/context/player-context";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
+import { COMBAT_CONFIG } from "@toyota/combat";
 import { MOVEMENT_CONFIG } from "@/lib/movement/movement.config";
 import {
   groundVehicle,

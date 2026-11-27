@@ -15,9 +15,7 @@ export const acknowledgeContactQte = createQte({
       detail: "Press X to transmit your report.",
       startMs: 200,
       endMs: 2200,
-      inputs: [
-        qteInput("transmit", "X", ["x"]),
-      ],
+      inputs: [qteInput("transmit", "X", ["x"])],
       resolve: "any",
       failFast: false,
 

@@ -1,4 +1,11 @@
 // apps/toyota-wars/lib/squad/squad.config.ts
+import { WEAPONS } from "@toyota/combat";
+
+const MAX_ENGAGEMENT_RANGE = Math.max(
+  1000,
+  ...Object.values(WEAPONS).map((weapon) => weapon.engagementRange),
+);
+
 export const SQUAD_CONFIG = {
   /** If this ratio (0 to 1) of squad members are retreating, the entire squad falls back. */
   generalRetreatThreshold: 0.4,
@@ -6,7 +13,7 @@ export const SQUAD_CONFIG = {
   criticalSquadHealthThreshold: 0.3,
   /** Leash distance before units are considered strayed from the squad rally point. */
   defaultLeashDistance: 250,
-  designateNearbyRadius: 55,
+  designateNearbyRadius: MAX_ENGAGEMENT_RANGE,
   designateVehicleSnapRadius: 7,
   designateDurationMs: 8000,
   designatedFireRangeMultiplier: 3,

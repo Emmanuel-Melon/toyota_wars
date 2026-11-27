@@ -6,6 +6,7 @@ const nextConfig = {
     "@toyota/agents",
     "@toyota/missions",
     "@toyota/models",
+    "@toyota/combat",
   ],
   typescript: {
     ignoreBuildErrors: true,

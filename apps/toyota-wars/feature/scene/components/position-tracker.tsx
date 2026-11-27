@@ -1,9 +1,8 @@
 "use client";
 
 import { useGameFrame } from "@/render-loop";
-import type { EnemyTarget } from "@/lib/combat/combat.types";
+import { type EnemyTarget, COMBAT_CONFIG } from "@toyota/combat";
 import type { Unit } from "@/lib/squad/squad.registry";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
 import { useTargets } from "@/context/targets-context";
 import { useArena } from "@/context/arena-context";
 import type { TerrainSampler } from "@/lib/map/map.terrain";

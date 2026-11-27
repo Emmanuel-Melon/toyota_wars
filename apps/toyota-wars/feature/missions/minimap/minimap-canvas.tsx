@@ -5,7 +5,5 @@ type Props = {
 };
 
 export function MinimapCanvas({ canvasRef }: Props) {
-  return (
-    <canvas ref={canvasRef} className="block h-full w-full" />
-  );
+  return <canvas ref={canvasRef} className="block h-full w-full" />;
 }

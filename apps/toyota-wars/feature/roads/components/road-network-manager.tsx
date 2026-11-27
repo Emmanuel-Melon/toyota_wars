@@ -8,15 +8,19 @@ import type { RoadNetwork } from "@/lib/map/map.network";
 import type { TerrainSampler } from "@/lib/map/map.terrain";
 
 interface Props {
+  focus: { readonly x: number; readonly z: number };
   bound: number;
   network: RoadNetwork;
   terrain: TerrainSampler;
+  visibleRadius?: number;
 }
 
 export const RoadNetworkManager = memo(function RoadNetworkManager({
+  focus,
   bound,
   network,
   terrain,
+  visibleRadius,
 }: Props) {
   const material = useMemo(() => {
     const t = Environment.createProceduralRoadTextures();
@@ -45,12 +49,12 @@ export const RoadNetworkManager = memo(function RoadNetworkManager({
   );
 
   const view = useMemo(() => {
-    const radius = Math.hypot(bound, bound);
+    const radius = visibleRadius ?? Math.hypot(bound, bound);
     return {
-      chunks: network.chunksNear(0, 0, radius),
-      sites: network.locationsNear(0, 0, radius),
+      chunks: network.chunksNear(focus.x, focus.z, radius),
+      sites: network.locationsNear(focus.x, focus.z, radius),
     };
-  }, [bound, network]);
+  }, [bound, focus.x, focus.z, network, visibleRadius]);
 
   return (
     <group>

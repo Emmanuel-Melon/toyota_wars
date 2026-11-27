@@ -1,5 +1,5 @@
 import { DEFAULT_MODEL_FOR_WEAPON } from "../vehicles/vehicle.config";
-import type { WeaponId } from "../weapons/weapon.types";
+import type { WeaponId } from "@toyota/combat";
 import type { SpawnConfig, VehicleSpawn } from "./map.types";
 
 // mulberry32: tiny, fast, good enough for gameplay

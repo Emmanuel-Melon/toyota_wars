@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { ConstantValue } from "three.quarks";
 import { useVehicleContext } from "@/context/vehicle-context";
 import { useFxEvent } from "@/context/fx-context";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
+import { COMBAT_CONFIG } from "@toyota/combat";
 import { useGameFrame } from "@/render-loop";
 import {
   createDamageSmoke,

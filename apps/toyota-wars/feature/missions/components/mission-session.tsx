@@ -10,7 +10,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
+import { COMBAT_CONFIG } from "@toyota/combat";
 import { DEFAULT_ARENA } from "@/lib/map/arena";
 import type { MapPosition, VehicleSpawn } from "@/lib/map/map.types";
 import {
@@ -53,7 +53,7 @@ function missionSquadSpawn(squad: Squad, playerSpawn: Vec2): RosterSquadSpawn {
   const units = squad.units.map((unit, index) => {
     const point = squad.spawnPoints[index % squad.spawnPoints.length];
     const position: [number, number] = [point.x, point.z];
-    const rotationY = headingToward(point, playerSpawn);
+    const rotationY = point.yaw ?? headingToward(point, playerSpawn);
     const template = unit.template as UnitTemplateId;
     const spawn: VehicleSpawn = {
       position,
@@ -82,6 +82,7 @@ function missionSquadSpawn(squad: Squad, playerSpawn: Vec2): RosterSquadSpawn {
     formationType: squad.formation,
     formationSpacing: squad.spacing,
     holdFormation: squad.holdFormation,
+    holdPosition: squad.spawnAnchor?.holdPosition ?? false,
     fireMode: squad.fireMode,
   };
 }

@@ -6,11 +6,18 @@ import {
   type AgentFormationState,
 } from "@toyota/agents";
 import * as THREE from "three";
-import type { FireRequest } from "@/lib/combat/combat.types";
-import { Weapon } from "@/lib/weapons/weapon.timer";
-import { WeaponBloomSystem } from "@/lib/weapons/weapon.bloom";
-import { WEAPONS } from "@/lib/weapons/weapon.config";
-import type { WeaponId } from "@/lib/weapons/weapon.types";
+import {
+  AutoAimingStrategy,
+  DefaultWeaponExecutor,
+  WEAPONS,
+  Weapon,
+  WeaponBloomSystem,
+  getVehicleDamageEffects,
+  type FireRequest,
+  type Team,
+  type VehicleDamageEffects,
+  type WeaponId,
+} from "@toyota/combat";
 import {
   AGENT_CONFIG,
   AGENT_UTILITY_DEBUG,
@@ -27,8 +34,6 @@ import {
   DefaultOrderResolver,
   nearestThreatDistance,
 } from "@/lib/movement/movement.resolver";
-import { DefaultWeaponExecutor } from "@/lib/weapons/weapon.executor";
-import { AutoAimingStrategy } from "@/lib/weapons/aim/auto-aiming.strategy";
 import {
   createDecision,
   resetDecision,
@@ -36,11 +41,6 @@ import {
 } from "@/lib/movement/movement.types";
 import { agentPorts } from "@/lib/agents/agent-ports";
 import { LeaderTracker } from "@/lib/movement/movement.leader";
-import type { Team } from "@/lib/combat/combat.types";
-import {
-  getVehicleDamageEffects,
-  type VehicleDamageEffects,
-} from "@/lib/combat/combat.parts";
 import type { VehiclePartHealth } from "@/context/vehicle-context";
 import { useArena } from "@/context/arena-context";
 

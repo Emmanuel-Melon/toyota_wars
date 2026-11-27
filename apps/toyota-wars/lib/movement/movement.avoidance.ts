@@ -1,9 +1,6 @@
 import type * as THREE from "three";
 import type { AvoidanceConfig, Obstacle } from "./movement.types";
-import {
-  closestObstacleSurface,
-  type ObstacleSurface,
-} from "@/lib/obstacles/obstacle-shape";
+import { closestObstacleSurface, type ObstacleSurface } from "@toyota/combat";
 
 export function accumulateObstaclePush(
   out: THREE.Vector3,

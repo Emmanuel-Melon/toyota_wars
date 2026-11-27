@@ -18,7 +18,7 @@ import {
   addSmokeCloud,
   clearSmokeClouds,
   tickSmokeClouds,
-} from "@/lib/fx/fx.smoke";
+} from "@toyota/combat";
 import { getWeaponFx } from "@/lib/fx/fx.config";
 import type { EffectProps } from "../effects.types";
 

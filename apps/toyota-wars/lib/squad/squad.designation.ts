@@ -1,4 +1,4 @@
-import type { HealthMap, Team } from "@/lib/combat/combat.types";
+import type { HealthMap, Team } from "@toyota/combat";
 import type { UnitRegistry } from "./squad.registry";
 import {
   FIRE_DESIGNATION_GROUP,

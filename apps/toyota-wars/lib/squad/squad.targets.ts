@@ -1,12 +1,12 @@
 // apps/toyota-wars/lib/squad/squad.targets.ts
 import type { Vector3 } from "three";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
-import type {
-  HealthMap,
-  PotentialTarget,
-  TargetAllocationMap,
-} from "@/lib/combat/combat.types";
-import { selectBestTarget } from "@/lib/combat/combat.targets";
+import {
+  COMBAT_CONFIG,
+  selectSquadTarget,
+  type HealthMap,
+  type PotentialTarget,
+  type TargetAllocationMap,
+} from "@toyota/combat";
 
 export type TargetAllocationOptions = {
   priorityTargetId?: string;
@@ -60,7 +60,7 @@ export function createTargetAllocator() {
         continue;
       }
 
-      const best = selectBestTarget(
+      const best = selectSquadTarget(
         member.id,
         member.position,
         targets,

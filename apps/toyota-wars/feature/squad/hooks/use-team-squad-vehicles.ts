@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useArena } from "@/context/arena-context";
 import { useCombat } from "@/context/combat-context";
-import type { HealthMap, PartHealthMap, Team } from "@/lib/combat/combat.types";
+import type { HealthMap, PartHealthMap, Team } from "@toyota/combat";
 import type { RosterSquad, RosterUnit } from "@/lib/squad/squad.roster";
 import type { Obstacle } from "@/lib/movement/movement.types";
 import {

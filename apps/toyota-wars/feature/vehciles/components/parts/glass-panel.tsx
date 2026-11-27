@@ -1,7 +1,7 @@
 "use client";
 
 import { Vehicle } from "@toyota/models";
-import { partHealthRatio } from "@/lib/combat/combat.parts";
+import { partHealthRatio } from "@toyota/combat";
 import { useVehicleContext } from "../../../../context/vehicle-context";
 import { FallenPart } from "./fallen-part";
 import { dropToGround } from "./helpers";

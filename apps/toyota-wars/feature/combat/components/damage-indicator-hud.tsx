@@ -1,11 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
-import {
-  getSnapshot,
-  playerHeadingRef,
-  subscribe,
-} from "@/lib/combat/damage-warnings";
+import { getSnapshot, playerHeadingRef, subscribe } from "@toyota/combat";
 
 const BAR_WIDTH = 80;
 const BAR_HEIGHT = 6;

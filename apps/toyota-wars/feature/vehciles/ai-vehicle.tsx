@@ -6,12 +6,17 @@ import { fireRangeForOrder, resetAgentDecision } from "@toyota/agents";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { AGENT_CONFIG, TANK_CONFIG } from "@/lib/agents/agent-runtime.config";
-import { isCombatActive } from "@/lib/combat/combat.activity";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
-import { hasAssignedTarget } from "@/lib/combat/combat.targets";
-import type { FireRequest } from "@/lib/combat/combat.types";
-import { readMuzzleTransform } from "@/lib/aim/aim.muzzle";
-import { findBlockingObstacle } from "@/lib/weapons/weapon.obstacles";
+import {
+  COMBAT_CONFIG,
+  calculatePredictedIntercept,
+  findBlockingObstacle,
+  hasAssignedTarget,
+  isCombatActive,
+  readMuzzleTransform,
+  WEAPONS,
+  type FireRequest,
+  type WeaponId,
+} from "@toyota/combat";
 import { MOVEMENT_CONFIG } from "@/lib/movement/movement.config";
 import {
   IDLE_DRIVE,
@@ -24,8 +29,6 @@ import { nearestThreatDistance } from "@/lib/movement/movement.resolver";
 import { mapAgentDecision } from "@/lib/agents/agent-decision";
 import { useBattle, useRegisterUnit } from "@/context/battle-context";
 import { useAITankRuntime } from "@/hooks/use-ai-tank-runtime";
-import { WEAPONS } from "@/lib/weapons/weapon.config";
-import type { WeaponId } from "@/lib/weapons/weapon.types";
 import {
   resolveVehicleLoadout,
   VEHICLE_PLATFORMS,
@@ -45,7 +48,7 @@ import {
   SQUAD_DIRECTIVE,
   type SquadOrderContext,
 } from "@/lib/squad/squad.types";
-import { FIRETEAM_TACTIC } from "@/lib/meso/meso.types";
+import { FIRETEAM_TACTIC } from "@toyota/ai";
 import type { VehiclePartHealth } from "./components/vehicle";
 import type { VehicleSpawn } from "@/lib/map/map.types";
 import { VehicleVisuals } from "./components/vehicle-visuals";
@@ -152,6 +155,8 @@ export function AIVehicle({
   const muzzleReadyRef = useRef(false);
   const orderTarget = useRef(new THREE.Vector3());
   const designationTarget = useRef(new THREE.Vector3());
+  const targetVelocity = useRef(new THREE.Vector3());
+  const aimPoint = useRef(new THREE.Vector3());
   const motion = useRef<VehicleMotion>({ speed: 0, steer: 0 });
   const ammo = useRef<number>(Number.POSITIVE_INFINITY);
   const { registry, wrecks } = useBattle();
@@ -278,8 +283,41 @@ export function AIVehicle({
         effectiveSquadOrder.fireDesignation,
       ),
     );
-    aimTargetRef.current = externalTarget;
-    externalTargetRef.current = externalTarget;
+
+    let targetUnitId: string | null = null;
+    if (designationActive && designation?.targetId) {
+      targetUnitId = designation.targetId;
+    } else if (trackedTarget && targetPositionsRef?.current) {
+      for (const [id, position] of targetPositionsRef.current) {
+        if (position === externalTarget) {
+          targetUnitId = id;
+          break;
+        }
+      }
+    }
+    const targetUnit = targetUnitId ? registry.get(targetUnitId) : undefined;
+    if (targetUnit) {
+      targetVelocity.current.set(
+        Math.sin(targetUnit.body.heading) * targetUnit.body.speed,
+        0,
+        Math.cos(targetUnit.body.heading) * targetUnit.body.speed,
+      );
+    } else {
+      targetVelocity.current.set(0, 0, 0);
+    }
+    const aimTarget = externalTarget
+      ? calculatePredictedIntercept(
+          weaponOrigin,
+          externalTarget,
+          targetVelocity.current,
+          weapon.projectile.speed,
+          aimPoint.current,
+          weapon.projectile.gravity,
+          3,
+        )
+      : null;
+    aimTargetRef.current = aimTarget;
+    externalTargetRef.current = aimTarget;
 
     const targetDistance = externalTarget
       ? Math.hypot(
@@ -291,7 +329,7 @@ export function AIVehicle({
       !usingObjectiveTarget &&
       trackedTarget !== null &&
       lineOfSightClear &&
-      targetDistance <= weapon.engagementRange;
+      targetDistance <= runtime.weaponExecutor.getRange();
     const scriptedMovement =
       usingObjectiveTarget || squadOrder.targetIsObjective === true;
     const combatActive =
@@ -447,6 +485,10 @@ export function AIVehicle({
     const retreating =
       runtime.retreatActive.current ||
       runtime.decision.current.movement.type === "flee";
+    const outOfRange =
+      weaponOrder.type === "fireAt" &&
+      runtime.body.position.distanceTo(weaponOrder.point) >
+        runtime.weaponExecutor.getRange();
 
     const muzzleReady = readMuzzleTransform(
       muzzleRef.current,
@@ -468,6 +510,7 @@ export function AIVehicle({
       targetBlocked ||
       runtime.damageEffects.weaponDisabled ||
       ammo.current < weapon.ammoCost ||
+      outOfRange ||
       (!retreating && !aimAlignedRef.current) ||
       !muzzleReady
     ) {
@@ -489,9 +532,21 @@ export function AIVehicle({
     const spreadMultiplier = retreating
       ? TANK_CONFIG.combat.retreatSpreadMultiplier
       : 1;
-    const spread =
-      runtime.bloom.current.getSpreadAngle(runtime.body.speed, weapon.spread) *
-      spreadMultiplier;
+    const shotDistance = Math.max(
+      1,
+      muzzleWorld.current.distanceTo(weaponOrder.point),
+    );
+    const precisionSpread = Math.max(
+      0.0004,
+      (weapon.projectile.hitRadius * 0.75) / shotDistance,
+    );
+    const rawSpread = runtime.bloom.current.getSpreadAngle(
+      runtime.body.speed,
+      weapon.spread * spreadMultiplier,
+    );
+    const spread = retreating
+      ? rawSpread
+      : Math.min(rawSpread, precisionSpread);
     onShoot?.(
       muzzleWorld.current.clone(),
       fireHeading,

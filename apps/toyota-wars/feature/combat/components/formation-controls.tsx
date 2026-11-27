@@ -19,14 +19,13 @@ export function FormationControls({
   };
 
   return (
-      <div className="flex flex-col gap-1">
-        {!hideLabel && (
-          <span className="font-mono text-[12px] font-semibold tracking-[0.12em] opacity-85">
-            FORMATION
-          </span>
-        )}
-        <div className="grid grid-cols-3 gap-2">
-
+    <div className="flex flex-col gap-1">
+      {!hideLabel && (
+        <span className="font-mono text-[12px] font-semibold tracking-[0.12em] opacity-85">
+          FORMATION
+        </span>
+      )}
+      <div className="grid grid-cols-3 gap-2">
         {(["column", "wedge", "line"] as const).map((formation) => (
           <CommandButton
             key={formation}

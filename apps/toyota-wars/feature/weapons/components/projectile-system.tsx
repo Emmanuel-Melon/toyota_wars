@@ -8,20 +8,19 @@ import { useFx } from "@/context/fx-context";
 import { EffectsHost } from "@/feature/effects/components/effects-host";
 import {
   createProjectilePool,
+  DEFAULT_MUZZLES,
+  markCombatActivity,
   spawnProjectile,
   stepProjectiles,
-} from "@/lib/weapons/weapon.projectile";
-import { DEFAULT_MUZZLES, WEAPONS } from "@/lib/weapons/weapon.config";
-import type {
-  EnemyTarget,
-  FireRequest,
-  HealthMap,
-  ProjectileSystemHandle,
-  Team,
-} from "@/lib/combat/combat.types";
-import type { VehiclePart } from "@/lib/combat/combat.teams";
+  WEAPONS,
+  type EnemyTarget,
+  type FireRequest,
+  type HealthMap,
+  type ProjectileSystemHandle,
+  type Team,
+  type VehiclePart,
+} from "@toyota/combat";
 import { useArena } from "@/context/arena-context";
-import { markCombatActivity } from "@/lib/combat/combat.activity";
 const MUZZLE_UP = new THREE.Vector3(0, 1, 0);
 const muzzleRight = new THREE.Vector3();
 
@@ -107,7 +106,7 @@ export function ProjectileSystem({
         targets: targets.current ?? [],
         health,
         getHealth,
-        terrain: arena.terrain,
+        getGroundHeight: (x, z) => arena.terrain.getHeight(x, z),
         obstacles: arena.obstacles,
         onHit,
         onKill,

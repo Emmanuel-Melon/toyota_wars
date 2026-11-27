@@ -1,7 +1,7 @@
 import { useMission } from "@/context/missions.context";
 import { GameOverMenu } from "@/feature/menu/components/game-menu";
 import { useMissionSession } from "@/feature/missions/components/mission-session";
-import type { Team } from "@/lib/combat/combat.types";
+import type { Team } from "@toyota/combat";
 import { allOrderedMissions } from "@/lib/missions/missions.registry";
 import { getNextMission } from "@toyota/missions";
 import type { GameState } from "../game.types";

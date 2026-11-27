@@ -2,9 +2,12 @@ import { useState } from "react";
 import { useGameFrame } from "@/render-loop";
 import * as THREE from "three";
 import { createTargetAllocator } from "@/lib/squad/squad.targets";
-import { NO_TARGET_Z } from "@/lib/combat/combat.targets";
-import { opposingTeam } from "@/lib/combat/combat.teams";
-import type { HealthMap, Team } from "@/lib/combat/combat.types";
+import {
+  NO_TARGET_Z,
+  opposingTeam,
+  type HealthMap,
+  type Team,
+} from "@toyota/combat";
 import { useBattle } from "@/context/battle-context";
 
 export function useSquadTargets(

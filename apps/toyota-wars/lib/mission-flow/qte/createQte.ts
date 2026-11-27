@@ -1,10 +1,6 @@
 // qte/createQte.ts
 import type { FlowQteStep } from "../mission-flow.types";
-import {
-  onPlayer,
-  rel,
-  type CameraShotSpec,
-} from "../camera/camera.types";
+import { onPlayer, rel, type CameraShotSpec } from "../camera/camera.types";
 import { createCameraResolver } from "../camera/camera.resolve";
 import type { QteInput, QteSpec } from "./qte.types";
 
@@ -22,16 +18,29 @@ const DEFAULT_QTE_SHOT: CameraShotSpec = {
   to: { position: rel(0, -5, 3.0), target: onPlayer(1.2), fov: 50 },
 };
 
-export const qteInput = (id: string, label: string, keys: string[] = [id], effects?: QteInput["effects"]): QteInput =>
-  ({ id, label, keys, effects });
+export const qteInput = (
+  id: string,
+  label: string,
+  keys: string[] = [id],
+  effects?: QteInput["effects"],
+): QteInput => ({ id, label, keys, effects });
 
 // qte/createQte.ts (only the return changes)
-export function createQte({ id, title, caption, shot = DEFAULT_QTE_SHOT, ...qte }: QteStepSpec): FlowQteStep {
+export function createQte({
+  id,
+  title,
+  caption,
+  shot = DEFAULT_QTE_SHOT,
+  ...qte
+}: QteStepSpec): FlowQteStep {
   const normalized: QteSpec = {
     ...qte,
     prompts: qte.prompts.map((p) => ({
       ...p,
-      inputs: p.inputs.map((i) => ({ ...i, keys: i.keys.map((k) => k.toLowerCase()) })),
+      inputs: p.inputs.map((i) => ({
+        ...i,
+        keys: i.keys.map((k) => k.toLowerCase()),
+      })),
     })),
   };
   return {

@@ -4,7 +4,7 @@
 import { createContext, useContext, type RefObject } from "react";
 import type * as THREE from "three";
 import type { Obstacle } from "@/lib/movement/movement.types";
-import type { Team } from "@/lib/combat/combat.types";
+import type { Team } from "@toyota/combat";
 import type { SquadOrderContext } from "@/lib/squad/squad.types";
 
 type SquadContextValue = {

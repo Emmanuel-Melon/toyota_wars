@@ -2,9 +2,12 @@
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useGameFrame } from "@/render-loop";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
-import { opposingTeam } from "@/lib/combat/combat.teams";
-import type { HealthMap, Team } from "@/lib/combat/combat.types";
+import {
+  COMBAT_CONFIG,
+  opposingTeam,
+  type HealthMap,
+  type Team,
+} from "@toyota/combat";
 import type { Obstacle } from "@/lib/movement/movement.types";
 import type { SquadDirectiveView } from "@toyota/missions";
 import { SQUAD_CONFIG } from "@/lib/squad/squad.config";
@@ -141,7 +144,13 @@ export function useSquadOrchestration({
         targetIsObjective: false,
       };
     }
-    const hasMissionDirective = strategic.directive !== null;
+    const holdingPosition = team === "ally" && shared?.holdPosition === true;
+    if (holdingPosition) {
+      strategic = { directive: null, objectiveTarget: null };
+    }
+    const hasMissionDirective = holdingPosition
+      ? false
+      : strategic.directive !== null;
 
     const directive = pickDirective({
       team,

@@ -18,7 +18,10 @@ export function useSnappedScatter(
 
   const cx0 = Math.round(playerBody.position.x / snapStep);
   const cz0 = Math.round(playerBody.position.z / snapStep);
-  const initialCenter = useRef({ x: cx0 * snapStep, z: cz0 * snapStep }).current;
+  const initialCenter = useRef({
+    x: cx0 * snapStep,
+    z: cz0 * snapStep,
+  }).current;
   const cellRef = useRef({ cx: cx0, cz: cz0, step: snapStep });
 
   useGameFrame(() => {

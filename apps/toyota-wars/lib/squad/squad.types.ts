@@ -1,8 +1,8 @@
 // apps/toyota-wars/lib/squad/squad.types.ts
 import type { FormationType } from "@/lib/tactics/tactics.formation";
-import type { FireteamTactic } from "../meso/meso.types";
+import type { FireteamTactic } from "@toyota/ai";
 import type { VehiclePlatform } from "../vehicles/vehicle.types";
-import type { WeaponConfig } from "../weapons/weapon.types";
+import type { WeaponConfig } from "@toyota/combat";
 import type { AgentIntentId } from "@toyota/agents";
 
 export interface Point2D {

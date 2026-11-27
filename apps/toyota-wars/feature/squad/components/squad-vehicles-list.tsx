@@ -1,5 +1,5 @@
 // apps/toyota-wars/feature/squad/squad-vehicles-list.tsx
-import type { HealthMap, PartHealthMap } from "@/lib/combat/combat.types";
+import type { HealthMap, PartHealthMap } from "@toyota/combat";
 import type { RosterSquad, RosterUnit } from "@/lib/squad/squad.roster";
 import { SquadVehicles, type SquadShared } from "./squad-vehicles";
 import { EMPTY_UNITS } from "../squad-vehicles.utils";

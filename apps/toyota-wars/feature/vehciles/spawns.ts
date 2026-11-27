@@ -1,4 +1,4 @@
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
+import { COMBAT_CONFIG } from "@toyota/combat";
 import { createSpawns } from "@/lib/map/map.spawns";
 import { PLAINS_MAP } from "@/lib/map/maps/plains";
 import { BattleRoster, type RosterSquadSpawn } from "@/lib/squad/squad.roster";

@@ -4,10 +4,10 @@ import { useMemo, useRef } from "react";
 import type * as THREE from "three";
 import { Vehicle, Weapons } from "@toyota/models";
 import {
-  createTurretAimLimits,
   BASE_TURRET_LIMITS,
-} from "@/lib/aim/aim.config";
-import { DEFAULT_MUZZLES } from "@/lib/weapons/weapon.config";
+  createTurretAimLimits,
+  DEFAULT_MUZZLES,
+} from "@toyota/combat";
 import { useVehicleContext } from "@/context/vehicle-context";
 import { VEHICLE_MODELS } from "@/lib/vehicles/vehicle.config";
 import type { BedWeaponProps } from "./types";
@@ -50,7 +50,7 @@ export function BedWeapon({
     aimTargetRef,
   });
 
-   const crew =
+  const crew =
     mount === "rocketPod" ? null : (
       <>
         <Vehicle.CrewGunner role="gunner" />

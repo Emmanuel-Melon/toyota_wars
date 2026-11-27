@@ -20,7 +20,13 @@ export const evadeQte = createQte({
       inputs: [qteInput("evade", "X", ["x"])],
       resolve: "any",
       failFast: true, // the bomb lands, so there's nothing left to play
-      onHit: [{ type: "notice", title: "CLOSE CALL", detail: "The shells land behind you." }],
+      onHit: [
+        {
+          type: "notice",
+          title: "CLOSE CALL",
+          detail: "The shells land behind you.",
+        },
+      ],
       onMiss: [{ type: "destroyPlayer", cause: "artillery-salvo" }],
     },
     {
@@ -32,11 +38,19 @@ export const evadeQte = createQte({
       required: false, // bonus: a miss doesn't fail the QTE
       inputs: [qteInput("shoot", "Z", ["z"])],
       resolve: "any",
-      onHit: [{ type: "damageSquad", squadId: ARTILLERY_SQUAD_ID, amount: 0.25 }],
+      onHit: [
+        { type: "damageSquad", squadId: ARTILLERY_SQUAD_ID, amount: 0.25 },
+      ],
     },
   ],
   on: {
     succeed: [{ type: "setFlag", key: "evaded-salvo", value: true }],
-    fail: [{ type: "notice", title: "DIRECT HIT", detail: "You didn't clear the blast." }],
+    fail: [
+      {
+        type: "notice",
+        title: "DIRECT HIT",
+        detail: "You didn't clear the blast.",
+      },
+    ],
   },
 });

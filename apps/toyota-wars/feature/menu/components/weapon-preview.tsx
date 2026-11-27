@@ -7,7 +7,7 @@ import { VehicleBody } from "@/feature/vehciles/components/vehicle-body";
 import { PLAYER_PALETTE } from "@/lib/palettes";
 import { VEHICLE_MODELS } from "@/lib/vehicles/vehicle.config";
 import type { VehicleModel } from "@/lib/vehicles/vehicle.types";
-import { WEAPONS } from "@/lib/weapons/weapon.config";
+import { WEAPONS } from "@toyota/combat";
 
 export function VehiclePreview({ model }: { model: VehicleModel }) {
   const weapon = WEAPONS[model.weapon];

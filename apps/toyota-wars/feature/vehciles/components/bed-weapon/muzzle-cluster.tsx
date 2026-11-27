@@ -1,5 +1,5 @@
 import { WeaponEffects } from "@/feature/vehciles/components/weapon-effects";
-import type { WeaponMuzzleEmitter } from "@/lib/weapons/weapon.types";
+import type { WeaponMuzzleEmitter } from "@toyota/combat";
 
 export function MuzzleCluster({
   muzzleZ,

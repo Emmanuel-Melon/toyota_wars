@@ -31,7 +31,8 @@ export function Speedometer({ compact = false }: { compact?: boolean }) {
         if (barRef.current) {
           barRef.current.style.transform = `scaleX(${Math.min(1, speed / MAX_KMH)})`;
         }
-        if (motionRef.current) motionRef.current.style.opacity = speed > 1 ? "1" : "0.3";
+        if (motionRef.current)
+          motionRef.current.style.opacity = speed > 1 ? "1" : "0.3";
       }
       frame = requestAnimationFrame(update);
     };
@@ -41,8 +42,16 @@ export function Speedometer({ compact = false }: { compact?: boolean }) {
   }, [playerBody]);
 
   const digits = (
-    <span className={compact ? "text-[18px] font-bold leading-none" : "text-[24px] font-bold leading-none tracking-[-0.04em]"}>
-      <span ref={zerosRef} className="opacity-25">00</span>
+    <span
+      className={
+        compact
+          ? "text-[18px] font-bold leading-none"
+          : "text-[24px] font-bold leading-none tracking-[-0.04em]"
+      }
+    >
+      <span ref={zerosRef} className="opacity-25">
+        00
+      </span>
       <span ref={valueRef}>0</span>
     </span>
   );
@@ -56,7 +65,9 @@ export function Speedometer({ compact = false }: { compact?: boolean }) {
       {compact ? (
         <div className="flex items-baseline justify-end gap-1.5 font-mono tabular-nums">
           {digits}
-          <span className="text-[9px] font-semibold tracking-[0.1em] opacity-70">KM/H</span>
+          <span className="text-[9px] font-semibold tracking-[0.1em] opacity-70">
+            KM/H
+          </span>
         </div>
       ) : (
         <div className="flex items-center gap-2">
@@ -77,7 +88,9 @@ export function Speedometer({ compact = false }: { compact?: boolean }) {
           <div className="flex flex-col gap-1">
             <div className="flex items-baseline gap-1 font-mono tabular-nums">
               {digits}
-              <span className="text-[8px] font-semibold tracking-[0.12em] opacity-70">KM/H</span>
+              <span className="text-[8px] font-semibold tracking-[0.12em] opacity-70">
+                KM/H
+              </span>
             </div>
             <div className="h-[3px] w-full overflow-hidden bg-black/40">
               <div

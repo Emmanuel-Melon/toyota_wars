@@ -1,6 +1,6 @@
 // lib/movement/movement.types.ts
 import * as THREE from "three";
-import type { WeaponOrder } from "@/lib/weapons/weapon.types";
+import type { WeaponOrder } from "@toyota/combat";
 
 export const MovementOrders = {
   Idle: "idle",

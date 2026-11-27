@@ -1,10 +1,11 @@
 import { createCutscene } from "@/lib/mission-flow/cutscene/createCutscene";
-import { rel, onPlayer, type CameraShotSpec } from "@/lib/mission-flow/camera/camera.types";
-import type { FlowCutsceneActor } from "@/lib/mission-flow/mission-flow.types";
 import {
-  PATROL_OPENING_ID,
-  HOSTILE_CONTACT_ID,
-} from "./ids";
+  rel,
+  onPlayer,
+  type CameraShotSpec,
+} from "@/lib/mission-flow/camera/camera.types";
+import type { FlowCutsceneActor } from "@/lib/mission-flow/mission-flow.types";
+import { PATROL_OPENING_ID, HOSTILE_CONTACT_ID } from "./ids";
 
 const allyRunner = (
   id: string,

@@ -1,4 +1,4 @@
-import type { Team } from "@/lib/combat/combat.types";
+import type { Team } from "@toyota/combat";
 import {
   ALLY_PALETTES,
   ENEMY_PALETTES,

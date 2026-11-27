@@ -1,8 +1,10 @@
 import type { MissionInput } from "@toyota/missions";
 
+export const FIRST_CONTACT_CHECKPOINT_ID = "first-contact-checkpoint";
+
 export const structures: NonNullable<MissionInput["arena"]["structures"]> = [
   {
-    id: "first-contact-checkpoint",
+    id: FIRST_CONTACT_CHECKPOINT_ID,
     structure: "checkpoint",
     anchor: "spawn",
     position: { x: 28, z: 215 },

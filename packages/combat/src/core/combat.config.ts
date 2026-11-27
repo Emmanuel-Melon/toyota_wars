@@ -1,0 +1,40 @@
+
+import { WEAPONS } from "../weapons/weapon.config";
+import type { Team } from "./combat.types";
+
+const MAX_ENGAGEMENT_RANGE = Math.max(
+  1000,
+  ...Object.values(WEAPONS).map((weapon) => weapon.engagementRange),
+);
+
+export const COMBAT_CONFIG = {
+  MAX_HEALTH: 400,
+  PLAYER_MAX_HEALTH: 800,
+  PLAYER_DANGER_HEALTH_FRACTION: 0.3,
+  PLAYER_DAMAGE_SMOKE_HEALTH_FRACTION: 0.55,
+  MAX_TARGET_RANGE: MAX_ENGAGEMENT_RANGE,
+  PLAYER_ID: "player",
+  PLAYER_AGGRO_DURATION_MS: 8000,
+  COMBAT_ACTIVITY_WINDOW_MS: 8000,
+  MAX_AMMO: 400,
+  WRECK_PICKUP_RADIUS: 4.5,
+  WRECK_AMMO_REFILL: 100,
+  WRECK_HEALTH_REFILL: 100,
+  WRECK_LOOT_AMMO_CHANCE: 0.5,
+  WRECK_MARKER_HEIGHT: 3.2,
+  BAR_COLORS: {
+    ally: "#d27a38",
+    enemy: "#c0392b",
+  } as Record<Team, string>,
+} as const;
+
+export const VEHICLE_COLLISION_CONFIG = {
+  ENABLED: true,
+  FRIENDLY_FIRE: false,
+  SPEED_THRESHOLD: 3,
+  DAMAGE_SCALE: 2.5,
+  MAX_DAMAGE: 60,
+  CONTACT_GRACE: 0.3,
+  CAPSULE_HALF_LENGTH: 0.9,
+  SEPARATION_SLOP: 0.01,
+} as const;

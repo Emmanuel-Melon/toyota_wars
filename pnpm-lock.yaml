@@ -147,6 +147,9 @@ importers:
       '@toyota/client':
         specifier: workspace:*
         version: link:../../packages/client
+      '@toyota/combat':
+        specifier: workspace:*
+        version: link:../../packages/combat
       '@toyota/missions':
         specifier: workspace:*
         version: link:../../packages/missions
@@ -286,6 +289,21 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  packages/combat:
+    devDependencies:
+      '@types/three':
+        specifier: ^0.186.0
+        version: 0.186.0
+      prettier:
+        specifier: ^3.9.5
+        version: 3.9.10
+      three:
+        specifier: ^0.186.1
+        version: 0.186.1
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/missions:
     dependencies:
       '@toyota/ai':
@@ -328,6 +346,8 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
+
+  packages/squad: {}
 
 packages:
 

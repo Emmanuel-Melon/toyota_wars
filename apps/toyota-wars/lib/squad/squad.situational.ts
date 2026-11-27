@@ -1,16 +1,14 @@
 import * as THREE from "three";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
-import type {
-  HealthMap,
-  PotentialTarget,
-  Team,
-} from "@/lib/combat/combat.types";
+import {
+  COMBAT_CONFIG,
+  type HealthMap,
+  type PotentialTarget,
+  type Team,
+} from "@toyota/combat";
 import type { Vec2 } from "@toyota/missions";
 import type { UnitRegistry } from "./squad.registry";
-import { MESO_CONFIG } from "../meso/meso.config";
+import { MESO_CONFIG } from "@toyota/ai";
 import { TANK_CONFIG } from "../agents/agent-runtime.config";
-import type { SquadOrderContext } from "./squad.types";
-import type { AgentIntentId } from "@toyota/agents";
 
 export type SquadSituational = {
   squadCenter: Vec2;

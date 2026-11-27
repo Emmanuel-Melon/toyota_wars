@@ -1,31 +1,35 @@
 import type { FlowSnapshot } from "@/lib/mission-flow/mission-flow.types";
-import type { MissionNotice, ObjectiveProgressSnapshot } from "@toyota/missions";
+import type {
+  MissionNotice,
+  ObjectiveProgressSnapshot,
+} from "@toyota/missions";
 import type { RadioTransmission } from "@/lib/radio/radio.types";
 import { SQUAD_DIRECTIVE, type SquadDirective } from "@/lib/squad/squad.types";
 import { TUTORIAL_STEPS } from "@/feature/game/tutorial/tutorial-steps";
 
-const DIRECTIVE_COPY: Record<SquadDirective, { title: string; body: string }> = {
-  [SQUAD_DIRECTIVE.ADVANCE]: {
-    title: "ADVANCING",
-    body: "Squad moving to contact.",
-  },
-  [SQUAD_DIRECTIVE.HOLD]: {
-    title: "HOLDING",
-    body: "Squad holding position.",
-  },
-  [SQUAD_DIRECTIVE.FLANK]: {
-    title: "FLANKING",
-    body: "Squad working the flank.",
-  },
-  [SQUAD_DIRECTIVE.FIGHTING_RETREAT]: {
-    title: "FIGHTING RETREAT",
-    body: "Falling back while engaging.",
-  },
-  [SQUAD_DIRECTIVE.GENERAL_RETREAT]: {
-    title: "WITHDRAWING",
-    body: "Squad withdrawing from contact.",
-  },
-};
+const DIRECTIVE_COPY: Record<SquadDirective, { title: string; body: string }> =
+  {
+    [SQUAD_DIRECTIVE.ADVANCE]: {
+      title: "ADVANCING",
+      body: "Squad moving to contact.",
+    },
+    [SQUAD_DIRECTIVE.HOLD]: {
+      title: "HOLDING",
+      body: "Squad holding position.",
+    },
+    [SQUAD_DIRECTIVE.FLANK]: {
+      title: "FLANKING",
+      body: "Squad working the flank.",
+    },
+    [SQUAD_DIRECTIVE.FIGHTING_RETREAT]: {
+      title: "FIGHTING RETREAT",
+      body: "Falling back while engaging.",
+    },
+    [SQUAD_DIRECTIVE.GENERAL_RETREAT]: {
+      title: "WITHDRAWING",
+      body: "Squad withdrawing from contact.",
+    },
+  };
 
 export function missionNoticeTransmission(
   round: number,
@@ -62,7 +66,8 @@ export function flowStepTransmission(
   round: number,
   flow: FlowSnapshot,
 ): RadioTransmission | null {
-  if (!flow.sequenceId || !flow.stepId || flow.phase === "gameplay") return null;
+  if (!flow.sequenceId || !flow.stepId || flow.phase === "gameplay")
+    return null;
 
   const title = flow.title ?? (flow.qte ? "QUICK TIME EVENT" : "COMMAND");
   const qtePrompt = flow.qte?.spec.prompts.find(
@@ -101,8 +106,7 @@ export function flowOutcomeTransmission(
     channel: "ally",
     callsign: "ALPHA-1",
     title,
-    body:
-      flow.qte?.spec.prompts[0]?.text ?? flow.title ?? "Order executed.",
+    body: flow.qte?.spec.prompts[0]?.text ?? flow.title ?? "Order executed.",
     priority: outcome === "failure" ? "urgent" : "routine",
   };
 }

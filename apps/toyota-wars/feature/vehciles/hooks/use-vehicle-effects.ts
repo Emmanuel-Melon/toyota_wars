@@ -6,8 +6,7 @@ import {
   type RecoilRef,
 } from "@/feature/vehciles/hooks/use-wreck-visual";
 import type { VehiclePartHealth } from "@/context/vehicle-context";
-import { isPartDestroyed } from "@/lib/combat/combat.parts";
-import type { VehiclePart } from "@/lib/combat/combat.teams";
+import { isPartDestroyed, type VehiclePart } from "@toyota/combat";
 import { VEHICLE_MODELS } from "@/lib/vehicles/vehicle.config";
 import type { VehicleModelId } from "@/lib/vehicles/vehicle.types";
 import { useFrame } from "@react-three/fiber";

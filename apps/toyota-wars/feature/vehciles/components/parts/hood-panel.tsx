@@ -4,8 +4,7 @@ import { useMemo } from "react";
 import type * as THREE from "three";
 import { Vehicle } from "@toyota/models";
 import { useVehicleContext } from "@/context/vehicle-context";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
-import { partHealthRatio } from "@/lib/combat/combat.parts";
+import { COMBAT_CONFIG, partHealthRatio } from "@toyota/combat";
 import { vehicleNumberForUnitId } from "@/lib/vehicle-identity";
 import { FallenPart } from "./fallen-part";
 

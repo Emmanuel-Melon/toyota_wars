@@ -17,7 +17,7 @@ export const stopTheConvoy: MissionInput = {
   requires: [],
   arena: {
     seed: 7007,
-    size: 600,
+    size: 2000,
     obstacleDensity: 0.32,
     playerSpawn: { x: 0, z: 240 },
     roads: {

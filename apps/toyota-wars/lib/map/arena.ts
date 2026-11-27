@@ -8,6 +8,7 @@ import {
 import { createArenaWorld } from "./map.world";
 import { createSpawns } from "./map.spawns";
 import { createTerrainSampler, type TerrainSampler } from "./map.terrain";
+import { createCheckpointObstacles } from "./checkpoint.collision";
 import type {
   MapChunkConfig,
   MapPosition,
@@ -116,9 +117,14 @@ export const DEFAULT_ARENA: ArenaSource = {
   clearancePoints: DEFAULT_CLEARANCE_POINTS,
 };
 
+const FOCUS_VIEW_RANGE_RATIO = 1.2;
+const FOCUS_VIEW_RANGE_LIMIT = 2400;
+const MAX_FOCUS_RENDER_RADIUS = 20;
 const MIN_OBSTACLE_RADIUS = 2.5;
 const MAX_OBSTACLE_RADIUS = 6.5;
 const OBSTACLE_AREA_EACH = 1200;
+const MAX_GENERATED_OBSTACLES = 360;
+const REFERENCE_OBSTACLE_DENSITY = 0.45;
 const OBSTACLE_SPACING = 4;
 const OBSTACLE_SPAWN_CLEARANCE = 10;
 const OBSTACLE_ROAD_SHOULDER = 4;
@@ -206,11 +212,16 @@ function playerHeading(spawn: Vec2): number {
 }
 
 function chunkConfig(size: number, base: MapChunkConfig): MapChunkConfig {
+  const focusRange = Math.min(
+    size * FOCUS_VIEW_RANGE_RATIO,
+    FOCUS_VIEW_RANGE_LIMIT,
+  );
+  const visibleRadius = Math.ceil(focusRange / base.size);
   return {
     ...base,
     renderRadius: Math.max(
       base.renderRadius,
-      Math.ceil(size / (2 * base.size)),
+      Math.min(visibleRadius, MAX_FOCUS_RENDER_RADIUS),
     ),
   };
 }
@@ -223,8 +234,12 @@ function createObstacles(
   structures: readonly ArenaStructure[],
 ): ArenaObstacle[] {
   const { seed, size, obstacleDensity } = source.arena;
-  const targetCount = Math.round(
-    ((size * size) / OBSTACLE_AREA_EACH) * obstacleDensity,
+  const targetCount = Math.min(
+    Math.round(((size * size) / OBSTACLE_AREA_EACH) * obstacleDensity),
+    Math.round(
+      (MAX_GENERATED_OBSTACLES * obstacleDensity) / REFERENCE_OBSTACLE_DENSITY,
+    ),
+    MAX_GENERATED_OBSTACLES,
   );
   if (targetCount <= 0) return [];
 
@@ -334,6 +349,12 @@ export function createArenaRuntime(source: ArenaSource): ArenaRuntime {
     roadWidth,
     structures,
   );
+  const structureObstacles: ArenaObstacle[] = structures.flatMap(
+    (structure): ArenaObstacle[] =>
+      structure.structure === "checkpoint"
+        ? createCheckpointObstacles(structure, terrain)
+        : [structure],
+  );
 
   return {
     levelId,
@@ -345,7 +366,7 @@ export function createArenaRuntime(source: ArenaSource): ArenaRuntime {
     roads,
     roadWidth,
     chunks: chunkConfig(source.arena.size, level.chunks),
-    obstacles: [...structures, ...obstacles],
+    obstacles: [...structureObstacles, ...obstacles],
     structures,
     playerSpawn,
     playerHeading:

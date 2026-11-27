@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type * as THREE from "three";
-import type { VehiclePart } from "@/lib/combat/combat.teams";
+import type { VehiclePart } from "@toyota/combat";
 
 export type V3 = [number, number, number];
 

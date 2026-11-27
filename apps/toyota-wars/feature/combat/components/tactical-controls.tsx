@@ -64,9 +64,7 @@ export function TacticalControls() {
             label="FOLLOW"
             shortcut={getDirectiveKey(SQUAD_DIRECTIVE.HOLD)}
             active={allyDirective === SQUAD_DIRECTIVE.HOLD}
-            onClick={run(() =>
-              onAllyDirectiveChange(SQUAD_DIRECTIVE.HOLD),
-            )}
+            onClick={run(() => onAllyDirectiveChange(SQUAD_DIRECTIVE.HOLD))}
           />
           <CommandButton
             icon={<Undo2 size={14} />}

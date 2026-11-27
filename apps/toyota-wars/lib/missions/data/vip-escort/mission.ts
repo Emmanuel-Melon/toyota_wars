@@ -17,7 +17,7 @@ export const vipEscort: MissionInput = {
   requires: [],
   arena: {
     seed: 6006,
-    size: 600,
+    size: 2000,
     obstacleDensity: 0.3,
     playerSpawn: { x: 0, z: 240 },
     roads: {

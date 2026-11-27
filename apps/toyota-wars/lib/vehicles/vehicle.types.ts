@@ -1,6 +1,5 @@
 // lib/vehicles/vehicle.types.ts
-import type { TargetPart } from "../combat/combat.types";
-import type { WeaponId } from "../weapons/weapon.types";
+import type { TargetPart, WeaponId } from "@toyota/combat";
 
 export type VehiclePlatformId = "technical" | "armored" | "support";
 

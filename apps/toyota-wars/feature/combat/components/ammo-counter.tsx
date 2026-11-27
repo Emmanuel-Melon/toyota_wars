@@ -32,7 +32,8 @@ export function AmmoCounter({
   const cap = Math.max(1, capacity);
   const pips = Math.max(1, Math.min(maxPips, cap));
   const perPip = cap / pips;
-  const state = current <= 0 ? "empty" : current / cap <= LOW_THRESHOLD ? "low" : "ok";
+  const state =
+    current <= 0 ? "empty" : current / cap <= LOW_THRESHOLD ? "low" : "ok";
 
   return (
     <div

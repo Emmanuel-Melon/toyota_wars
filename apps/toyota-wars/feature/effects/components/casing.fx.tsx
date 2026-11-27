@@ -25,8 +25,7 @@ import { useArena } from "@/context/arena-context";
 import { useFx, useFxEvent } from "@/context/fx-context";
 import { useGameFrame } from "@/render-loop";
 import { getWeaponFx } from "@/lib/fx/fx.config";
-import { WEAPONS } from "@/lib/weapons/weapon.config";
-import type { WeaponId } from "@/lib/weapons/weapon.types";
+import { WEAPONS, type WeaponId } from "@toyota/combat";
 import type { EffectProps } from "../effects.types";
 
 const POOL_SIZE = 160;

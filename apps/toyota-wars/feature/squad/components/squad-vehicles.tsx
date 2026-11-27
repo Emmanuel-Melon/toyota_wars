@@ -2,10 +2,14 @@
 "use client";
 
 import { useMemo } from "react";
-import { projectPartHealth } from "@/lib/combat/combat.parts";
-import type { HealthMap, PartHealthMap, Team } from "@/lib/combat/combat.types";
+import {
+  createFireRequest,
+  projectPartHealth,
+  type HealthMap,
+  type PartHealthMap,
+  type Team,
+} from "@toyota/combat";
 import type { Obstacle, TankLeader } from "@/lib/movement/movement.types";
-import { createFireRequest } from "@/lib/weapons/weapon.math";
 import { resolveVehicleLoadout } from "@/lib/vehicles/vehicle.config";
 import { TANK_CONFIG } from "@/lib/agents/agent-runtime.config";
 import {
@@ -39,6 +43,7 @@ export type SquadShared = {
   formationType?: FormationType;
   formationSpacing?: number;
   holdFormation?: boolean;
+  holdPosition?: boolean;
   fireMode?: SquadFireMode;
   directive?: SquadDirective;
   isExplicitOrder?: boolean;

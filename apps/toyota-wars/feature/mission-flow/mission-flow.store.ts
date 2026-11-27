@@ -19,10 +19,7 @@ import type {
 const QTE_RESOLVE_HOLD_MS = 420;
 const MAX_FRAME_MS = 100;
 
-const FLOW_OUTCOME: Record<
-  MachineQteOutcome,
-  Exclude<QteOutcome, null>
-> = {
+const FLOW_OUTCOME: Record<MachineQteOutcome, Exclude<QteOutcome, null>> = {
   succeeded: "success",
   failed: "failure",
   skipped: "skipped",

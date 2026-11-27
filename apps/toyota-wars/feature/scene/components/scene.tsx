@@ -9,7 +9,7 @@ import { PositionTracker } from "./position-tracker";
 import { ReticleUpdater } from "./scene-reticle";
 
 // shared libs
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
+import { COMBAT_CONFIG } from "@toyota/combat";
 import { PLAYER_PALETTE } from "@/lib/palettes";
 
 // contexts

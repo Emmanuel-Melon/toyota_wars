@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useCombat } from "@/context/combat-context";
 import { useMission } from "@/context/missions.context";
 import { useMissionFlow } from "@/feature/mission-flow/mission-flow.context";
-import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
+import { COMBAT_CONFIG } from "@toyota/combat";
 import type { RadioTransmission } from "@/lib/radio/radio.types";
 import { resetRadio, transmitRadio } from "@/lib/radio/radio.store";
 import type { SquadDirective } from "@/lib/squad/squad.types";

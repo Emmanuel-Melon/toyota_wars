@@ -1,4 +1,4 @@
-import { TANK_HIT_PARTS } from "../../combat/combat.hitboxes";
+import { TANK_HIT_PARTS } from "@toyota/combat";
 import type { VehicleFrame } from "../vehicle.types";
 
 export const SHARED_VEHICLE_FRAME: VehicleFrame = {
