@@ -2,7 +2,6 @@
 "use client";
 
 import { useCallback } from "react";
-import { ProceduralAudio } from "@/lib/audio/audio.procedural";
 import type { VehiclePart } from "@/lib/combat/combat.teams";
 import { useCombat } from "@/context/combat-context";
 import { usePlayer } from "@/context/player-context";
@@ -24,7 +23,6 @@ export function ProjectileSystemLayer() {
       damage: number,
       source: "player" | "ai",
     ) => {
-      ProceduralAudio.playMetalImpact();
       onHit(id, part, damage);
       if (source === "player") {
         recordPlayerDamage(id, damage);

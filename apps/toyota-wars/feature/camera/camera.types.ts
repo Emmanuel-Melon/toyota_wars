@@ -7,6 +7,12 @@ export type DroneRoamState = {
   heading: number;
 };
 
+export type DroneRoamInput = {
+  forward: number;
+  strafe: number;
+  lift: number;
+};
+
 const CAMERA_MODE_ORDER: readonly CameraMode[] = [
   "chase",
   "drone",

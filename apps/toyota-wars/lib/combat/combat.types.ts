@@ -48,6 +48,7 @@ export type FireRequest = {
   damageScale?: number;
   worldMuzzle?: { position: THREE.Vector3; direction: THREE.Vector3 };
   source: "player" | "ai";
+  barrel?: number;
 };
 
 export type ProjectileSystemHandle = {

@@ -55,41 +55,39 @@ export function ProjectileSystem({
 
   useImperativeHandle(systemRef, () => ({
     fire(request) {
-      const first = spawnProjectile(projectiles.current, request);
-      if (!first) return;
-
-      markCombatActivity();
-
       const configuredMuzzles = WEAPONS[request.weapon].muzzles;
       const muzzleOffsets = configuredMuzzles?.length
         ? configuredMuzzles
         : DEFAULT_MUZZLES;
-      muzzleRight.crossVectors(first.velocity, MUZZLE_UP);
+      const barrel = THREE.MathUtils.clamp(
+        request.barrel ?? 0,
+        0,
+        muzzleOffsets.length - 1,
+      );
+      const projectile = spawnProjectile(projectiles.current, request);
+      if (!projectile) return;
+
+      markCombatActivity();
+
+      const offset = muzzleOffsets[barrel];
+      muzzleRight.crossVectors(projectile.velocity, MUZZLE_UP);
       if (muzzleRight.lengthSq() < 1e-6) {
         muzzleRight.set(1, 0, 0);
       } else {
         muzzleRight.normalize();
       }
+      projectile.position.addScaledVector(muzzleRight, offset.right);
+      if (offset.up) projectile.position.y += offset.up;
 
-      for (let barrel = 0; barrel < muzzleOffsets.length; barrel += 1) {
-        const projectile =
-          barrel === 0 ? first : spawnProjectile(projectiles.current, request);
-        if (!projectile) break;
-
-        const offset = muzzleOffsets[barrel];
-        projectile.position.addScaledVector(muzzleRight, offset.right);
-        if (offset.up) projectile.position.y += offset.up;
-
-        fx.emit("shot", {
-          slot: projectiles.current.indexOf(projectile),
-          barrel,
-          weapon: request.weapon,
-          team: request.team,
-          source: request.source,
-          origin: projectile.position.clone(),
-          direction: projectile.velocity.clone().normalize(),
-        });
-      }
+      fx.emit("shot", {
+        slot: projectiles.current.indexOf(projectile),
+        barrel,
+        weapon: request.weapon,
+        team: request.team,
+        source: request.source,
+        origin: projectile.position.clone(),
+        direction: projectile.velocity.clone().normalize(),
+      });
     },
     clear() {
       for (const projectile of projectiles.current) {

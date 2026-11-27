@@ -28,7 +28,7 @@ const clamp = (value: number, min: number, max: number) =>
 
 export function DroneRoamController() {
   const { mode } = useCameraMode();
-  const { isMobile, isTouch } = useViewport();
+  const { isTouch } = useViewport();
   const {
     playerBody: body,
     playerCommand: command,
@@ -36,11 +36,11 @@ export function DroneRoamController() {
     destroyed,
   } = usePlayer();
   const arena = useArena();
-  const { state, reset } = useDroneRoam();
+  const { state, input, reset } = useDroneRoam();
   const { phase } = useMissionFlow();
   const controlsLocked = paused || destroyed || phase !== "gameplay";
   const roamActive = isRoamMode(mode);
-  const desktopRoam = !isMobile && !isTouch;
+  const desktopRoam = !isTouch;
   const pressed = useRef(new Set<string>());
   const modeRef = useRef(mode);
 
@@ -51,6 +51,9 @@ export function DroneRoamController() {
   useEffect(() => {
     if (!roamActive) {
       pressed.current.clear();
+      input.forward = 0;
+      input.strafe = 0;
+      input.lift = 0;
       return;
     }
     reset({ x: body.position.x, z: body.position.z, heading: body.heading });
@@ -58,7 +61,7 @@ export function DroneRoamController() {
     command.current.steer = 0;
     command.current.desiredHeading = null;
     body.halt();
-  }, [body, command, reset, roamActive]);
+  }, [body, command, input, reset, roamActive]);
 
   useEffect(() => {
     if (!desktopRoam) return;
@@ -83,24 +86,43 @@ export function DroneRoamController() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+      pressed.current.clear();
     };
   }, [controlsLocked, desktopRoam]);
 
   useGameFrame((_, delta) => {
-    if (!roamActive || !desktopRoam || controlsLocked) {
+    if (!roamActive || controlsLocked) {
       pressed.current.clear();
+      input.forward = 0;
+      input.strafe = 0;
+      input.lift = 0;
       return;
     }
 
+    if (!desktopRoam) pressed.current.clear();
+
     const keys = pressed.current;
-    const forward =
+    const forward = clamp(
       (hasAny(keys, FORWARD_KEYS) ? 1 : 0) -
-      (hasAny(keys, BACKWARD_KEYS) ? 1 : 0);
-    const strafe =
-      (hasAny(keys, RIGHT_KEYS) ? 1 : 0) - (hasAny(keys, LEFT_KEYS) ? 1 : 0);
-    const lift =
+        (hasAny(keys, BACKWARD_KEYS) ? 1 : 0) +
+        input.forward,
+      -1,
+      1,
+    );
+    const strafe = clamp(
+      (hasAny(keys, RIGHT_KEYS) ? 1 : 0) -
+        (hasAny(keys, LEFT_KEYS) ? 1 : 0) +
+        input.strafe,
+      -1,
+      1,
+    );
+    const lift = clamp(
       (hasAny(keys, DRONE_UP_KEYS) ? 1 : 0) -
-      (hasAny(keys, DRONE_DOWN_KEYS) ? 1 : 0);
+        (hasAny(keys, DRONE_DOWN_KEYS) ? 1 : 0) +
+        input.lift,
+      -1,
+      1,
+    );
 
     if (forward !== 0 || strafe !== 0) {
       const sin = Math.sin(state.heading);
@@ -108,12 +130,12 @@ export function DroneRoamController() {
       const distance = DRONE_ROAM_CONFIG.moveSpeed * delta;
       const limit = Math.max(1, arena.bound - DRONE_ROAM_CONFIG.edgeMargin);
       state.x = clamp(
-        state.x + (sin * forward + cos * strafe) * distance,
+        state.x + (sin * forward - cos * strafe) * distance,
         -limit,
         limit,
       );
       state.z = clamp(
-        state.z + (cos * forward - sin * strafe) * distance,
+        state.z + (cos * forward + sin * strafe) * distance,
         -limit,
         limit,
       );

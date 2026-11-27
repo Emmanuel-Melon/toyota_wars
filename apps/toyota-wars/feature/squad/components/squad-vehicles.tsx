@@ -195,7 +195,15 @@ export function SquadVehicles({
                 unit.maxHealth,
               )}
               fireWhileMoving
-              onShoot={(pos, heading, pitch, spread, weapon, worldMuzzle) => {
+              onShoot={(
+                pos,
+                heading,
+                pitch,
+                spread,
+                weapon,
+                worldMuzzle,
+                barrel,
+              ) => {
                 if (shared?.fireMode === "scripted") return;
                 projectiles.current?.fire(
                   createFireRequest(
@@ -207,6 +215,8 @@ export function SquadVehicles({
                     pitch,
                     team === "ally" ? TANK_CONFIG.combat.allyDamageScale : 1,
                     worldMuzzle,
+                    undefined,
+                    barrel,
                   ),
                 );
               }}

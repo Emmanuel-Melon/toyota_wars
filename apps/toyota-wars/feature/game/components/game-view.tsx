@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
+import { useCameraMode } from "@/context/camera-mode-context";
 import { useCombat } from "@/context/combat-context";
 import { usePlayer } from "@/context/player-context";
 import { useViewport } from "@/context/viewport-context";
@@ -12,6 +13,8 @@ import { useGameScreen } from "@/feature/game/hooks/use-game-screen";
 import { useGameShortcuts } from "@/feature/game/hooks/use-game-shortcuts";
 import { useTutorialGates } from "@/feature/game/tutorial/tutorial-gates";
 import { TouchControls } from "@/feature/controls/components/touch-controls";
+import { isRoamMode } from "@/feature/camera/camera.types";
+import { useCameraModeToggle } from "@/feature/camera/hooks/use-camera-mode-toggle";
 import { useCameraTouchLook } from "@/feature/camera/hooks/use-camera-touch-look";
 import { RadioBridge } from "@/feature/radio/components/radio-bridge";
 import { RadioFeed } from "@/feature/radio/components/radio-feed";
@@ -46,6 +49,8 @@ export function GameView({
   } = usePlayer();
   const { capabilities, reportCommand, reportFormation } = useTutorialGates();
   const { isMobile, isPortrait, isTouch } = useViewport();
+  const { mode } = useCameraMode();
+  const roamActive = isRoamMode(mode);
   const flow = useMissionFlow();
 
   const handleAttack = useCallback(() => {
@@ -101,6 +106,7 @@ export function GameView({
     onDesignateFire: handleDesignateFire,
     onClearDesignation: handleClearDesignation,
   });
+  useCameraModeToggle("KeyV");
 
   const screen = useGameScreen(game.mode);
   const radioActive = game.hasActiveRound && screen.kind === "playing";
@@ -130,10 +136,11 @@ export function GameView({
         tutorialStep={game.tutorialStep}
       />
       <GameScreenRouter screen={screen} game={game} flow={flow} />
-      {radioActive && <RadioFeed />}
-      {isMobile && screen.kind === "playing" && flow.phase === "gameplay" && (
-        <TouchControls game={game} />
-      )}
+      {radioActive && !roamActive && <RadioFeed />}
+      {isMobile &&
+        screen.kind === "playing" &&
+        flow.phase === "gameplay" &&
+        !roamActive && <TouchControls game={game} />}
       {game.tutorialActive &&
         game.hasActiveRound &&
         screen.kind === "playing" &&

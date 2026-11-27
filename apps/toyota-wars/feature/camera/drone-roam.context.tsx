@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { DRONE_ROAM_CONFIG } from "./camera.config";
-import type { DroneRoamState } from "./camera.types";
+import type { DroneRoamInput, DroneRoamState } from "./camera.types";
 
 type StreamFocus = {
   readonly position: {
@@ -19,6 +19,7 @@ type StreamFocus = {
 
 type DroneRoamContextValue = {
   state: DroneRoamState;
+  input: DroneRoamInput;
   streamingFocus: StreamFocus;
   reset: (source: {
     readonly x: number;
@@ -36,6 +37,7 @@ export function DroneRoamProvider({ children }: { children: ReactNode }) {
     altitude: DRONE_ROAM_CONFIG.initialAltitude,
     heading: 0,
   });
+  const inputRef = useRef<DroneRoamInput>({ forward: 0, strafe: 0, lift: 0 });
   const streamingFocus = useMemo<StreamFocus>(
     () => ({
       get position() {
@@ -57,12 +59,20 @@ export function DroneRoamProvider({ children }: { children: ReactNode }) {
         state.z = source.z;
         state.altitude = DRONE_ROAM_CONFIG.initialAltitude;
         state.heading = source.heading;
+        inputRef.current.forward = 0;
+        inputRef.current.strafe = 0;
+        inputRef.current.lift = 0;
       },
     [],
   );
 
   const value = useMemo<DroneRoamContextValue>(
-    () => ({ state: stateRef.current, streamingFocus, reset }),
+    () => ({
+      state: stateRef.current,
+      input: inputRef.current,
+      streamingFocus,
+      reset,
+    }),
     [streamingFocus, reset],
   );
 

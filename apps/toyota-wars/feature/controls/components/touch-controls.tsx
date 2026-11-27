@@ -25,7 +25,17 @@ export function TouchControls({ game }: { game: GameState }) {
   const knobRef = useRef<HTMLDivElement>(null);
   const drivePointer = useRef<number | null>(null);
   const aimPointer = useRef<number | null>(null);
+  const firePointer = useRef<number | null>(null);
   const aimDrag = useRef({ x: 0, y: 0, aimX: 0, aimY: 0 });
+
+  const stopFire = useCallback(
+    (pointerId?: number) => {
+      if (pointerId !== undefined && firePointer.current !== pointerId) return;
+      firePointer.current = null;
+      firingRef.current = false;
+    },
+    [firingRef],
+  );
 
   const resetDrive = useCallback(() => {
     if (knobRef.current)
@@ -37,19 +47,37 @@ export function TouchControls({ game }: { game: GameState }) {
 
   useEffect(() => {
     if (!playerControlsLocked) return;
-    firingRef.current = false;
+    stopFire();
     drivePointer.current = null;
     aimPointer.current = null;
     resetDrive();
-  }, [firingRef, playerControlsLocked, resetDrive]);
+  }, [playerControlsLocked, resetDrive, stopFire]);
 
   useEffect(
     () => () => {
-      firingRef.current = false;
+      stopFire();
       resetDrive();
     },
-    [firingRef, resetDrive],
+    [resetDrive, stopFire],
   );
+
+  useEffect(() => {
+    const handlePointerUp = (event: PointerEvent) => stopFire(event.pointerId);
+    const handleBlur = () => stopFire();
+    const handleVisibility = () => {
+      if (document.hidden) stopFire();
+    };
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerUp);
+    window.addEventListener("blur", handleBlur);
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => {
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerUp);
+      window.removeEventListener("blur", handleBlur);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, [stopFire]);
 
   useEffect(() => {
     if (aimMode !== "manual") aimPointer.current = null;
@@ -131,6 +159,7 @@ export function TouchControls({ game }: { game: GameState }) {
   const startFire = (event: ReactPointerEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
+    firePointer.current = event.pointerId;
     firingRef.current = true;
   };
 
@@ -184,12 +213,9 @@ export function TouchControls({ game }: { game: GameState }) {
             type="button"
             className={styles.fire}
             onPointerDown={startFire}
-            onPointerUp={() => {
-              firingRef.current = false;
-            }}
-            onPointerCancel={() => {
-              firingRef.current = false;
-            }}
+            onPointerUp={(event) => stopFire(event.pointerId)}
+            onPointerCancel={(event) => stopFire(event.pointerId)}
+            onLostPointerCapture={(event) => stopFire(event.pointerId)}
             onContextMenu={(event) => event.preventDefault()}
             aria-label="Fire weapon"
           >

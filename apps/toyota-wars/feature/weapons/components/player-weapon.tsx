@@ -58,6 +58,7 @@ export function PlayerWeapon() {
   const muzzlePosition = useRef(new THREE.Vector3());
   const muzzleDirection = useRef(new THREE.Vector3());
   const lastKillCount = useRef(stats.enemiesDestroyed);
+  const nextBarrelRef = useRef(0);
 
   useEffect(() => {
     controlsLockedRef.current = playerControlsLocked;
@@ -77,7 +78,8 @@ export function PlayerWeapon() {
   useEffect(() => {
     weapon.current = new Weapon(playerWeapon.cooldown);
     bloom.current = new WeaponBloomSystem();
-  }, [playerWeapon.cooldown]);
+    nextBarrelRef.current = 0;
+  }, [arena, playerWeapon.cooldown, playerWeapon.id]);
 
   useEffect(() => {
     if (stats.enemiesDestroyed < lastKillCount.current) {
@@ -121,11 +123,21 @@ export function PlayerWeapon() {
     const handleKeyUp = (event: KeyboardEvent) => {
       if (event.code === FIRE_KEY_CODE) firingRef.current = false;
     };
+    const handleBlur = () => {
+      firingRef.current = false;
+    };
+    const handleVisibility = () => {
+      if (document.hidden) firingRef.current = false;
+    };
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("blur", handleBlur);
+    document.addEventListener("visibilitychange", handleVisibility);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("blur", handleBlur);
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, [aimMode, capabilities.canFire, phase, setAimMode]);
 
@@ -145,7 +157,17 @@ export function PlayerWeapon() {
     bloom.current.update(delta, firingRef.current && !celebrating);
 
     const origin = shotOrigin.current.copy(body.position);
-    const fireAtTarget = (speed: number, spreadScale: number): boolean => {
+    const takeBarrel = () => {
+      const count = playerWeapon.muzzles?.length ?? 1;
+      const barrel = nextBarrelRef.current % count;
+      nextBarrelRef.current = (barrel + 1) % count;
+      return barrel;
+    };
+    const fireAtTarget = (
+      speed: number,
+      spreadScale: number,
+      barrel: number,
+    ): boolean => {
       if (!projectiles.current) return false;
       const spread = bloom.current.getSpreadAngle(
         speed,
@@ -168,13 +190,18 @@ export function PlayerWeapon() {
           undefined,
           undefined,
           "player",
+          barrel,
         ),
       );
-      kickRecoil(recoilRef, playerWeapon.recoil);
+      kickRecoil(recoilRef, playerWeapon.recoil, barrel);
       return true;
     };
 
-    const fireFromMuzzle = (speed: number, spreadScale: number): boolean => {
+    const fireFromMuzzle = (
+      speed: number,
+      spreadScale: number,
+      barrel: number,
+    ): boolean => {
       if (
         !projectiles.current ||
         !readMuzzleTransform(
@@ -202,9 +229,10 @@ export function PlayerWeapon() {
           undefined,
           { position: origin, direction },
           "player",
+          barrel,
         ),
       );
-      kickRecoil(recoilRef, playerWeapon.recoil);
+      kickRecoil(recoilRef, playerWeapon.recoil, barrel);
       return true;
     };
 
@@ -219,7 +247,7 @@ export function PlayerWeapon() {
       aimTargetRef.current = targetPoint.current;
       if (fired && playerAmmo.current >= playerWeapon.ammoCost) {
         bloom.current.registerShot();
-        fireAtTarget(0, 0.35);
+        fireAtTarget(0, 0.35, takeBarrel());
         if (spendAmmo(playerWeapon.ammoCost)) reportShot();
       }
       return;
@@ -256,8 +284,10 @@ export function PlayerWeapon() {
       weapon.current.tryFire()
     ) {
       bloom.current.registerShot();
+      const barrel = takeBarrel();
       const fired =
-        fireFromMuzzle(body.speed, 1) || fireAtTarget(body.speed, 1);
+        fireFromMuzzle(body.speed, 1, barrel) ||
+        fireAtTarget(body.speed, 1, barrel);
       if (fired && spendAmmo(playerWeapon.ammoCost)) {
         reportShot();
       }

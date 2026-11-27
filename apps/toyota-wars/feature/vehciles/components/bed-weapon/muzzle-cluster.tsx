@@ -12,7 +12,7 @@ export function MuzzleCluster({
     <>
       {muzzleOffsets.map((offset, index) => (
         <group key={index} position={[offset.right, offset.up ?? 0, muzzleZ]}>
-          <WeaponEffects light={index === 0} />
+          <WeaponEffects barrelIndex={index} />
         </group>
       ))}
     </>

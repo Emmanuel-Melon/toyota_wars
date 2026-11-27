@@ -10,7 +10,6 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
-import { ProceduralAudio } from "@/lib/audio/audio.procedural";
 import { resetCombatActivity } from "@/lib/combat/combat.activity";
 import { COMBAT_CONFIG } from "@/lib/combat/combat.config";
 import type { VehiclePart } from "@/lib/combat/combat.teams";
@@ -215,7 +214,6 @@ export function CombatProvider({ children }: { children: ReactNode }) {
           ? { mode: ALLY_ATTACK_MODE.SEEK, issuedAt: performance.now() }
           : order,
       );
-      ProceduralAudio.playExplosion();
 
       if (team === "ally" && unit.team === "enemy") {
         setStats((prev) => ({

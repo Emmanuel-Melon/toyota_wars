@@ -75,6 +75,7 @@ type AIVehicleProps = {
     spread: number,
     weapon: WeaponId,
     worldMuzzle?: FireRequest["worldMuzzle"],
+    barrel?: number,
   ) => void;
   children?: React.ReactNode;
 };
@@ -136,6 +137,7 @@ export function AIVehicle({
   const pose = useRef<ChassisPose>({ pitch: 0, roll: 0 });
   const muzzleRef = useRef<THREE.Object3D>(null);
   const recoilRef = useRef(createRecoilState());
+  const nextBarrelRef = useRef(0);
   const muzzleWorld = useRef(new THREE.Vector3());
   const muzzleDirection = useRef(new THREE.Vector3());
   const aimAlignedRef = useRef(false);
@@ -480,7 +482,10 @@ export function AIVehicle({
 
     ammo.current = Math.max(0, ammo.current - weapon.ammoCost);
     runtime.bloom.current.registerShot();
-    kickRecoil(recoilRef, weapon.recoil);
+    const muzzleCount = weapon.muzzles?.length ?? 1;
+    const barrel = nextBarrelRef.current % muzzleCount;
+    nextBarrelRef.current = (barrel + 1) % muzzleCount;
+    kickRecoil(recoilRef, weapon.recoil, barrel);
     const spreadMultiplier = retreating
       ? TANK_CONFIG.combat.retreatSpreadMultiplier
       : 1;
@@ -494,6 +499,7 @@ export function AIVehicle({
       spread,
       weapon.id,
       { position: muzzleWorld.current, direction: muzzleDirection.current },
+      barrel,
     );
   });
 

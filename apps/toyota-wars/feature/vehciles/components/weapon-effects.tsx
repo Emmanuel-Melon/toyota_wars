@@ -6,7 +6,13 @@ import { useFrame } from "@react-three/fiber";
 import type * as THREE from "three";
 import { useVehicleContext } from "@/context/vehicle-context";
 
-export function WeaponEffects({ light = true }: { light?: boolean }) {
+export function WeaponEffects({
+  barrelIndex = 0,
+  light = true,
+}: {
+  barrelIndex?: number;
+  light?: boolean;
+}) {
   const flashRef = useRef<THREE.PointLight>(null);
   const { recoilRef } = useVehicleContext();
 
@@ -14,7 +20,10 @@ export function WeaponEffects({ light = true }: { light?: boolean }) {
     if (!flashRef.current) return;
 
     // If the barrel recoil is active (greater than 0), turn on/brighten the muzzle flash light
-    const isFiring = recoilRef && recoilRef.current.barrel > 0.05;
+    const isFiring =
+      recoilRef &&
+      recoilRef.current.barrelIndex === barrelIndex &&
+      recoilRef.current.barrel > 0.05;
 
     if (isFiring) {
       // Randomize intensity slightly per frame during firing for a flickering effect
@@ -38,18 +47,21 @@ export function WeaponEffects({ light = true }: { light?: boolean }) {
       )}
 
       {/* Procedural geometric muzzle flash burst (visible only when firing) */}
-      <MuzzleFlashMesh />
+      <MuzzleFlashMesh barrelIndex={barrelIndex} />
     </group>
   );
 }
 
-function MuzzleFlashMesh() {
+function MuzzleFlashMesh({ barrelIndex }: { barrelIndex: number }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const { recoilRef } = useVehicleContext();
 
   useFrame(() => {
     if (!meshRef.current) return;
-    const isFiring = recoilRef && recoilRef.current.barrel > 0.05;
+    const isFiring =
+      recoilRef &&
+      recoilRef.current.barrelIndex === barrelIndex &&
+      recoilRef.current.barrel > 0.05;
     meshRef.current.visible = !!isFiring;
     if (isFiring) {
       // Random scale twitch for organic flash look

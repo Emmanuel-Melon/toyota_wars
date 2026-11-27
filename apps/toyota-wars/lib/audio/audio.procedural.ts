@@ -1,6 +1,12 @@
 // lib/audio/audio.procedural.ts
+import { MOVEMENT_CONFIG } from "@/lib/movement/movement.config";
+
 export class ProceduralAudio {
   private static audioCtx: AudioContext | null = null;
+  private static sampleBuffers = new Map<string, Promise<AudioBuffer | null>>();
+  private static vehicleSource: AudioBufferSourceNode | null = null;
+  private static vehicleGain: GainNode | null = null;
+  private static vehicleSourcePending = false;
 
   private static getContext(): AudioContext | null {
     if (typeof window === "undefined") return null;
@@ -19,6 +25,113 @@ export class ProceduralAudio {
     }
 
     return this.audioCtx;
+  }
+
+  private static loadSample(
+    ctx: AudioContext,
+    src: string,
+  ): Promise<AudioBuffer | null> {
+    let pending = this.sampleBuffers.get(src);
+    if (!pending) {
+      pending = fetch(src)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Failed to load audio sample: ${src}`);
+          }
+          return response.arrayBuffer();
+        })
+        .then((data) => ctx.decodeAudioData(data))
+        .catch((error) => {
+          console.warn("Unable to decode audio sample:", error);
+          return null;
+        });
+      this.sampleBuffers.set(src, pending);
+    }
+    return pending;
+  }
+
+  private static async playSample(
+    src: string,
+    fallback?: () => void,
+  ): Promise<void> {
+    try {
+      const ctx = this.getContext();
+      if (!ctx) return;
+
+      const buffer = await this.loadSample(ctx, src);
+      if (!buffer) {
+        fallback?.();
+        return;
+      }
+
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(ctx.destination);
+      source.start();
+    } catch (error) {
+      console.warn("Audio sample playback failed:", error);
+      fallback?.();
+    }
+  }
+
+  public static playVehicleExplosion(): void {
+    void this.playSample("/audio/explosion_car.mp3", () =>
+      this.playExplosion(),
+    );
+  }
+
+  public static playBulletImpact(): void {
+    void this.playSample("/audio/bullet.mp3", () => this.playMetalImpact());
+  }
+
+  private static async startVehicleAudioAsync(): Promise<void> {
+    const ctx = this.getContext();
+    if (!ctx || this.vehicleSource || this.vehicleSourcePending) return;
+
+    this.vehicleSourcePending = true;
+    try {
+      const buffer = await this.loadSample(ctx, "/audio/toyota.mp3");
+      if (!buffer || this.vehicleSource) return;
+
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.loop = true;
+      const gain = ctx.createGain();
+      gain.gain.value = 0;
+      source.connect(gain);
+      gain.connect(ctx.destination);
+      source.start();
+      this.vehicleSource = source;
+      this.vehicleGain = gain;
+    } catch (error) {
+      console.warn("Vehicle audio playback failed:", error);
+    } finally {
+      this.vehicleSourcePending = false;
+    }
+  }
+
+  public static startVehicleAudio(): void {
+    void this.startVehicleAudioAsync();
+  }
+
+  public static setVehicleAudioSpeed(speed: number): void {
+    const ctx = this.audioCtx;
+    if (!ctx || !this.vehicleGain) return;
+
+    const ratio = Math.min(1, Math.abs(speed) / MOVEMENT_CONFIG.body.maxSpeed);
+    const level = ratio <= 0.02 ? 0 : 0.08 + ratio * 0.32;
+    this.vehicleGain.gain.setTargetAtTime(level, ctx.currentTime, 0.08);
+    this.vehicleSource?.playbackRate.setTargetAtTime(
+      0.85 + ratio * 0.3,
+      ctx.currentTime,
+      0.12,
+    );
+  }
+
+  public static stopVehicleAudio(): void {
+    const ctx = this.audioCtx;
+    if (!ctx || !this.vehicleGain) return;
+    this.vehicleGain.gain.setTargetAtTime(0, ctx.currentTime, 0.05);
   }
 
   public static playMetalImpact(): void {

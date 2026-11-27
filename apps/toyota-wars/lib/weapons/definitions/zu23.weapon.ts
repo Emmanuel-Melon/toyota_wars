@@ -9,7 +9,7 @@ export const zu23Weapon: WeaponConfig = {
   preferredRange: 200,
   engagementRange: 60,
   aimTargetHeight: 1.25,
-  cooldown: 0.3,
+  cooldown: 0.15,
   spread: 0.015,
   recoil: 2.4,
   ammoCost: 1,
@@ -24,7 +24,7 @@ export const zu23Weapon: WeaponConfig = {
     gravity: 9.81,
     drag: 0,
     hitRadius: 1.6,
-    damage: 18,
+    damage: 24,
   },
   audio: {
     kind: "sample",

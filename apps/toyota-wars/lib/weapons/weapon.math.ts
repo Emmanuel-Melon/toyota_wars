@@ -37,6 +37,7 @@ export function createFireRequest(
   damageScale?: number,
   worldMuzzle?: FireRequest["worldMuzzle"],
   source: FireRequest["source"] = "ai",
+  barrel?: number,
 ): FireRequest {
   return {
     startPos: startPos.clone(),
@@ -48,5 +49,6 @@ export function createFireRequest(
     damageScale,
     worldMuzzle,
     source,
+    barrel,
   };
 }

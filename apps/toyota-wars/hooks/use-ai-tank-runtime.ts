@@ -6,6 +6,7 @@ import {
   type AgentFormationState,
 } from "@toyota/agents";
 import * as THREE from "three";
+import type { FireRequest } from "@/lib/combat/combat.types";
 import { Weapon } from "@/lib/weapons/weapon.timer";
 import { WeaponBloomSystem } from "@/lib/weapons/weapon.bloom";
 import { WEAPONS } from "@/lib/weapons/weapon.config";
@@ -61,6 +62,8 @@ type UseAITankRuntimeParams = {
     pitch: number,
     spread: number,
     weapon: WeaponId,
+    worldMuzzle?: FireRequest["worldMuzzle"],
+    barrel?: number,
   ) => void;
 };
 

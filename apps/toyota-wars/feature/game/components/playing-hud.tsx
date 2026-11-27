@@ -1,7 +1,10 @@
 "use client";
 
 import type { RefObject } from "react";
+import { useCameraMode } from "@/context/camera-mode-context";
 import { useViewport } from "@/context/viewport-context";
+import { DroneRoamOverlay } from "@/feature/camera/components/drone-roam-overlay";
+import { isRoamMode } from "@/feature/camera/camera.types";
 import { CombatTelemetry } from "@/feature/combat/components/combat-telemetry";
 import { DangerVignette } from "@/feature/combat/components/danger-vignette";
 import { DamageIndicatorHud } from "@/feature/combat/components/damage-indicator-hud";
@@ -25,6 +28,9 @@ type Props = { game: GameState; shellRef: RefObject<HTMLElement | null> };
 
 export function PlayingHud({ game, shellRef }: Props) {
   const { isMobile } = useViewport();
+  const { mode } = useCameraMode();
+
+  if (isRoamMode(mode)) return <DroneRoamOverlay />;
 
   return (
     <>

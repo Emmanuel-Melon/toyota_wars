@@ -1,0 +1,70 @@
+.controlLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+}
+
+.stick {
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom) + 16px);
+  left: calc(env(safe-area-inset-left) + 16px);
+  display: grid;
+  width: 88px;
+  height: 88px;
+  place-items: center;
+  border: 2px solid rgb(var(--ui-primary-rgb) / 0.55);
+  border-radius: 50%;
+  background: rgb(var(--ui-panel-rgb) / 0.45);
+  box-shadow: 0 0 26px rgb(var(--ui-primary-rgb) / 0.25);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  touch-action: none;
+  pointer-events: auto;
+}
+
+.knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgb(var(--ui-primary-rgb) / 0.8);
+  border-radius: 50%;
+  background: rgb(var(--ui-primary-rgb) / 0.3);
+  box-shadow: 0 0 14px rgb(var(--ui-primary-rgb) / 0.4);
+}
+
+.label {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(var(--ui-text-rgb) / 0.7);
+}
+
+.liftCluster {
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom) + 20px);
+  left: calc(env(safe-area-inset-left) + 112px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.liftButton {
+  min-width: 56px;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid rgb(var(--ui-primary-rgb) / 0.45);
+  background: rgb(var(--ui-panel-rgb) / 0.45);
+  color: rgb(var(--ui-text-rgb) / 0.85);
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  touch-action: none;
+  pointer-events: auto;
+}

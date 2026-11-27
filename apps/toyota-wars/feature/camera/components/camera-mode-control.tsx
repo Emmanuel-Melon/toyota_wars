@@ -4,7 +4,6 @@ import { useCameraMode } from "@/context/camera-mode-context";
 import { useRadar } from "@/context/radar-context";
 import { useViewport } from "@/context/viewport-context";
 import { useMissionFlow } from "@/feature/mission-flow/mission-flow.context";
-import { useCameraModeToggle } from "../hooks/use-camera-mode-toggle";
 import { HudButton, HudStatRow } from "@/feature/hud/components/hud-parts";
 import { nextCameraMode, type CameraMode } from "../camera.types";
 
@@ -15,25 +14,17 @@ const MODE_LABELS: Record<CameraMode, string> = {
 };
 
 export function CameraModeControl() {
-  const { mode, setMode, cycleMode } = useCameraMode();
+  const { mode, cycleMode } = useCameraMode();
   const { radarOnline } = useRadar();
-  const { isMobile, isTouch } = useViewport();
+  const { isTouch } = useViewport();
   const { phase } = useMissionFlow();
   const flowActive = phase !== "gameplay";
-  const desktopRoam = !isMobile && !isTouch;
-  useCameraModeToggle("KeyV");
+  const desktopRoam = !isTouch;
 
-  const nextMode: CameraMode = !radarOnline
-    ? "chase"
-    : desktopRoam
-      ? nextCameraMode(mode)
-      : mode === "drone"
-        ? "chase"
-        : "drone";
+  const nextMode: CameraMode = !radarOnline ? "chase" : nextCameraMode(mode);
   const handleClick = () => {
     if (flowActive || !radarOnline) return;
-    if (desktopRoam) cycleMode();
-    else setMode(nextMode);
+    cycleMode();
   };
 
   return (
