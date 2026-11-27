@@ -33,7 +33,7 @@ export const RoadNetworkManager = memo(function RoadNetworkManager({
       roughnessMap: t.roughnessMap,
       roughness: 0.92,
       metalness: 0.02,
-      side: THREE.DoubleSide,
+      side: THREE.FrontSide,
       polygonOffset: true,
       polygonOffsetFactor: -2,
       polygonOffsetUnits: -2,

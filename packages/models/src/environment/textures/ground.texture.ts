@@ -102,7 +102,7 @@ export function getGroundLayers(): GroundLayers {
       [0.85, "#8f8f55"],
     ]),
   );
-  grass.colorSpace = THREE.SRGBColorSpace;
+  grass.colorSpace = THREE.NoColorSpace;
   const dirt = toTexture(
     makeLayerCanvas(256, 5, 23, [
       [0.3, "#77603f"],
