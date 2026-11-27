@@ -1,3 +1,4 @@
+// apps/toyota-wars/feature/terrain/components/grass-patches.tsx
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -6,6 +7,7 @@ import { useGameFrame } from "@/render-loop";
 import type { ArenaObstacle } from "@/lib/map/arena";
 import type { RoadNetwork } from "@/lib/map/map.network";
 import type { TerrainSampler } from "@/lib/map/map.terrain";
+import { useSnappedScatter } from "../hooks/use-snapped-scatter";
 
 type WorldPosition = { readonly x: number; readonly z: number };
 
@@ -21,13 +23,6 @@ interface GrassPatchesProps {
   seed?: number;
 }
 
-function snappedPosition(x: number, z: number, step: number) {
-  return {
-    x: Math.round(x / step) * step,
-    z: Math.round(z / step) * step,
-  };
-}
-
 export function GrassPatches({
   playerBody,
   terrain,
@@ -40,10 +35,10 @@ export function GrassPatches({
   seed = 17,
 }: GrassPatchesProps) {
   const snapStep = Math.max(20, areaSize * 0.25);
-  const initialCenter = useRef(
-    snappedPosition(playerBody.position.x, playerBody.position.z, snapStep),
-  ).current;
   const fieldRef = useRef<Environment.GrassPatchFieldHandle>(null);
+  const initialCenter = useSnappedScatter(playerBody, snapStep, (x, z) =>
+    fieldRef.current?.scatter(x, z),
+  );
   const cellRef = useRef({
     cx: Math.round(playerBody.position.x / snapStep),
     cz: Math.round(playerBody.position.z / snapStep),

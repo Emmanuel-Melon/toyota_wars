@@ -1,3 +1,4 @@
+// packages/models/src/environment/types.ts
 export type TerrainSampler = {
   readonly getHeight: (worldX: number, worldZ: number) => number;
   readonly getVehicleHeight: (worldX: number, worldZ: number) => number;
@@ -25,7 +26,7 @@ export type RockObstacleVisual = ObstacleVisual & {
 
 export type StructureVisual = {
   readonly id: string;
-  readonly structure: "building" | "watchtower";
+  readonly structure: "building" | "watchtower" | "checkpoint" | "base";
   readonly position: {
     readonly x: number;
     readonly y: number;

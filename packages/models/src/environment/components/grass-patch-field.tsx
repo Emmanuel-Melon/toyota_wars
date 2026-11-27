@@ -9,6 +9,7 @@ import {
 import * as THREE from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import type { ObstacleVisual, RoadClearance, TerrainSampler } from "../types";
+import { getObstacleXZRadius } from "./obstacle-utils";
 
 const ROAD_EDGE_MARGIN = 2;
 const BOUND_MARGIN = 2;
@@ -109,18 +110,6 @@ function createDesertTuftGeometry(): THREE.BufferGeometry {
     throw new Error("Failed to merge desert tuft geometry");
   }
   return merged;
-}
-
-function getObstacleXZRadius(obstacle: ObstacleVisual): {
-  x: number;
-  z: number;
-  radius: number;
-} | null {
-  const x = obstacle.position?.x ?? obstacle.x;
-  const z = obstacle.position?.z ?? obstacle.z;
-  if (typeof x !== "number" || typeof z !== "number") return null;
-  const radius = typeof obstacle.radius === "number" ? obstacle.radius : 3;
-  return { x, z, radius };
 }
 
 export const GrassPatchField = forwardRef<
