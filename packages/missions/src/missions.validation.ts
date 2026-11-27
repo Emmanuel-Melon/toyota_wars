@@ -33,6 +33,9 @@ const isOutside = (p: Vec2, half: number) =>
   Math.abs(p.x) > half || Math.abs(p.z) > half;
 const MIN_SPAWN_SEPARATION = 30;
 const MIN_OPPOSING_CENTROID_DISTANCE = 0.6;
+const LARGE_ARENA_SIZE = 1000;
+const MIN_LARGE_ENGAGEMENT_DISTANCE = 1000;
+const MAX_LARGE_ENGAGEMENT_DISTANCE = 2000;
 
 // ─────────────────────────────────────────────────────────────
 // MISSION
@@ -41,6 +44,7 @@ export function validateMission(m: MissionDraft, sink: IssueSink): void {
   const report = reporter(sink);
   validateBounds(m, report);
   validateSpawnLayout(m, report);
+  validateSpawnAnchors(m, report);
   const zoneById = validateZones(m, report);
   const squadById = validateSquads(m, report);
   validateSquadEffects(m, report);
@@ -159,8 +163,20 @@ function validateSpawnLayout(m: MissionDraft, report: ReportIssue): void {
   const dx = enemyCenter.x - friendlyCenter.x;
   const dz = enemyCenter.z - friendlyCenter.z;
 
-  if (Math.hypot(dx, dz) < m.arena.size * MIN_OPPOSING_CENTROID_DISTANCE) {
+  const separation = Math.hypot(dx, dz);
+  const isLargeArena = m.arena.size >= LARGE_ARENA_SIZE;
+  const minSeparation = isLargeArena
+    ? MIN_LARGE_ENGAGEMENT_DISTANCE
+    : m.arena.size * MIN_OPPOSING_CENTROID_DISTANCE;
+  const maxSeparation = Math.max(MAX_LARGE_ENGAGEMENT_DISTANCE, m.arena.size);
+  if (separation < minSeparation) {
     report("opposing spawn centroids are too close together", ["squads"]);
+  }
+  if (isLargeArena && separation > maxSeparation) {
+    report(
+      `opposing spawn centroids are too far apart (max ${maxSeparation}m)`,
+      ["squads"],
+    );
   }
 
   const axis = Math.abs(dx) >= Math.abs(dz) ? "x" : "z";
@@ -170,6 +186,32 @@ function validateSpawnLayout(m: MissionDraft, report: ReportIssue): void {
       ["squads"],
     );
   }
+}
+
+function validateSpawnAnchors(m: MissionDraft, report: ReportIssue): void {
+  m.squads.forEach((squad, squadIndex) => {
+    const anchor = squad.spawnAnchor;
+    if (!anchor) return;
+
+    const structure = m.arena.structures?.find(
+      (entry) => entry.id === anchor.structureId,
+    );
+    if (!structure) {
+      report(
+        `spawnAnchor references unknown structure "${anchor.structureId}"`,
+        ["squads", squadIndex, "spawnAnchor", "structureId"],
+      );
+      return;
+    }
+    if (structure.structure !== "checkpoint") {
+      report("spawnAnchor requires a checkpoint structure", [
+        "squads",
+        squadIndex,
+        "spawnAnchor",
+        "structureId",
+      ]);
+    }
+  });
 }
 
 function validateZones(

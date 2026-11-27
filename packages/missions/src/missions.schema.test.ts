@@ -1,7 +1,16 @@
 import { describe, expect, it } from "vitest";
 
 import { MissionCatalogSchema, MissionSchema } from "./missions.schema";
+import type { MissionInput } from "./missions.types";
 import { makeMissionInput } from "./test-fixtures/mission";
+
+function makeLargeArenaInput(): MissionInput {
+  const input = makeMissionInput();
+  input.arena.size = 2000;
+  input.arena.playerSpawn = { x: 0, z: 900 };
+  input.squads[0].spawnPoints = [{ x: 0, z: -900 }];
+  return input;
+}
 
 describe("mission schemas", () => {
   it("applies squad effect defaults", () => {
@@ -99,6 +108,41 @@ describe("mission schemas", () => {
     ]);
   });
 
+  it("applies spawn anchor defaults and keeps spawn yaw", () => {
+    const input = makeMissionInput();
+    input.arena.structures = [
+      { id: "gate", structure: "checkpoint", position: { x: 0, z: -150 } },
+    ];
+    input.squads[0].spawnPoints = [{ x: 0, z: -150, yaw: 0.5 }];
+    input.squads[0].spawnAnchor = { structureId: "gate", role: "vehicle" };
+
+    const mission = MissionSchema.parse(input);
+
+    expect(mission.squads[0].spawnAnchor).toEqual({
+      structureId: "gate",
+      role: "vehicle",
+      holdPosition: true,
+    });
+    expect(mission.squads[0].spawnPoints).toEqual([
+      { x: 0, z: -150, yaw: 0.5 },
+    ]);
+  });
+
+  it("rejects spawn anchors without checkpoint structures", () => {
+    const input = makeMissionInput();
+    input.squads[0].spawnAnchor = { structureId: "missing", role: "vehicle" };
+
+    expect(() => MissionSchema.parse(input)).toThrow(/unknown structure/);
+  });
+
+  it("rejects spawn anchors on non-checkpoint structures", () => {
+    const input = makeMissionInput();
+    input.arena.structures = [{ id: "tower", position: { x: 0, z: -150 } }];
+    input.squads[0].spawnAnchor = { structureId: "tower", role: "vehicle" };
+
+    expect(() => MissionSchema.parse(input)).toThrow(/checkpoint structure/);
+  });
+
   it("rejects invalid arena structures", () => {
     const input = makeMissionInput();
     input.arena.structures = [{ id: "Invalid_ID", position: { x: 0, z: 0 } }];
@@ -147,5 +191,35 @@ describe("mission schemas", () => {
     expect(() => MissionCatalogSchema.parse([first, second])).toThrow(
       /Unknown mission/,
     );
+  });
+
+  it("rejects arena sizes outside supported bounds", () => {
+    const tooSmall = makeMissionInput();
+    tooSmall.arena.size = 99;
+    tooSmall.arena.playerSpawn = { x: 0, z: 30 };
+    tooSmall.squads[0].spawnPoints = [{ x: 0, z: -30 }];
+
+    expect(() => MissionSchema.parse(tooSmall)).toThrow();
+
+    const tooLarge = makeLargeArenaInput();
+    tooLarge.arena.size = 4001;
+    tooLarge.arena.playerSpawn = { x: 0, z: 1500 };
+    tooLarge.squads[0].spawnPoints = [{ x: 0, z: -1500 }];
+
+    expect(() => MissionSchema.parse(tooLarge)).toThrow();
+  });
+
+  it("rejects large-arena spawns outside the engagement band", () => {
+    const tooClose = makeLargeArenaInput();
+    tooClose.arena.playerSpawn = { x: 0, z: 100 };
+    tooClose.squads[0].spawnPoints = [{ x: 0, z: -100 }];
+
+    expect(() => MissionSchema.parse(tooClose)).toThrow(/too close together/);
+
+    const tooFar = makeLargeArenaInput();
+    tooFar.arena.playerSpawn = { x: 1000, z: 1000 };
+    tooFar.squads[0].spawnPoints = [{ x: -1000, z: -1000 }];
+
+    expect(() => MissionSchema.parse(tooFar)).toThrow(/too far apart/);
   });
 });

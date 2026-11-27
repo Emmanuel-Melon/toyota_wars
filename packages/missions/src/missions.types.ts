@@ -13,7 +13,9 @@ import type {
   PersonalitySchema,
   RoadConfigSchema,
   SpawnLayoutSchema,
+  SpawnPointSchema,
   SpawnTriggerSchema,
+  SquadSpawnAnchorSchema,
   SquadEffectSchema,
   SquadFireModeSchema,
   SquadFormationSchema,
@@ -27,11 +29,13 @@ import type {
 
 // ── Primitives ──
 export type Vec2 = z.infer<typeof Vec2Schema>;
+export type SpawnPoint = z.infer<typeof SpawnPointSchema>;
 export type MissionZone = z.infer<typeof MissionZoneSchema>;
 export type Personality = z.infer<typeof PersonalitySchema>;
 export type InitialOrder = z.infer<typeof InitialOrderSchema>;
 export type Team = z.infer<typeof TeamSchema>;
 export type SpawnLayout = z.infer<typeof SpawnLayoutSchema>;
+export type SquadSpawnAnchor = z.infer<typeof SquadSpawnAnchorSchema>;
 export type SquadFormation = z.infer<typeof SquadFormationSchema>;
 export type SquadFireMode = z.infer<typeof SquadFireModeSchema>;
 

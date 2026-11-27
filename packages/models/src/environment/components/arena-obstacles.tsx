@@ -31,9 +31,16 @@ function createDeformedRockGeometry(seed: number): DodecahedronGeometry {
 type ArenaObstaclesProps = {
   obstacles: readonly RockObstacleVisual[];
   terrain: TerrainSampler;
+  focus?: { readonly x: number; readonly z: number };
+  visibleRadius?: number;
 };
 
-export function ArenaObstacles({ obstacles, terrain }: ArenaObstaclesProps) {
+export function ArenaObstacles({
+  obstacles,
+  terrain,
+  focus,
+  visibleRadius,
+}: ArenaObstaclesProps) {
   const rockEntries = useMemo(
     () =>
       obstacles
@@ -44,7 +51,10 @@ export function ArenaObstacles({ obstacles, terrain }: ArenaObstaclesProps) {
           const scaleX = baseRadius * (0.9 + ((seed % 17) / 17) * 0.35);
           const scaleY = baseRadius * (0.65 + (((seed >> 4) % 13) / 13) * 0.35);
           const scaleZ = baseRadius * (0.85 + (((seed >> 8) % 19) / 19) * 0.35);
-          const groundY = terrain.getHeight(obstacle.position.x, obstacle.position.z);
+          const groundY = terrain.getHeight(
+            obstacle.position.x,
+            obstacle.position.z,
+          );
 
           return {
             id: obstacle.id,
@@ -59,6 +69,16 @@ export function ArenaObstacles({ obstacles, terrain }: ArenaObstaclesProps) {
         }),
     [obstacles, terrain],
   );
+
+  const visibleRocks = useMemo(() => {
+    if (!focus || visibleRadius === undefined) return rockEntries;
+    const radiusSq = (visibleRadius + 8) ** 2;
+    return rockEntries.filter((rock) => {
+      const dx = rock.x - focus.x;
+      const dz = rock.z - focus.z;
+      return dx * dx + dz * dz <= radiusSq;
+    });
+  }, [rockEntries, focus?.x, focus?.z, visibleRadius]);
 
   const materials = useMemo(
     () =>
@@ -81,7 +101,7 @@ export function ArenaObstacles({ obstacles, terrain }: ArenaObstaclesProps) {
 
   return (
     <group name="arena-obstacles">
-      {rockEntries.map((rock) => (
+      {visibleRocks.map((rock) => (
         <RockMesh
           key={rock.id}
           rock={rock}

@@ -1,3 +1,4 @@
+// packages/models/src/vehicle/components/wheels/wheel-tire.tsx
 import { WHEEL_VISUAL } from "../../config/vehicle-visual.config";
 
 type WheelTireProps = {

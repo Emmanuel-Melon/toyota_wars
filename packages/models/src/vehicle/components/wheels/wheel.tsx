@@ -1,3 +1,4 @@
+// packages/models/src/vehicle/components/wheels/wheel.tsx
 import type { WheelVisualProps } from "../../types";
 import { SuspensionArms } from "./suspension-arms";
 import { WheelHub } from "./wheel-hub";

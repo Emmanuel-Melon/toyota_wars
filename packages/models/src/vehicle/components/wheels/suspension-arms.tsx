@@ -1,3 +1,4 @@
+// packages/models/src/vehicle/components/wheels/suspension-arms.tsx
 import { WHEEL_VISUAL } from "../../config/vehicle-visual.config";
 
 type SuspensionArmsProps = {

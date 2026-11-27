@@ -1,5 +1,6 @@
 // structures/checkpoint.tsx
 import { useMemo } from "react";
+import * as Soldier from "../../../soldier";
 import { Box } from "./structure-box";
 import { Watchtower } from "./watchtower";
 import { CHECKPOINT, getCheckpointSlots } from "./structure-slots";
@@ -33,9 +34,14 @@ export function Checkpoint({ structure, materials, unitBox }: StructurePartProps
   const boothX = lane / 2 + 1.5;
   const shared = { materials, unitBox };
 
+  const slots = useMemo(() => getCheckpointSlots(structure), [structure]);
   const bays = useMemo(
-    () => getCheckpointSlots(structure).filter((s) => s.role === "vehicle"),
-    [structure],
+    () => slots.filter((slot) => slot.role === "vehicle"),
+    [slots],
+  );
+  const guards = useMemo(
+    () => slots.filter((slot) => slot.role === "guard"),
+    [slots],
   );
 
   // Boom arm: alternating red/white segments
@@ -75,6 +81,23 @@ export function Checkpoint({ structure, materials, unitBox }: StructurePartProps
           length={5.5}
           {...shared}
         />
+      ))}
+
+      {guards.map((guard) => (
+        <group
+          key={guard.id}
+          position={[
+            guard.position.x,
+            guard.position.y + Soldier.poses.standing.pelvisHeight,
+            guard.position.z,
+          ]}
+          rotation={[0, guard.yaw, 0]}
+        >
+          <Soldier.Soldier
+            pose={Soldier.poses.standing}
+            palette={Soldier.DEFAULT_SOLDIER_PALETTE}
+          />
+        </group>
       ))}
 
       {/* Corner watchtower (reuses the existing model) */}

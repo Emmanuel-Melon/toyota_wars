@@ -1,14 +1,11 @@
 // packages/models/src/environment/components/arena-structures.tsx
-import type { ComponentType } from "react";
+import { useMemo, type ComponentType } from "react";
 import type { StructureVisual } from "../types";
 import { Building } from "./structures/building";
 import { Checkpoint } from "./structures/checkpoint";
 import type { StructurePartProps } from "./structures/structure.types";
 import { Watchtower } from "./structures/watchtower";
-import {
-  colorFor,
-  useStructureAssets,
-} from "./structures/structure-assets";
+import { colorFor, useStructureAssets } from "./structures/structure-assets";
 import { BASE_PART_COMPONENTS } from "./structures/structure-parts";
 import { Base } from "./structures/base";
 
@@ -20,16 +17,32 @@ const STRUCTURE_PARTS: Record<
   base: Base,
 };
 
+type ArenaStructuresProps = {
+  structures: readonly StructureVisual[];
+  focus?: { readonly x: number; readonly z: number };
+  visibleRadius?: number;
+};
+
 export function ArenaStructures({
   structures,
-}: {
-  structures: readonly StructureVisual[];
-}) {
+  focus,
+  visibleRadius,
+}: ArenaStructuresProps) {
   const { unitBox, sharedAssets } = useStructureAssets();
+
+  const visibleStructures = useMemo(() => {
+    if (!focus || visibleRadius === undefined) return structures;
+    const radiusSq = (visibleRadius + 64) ** 2;
+    return structures.filter((structure) => {
+      const dx = structure.position.x - focus.x;
+      const dz = structure.position.z - focus.z;
+      return dx * dx + dz * dz <= radiusSq;
+    });
+  }, [structures, focus?.x, focus?.z, visibleRadius]);
 
   return (
     <group name="arena-structures">
-      {structures.map((structure) => {
+      {visibleStructures.map((structure) => {
         const wallHex = colorFor(structure.id);
         const Part = STRUCTURE_PARTS[structure.structure];
         const materials = {

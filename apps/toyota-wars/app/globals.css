@@ -31,9 +31,7 @@
 
   /* Reusable surface patterns */
   --hud-rivet:
-    rgb(210 195 165 / 0.6) 0 1.2px,
-    rgb(0 0 0 / 0.55) 1.8px,
-    transparent 2.6px;
+    rgb(210 195 165 / 0.6) 0 1.2px, rgb(0 0 0 / 0.55) 1.8px, transparent 2.6px;
 
   --hud-noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 
@@ -87,33 +85,54 @@
 
   --hud-rust-wash-small:
     linear-gradient(0deg, rgb(var(--hud-sand) / 0.08), transparent 30%),
-    radial-gradient(120% 90% at 0% 100%, rgb(var(--hud-rust) / 0.18), transparent 55%);
+    radial-gradient(
+      120% 90% at 0% 100%,
+      rgb(var(--hud-rust) / 0.18),
+      transparent 55%
+    );
 
   --hud-rust-wash-medium:
     linear-gradient(0deg, rgb(var(--hud-sand) / 0.12), transparent 38%),
-    radial-gradient(110% 80% at 0% 100%, rgb(var(--hud-rust) / 0.26), transparent 60%),
-    radial-gradient(70% 60% at 100% 0%, rgb(var(--hud-rust) / 0.18), transparent 65%);
+    radial-gradient(
+      110% 80% at 0% 100%,
+      rgb(var(--hud-rust) / 0.26),
+      transparent 60%
+    ),
+    radial-gradient(
+      70% 60% at 100% 0%,
+      rgb(var(--hud-rust) / 0.18),
+      transparent 65%
+    );
 
   --hud-rust-wash-large:
     linear-gradient(0deg, rgb(var(--hud-sand) / 0.14), transparent 42%),
-    radial-gradient(130% 90% at 0% 100%, rgb(var(--hud-rust) / 0.32), transparent 62%),
-    radial-gradient(80% 65% at 100% 0%, rgb(var(--hud-rust) / 0.24), transparent 68%),
-    radial-gradient(60% 50% at 50% 0%, rgb(var(--hud-rust-deep) / 0.18), transparent 70%);
+    radial-gradient(
+      130% 90% at 0% 100%,
+      rgb(var(--hud-rust) / 0.32),
+      transparent 62%
+    ),
+    radial-gradient(
+      80% 65% at 100% 0%,
+      rgb(var(--hud-rust) / 0.24),
+      transparent 68%
+    ),
+    radial-gradient(
+      60% 50% at 50% 0%,
+      rgb(var(--hud-rust-deep) / 0.18),
+      transparent 70%
+    );
 
   --hud-rust-drips: var(--hud-rust-drips-medium);
   --hud-rust-wash: var(--hud-rust-wash-medium);
 
   --hud-shadow-panel:
-    inset 0 1px 0 rgb(255 235 200 / 0.1),
-    inset 0 0 0 1px rgb(0 0 0 / 0.4),
-    inset 0 -16px 22px -14px rgb(0 0 0 / 0.7),
-    0 6px 14px rgb(0 0 0 / 0.45);
+    inset 0 1px 0 rgb(255 235 200 / 0.1), inset 0 0 0 1px rgb(0 0 0 / 0.4),
+    inset 0 -16px 22px -14px rgb(0 0 0 / 0.7), 0 6px 14px rgb(0 0 0 / 0.45);
 
   --hud-command-border: rgb(0 0 0 / 0.6);
   --hud-shadow-command: inset 0 1px 0 rgb(255 235 200 / 0.06);
   --hud-shadow-keycap:
-    inset 0 1px 0 rgb(255 235 200 / 0.25),
-    0 2px 0 var(--hud-border);
+    inset 0 1px 0 rgb(255 235 200 / 0.25), 0 2px 0 var(--hud-border);
 
   --background: var(--ui-panel);
   --foreground: var(--ui-text);
@@ -174,9 +193,7 @@
     border: 1px solid var(--hud-border);
     border-radius: 3px;
     background:
-      var(--hud-rust-wash),
-      var(--hud-noise),
-      rgb(var(--hud-bg) / 0.86);
+      var(--hud-rust-wash), var(--hud-noise), rgb(var(--hud-bg) / 0.86);
     box-shadow: var(--hud-shadow-panel);
   }
 
@@ -203,7 +220,10 @@
       radial-gradient(circle at 7px 7px, var(--hud-rivet)),
       radial-gradient(circle at calc(100% - 7px) 7px, var(--hud-rivet)),
       radial-gradient(circle at 7px calc(100% - 7px), var(--hud-rivet)),
-      radial-gradient(circle at calc(100% - 7px) calc(100% - 7px), var(--hud-rivet));
+      radial-gradient(
+        circle at calc(100% - 7px) calc(100% - 7px),
+        var(--hud-rivet)
+      );
   }
 
   .hud-keycap {
@@ -214,9 +234,7 @@
     padding: 0 0.4rem;
     font: 700 11px/1 var(--font-mono, monospace);
     color: var(--hud-bone);
-    background:
-      var(--hud-rust-wash),
-      linear-gradient(#5b5244, #3a342a);
+    background: var(--hud-rust-wash), linear-gradient(#5b5244, #3a342a);
     border: 1px solid var(--hud-border);
     border-radius: 3px;
     box-shadow: var(--hud-shadow-keycap);
@@ -235,7 +253,9 @@
     border-radius: 3px;
     box-shadow: var(--hud-shadow-command);
     cursor: pointer;
-    transition: transform 60ms, background-color 120ms;
+    transition:
+      transform 60ms,
+      background-color 120ms;
   }
 
   .hud-command:hover:not(:disabled) {
@@ -253,7 +273,10 @@
 
   .hud-command[data-active="true"] {
     color: var(--hud-active-fg);
-    background: linear-gradient(var(--hud-active-top), var(--hud-active-bottom));
+    background: linear-gradient(
+      var(--hud-active-top),
+      var(--hud-active-bottom)
+    );
     border-color: var(--hud-active-border);
   }
 
@@ -266,8 +289,7 @@
   .hud-command-card[data-active="true"] {
     color: var(--hud-active-top);
     background:
-      var(--hud-rust-wash-small),
-      var(--hud-rust-drips-small),
+      var(--hud-rust-wash-small), var(--hud-rust-drips-small),
       rgb(var(--hud-bg) / 0.86);
     border-color: var(--hud-active-border);
   }

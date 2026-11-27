@@ -10,11 +10,11 @@ import * as THREE from "three";
 import type { ObstacleVisual, RoadClearance, TerrainSampler } from "../../types";
 import { getObstacleXZRadius } from "../obstacle-utils";
 import type { CircleXZ } from "../obstacle-utils";
-import type { TreeGeometry } from "./tree-geometry";
 import { placeTrees, TREE_DEFAULTS } from "./tree-placement";
 import { TREE_SPECIES, TREE_SPECIES_IDS } from "./tree-species";
 import type { TreeSpeciesId } from "./tree-species";
 import { createTreeTextures } from "./tree-textures";
+import type { TreeGeometry } from "../../geometry/tree-geometry";
 
 const ROAD_EDGE_MARGIN = 2;
 const ROAD_CANOPY_MARGIN = 3; // keeps canopies from hanging over the road

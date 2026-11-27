@@ -62,3 +62,13 @@ export type RoadChunkRefVisual = {
   readonly from: number;
   readonly to: number;
 };
+
+export type TrenchVisual = {
+  id: string;
+  /** Centerline in world XZ. Add zigzag points to get traverses. */
+  points: readonly { x: number; z: number }[];
+  width: number; // interior floor width
+  depth: number;
+  /** Which side faces the enemy (parapet + firing step). Flip the sign if it's on the wrong side. */
+  front?: 1 | -1;
+};

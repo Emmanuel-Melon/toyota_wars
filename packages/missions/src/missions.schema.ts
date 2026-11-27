@@ -18,13 +18,17 @@ import { validateCatalog, validateMission } from "./missions.validation";
  * (move to src/feature/missions/ and add extendZodWithOpenApi(z) when it does).
  *
  * Cross-reference rules (unknown squad ids, bounds, winnability) live in
- * mission.validation.ts. Positions are world units relative to the arena centre.
+ * mission.validation.ts. Positions and arena dimensions are in meters relative
+ * to the arena centre (1 world unit = 1 meter).
  */
 
 // ─────────────────────────────────────────────────────────────
 // PRIMITIVES
 // ─────────────────────────────────────────────────────────────
 export const Vec2Schema = z.object({ x: z.number(), z: z.number() });
+export const SpawnPointSchema = Vec2Schema.extend({
+  yaw: z.number().optional(),
+});
 
 export const MissionZoneSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -63,6 +67,11 @@ export const InitialOrderSchema = z.enum([
 ]);
 
 export const SpawnLayoutSchema = z.enum(["generated", "authored"]);
+export const SquadSpawnAnchorSchema = z.object({
+  structureId: z.string().regex(/^[a-z0-9-]+$/),
+  role: z.literal("vehicle"),
+  holdPosition: z.boolean().default(true),
+});
 export const SquadFormationSchema = z.enum(["column", "wedge", "line"]);
 export const SquadFireModeSchema = z.enum(["normal", "scripted"]);
 
@@ -113,8 +122,9 @@ const SquadBaseSchema = z.object({
   team: TeamSchema,
   units: z.array(SquadUnitSchema).min(1),
   /** Units are assigned to spawn points in order, cycling if there are fewer points. */
-  spawnPoints: z.array(Vec2Schema).min(1),
+  spawnPoints: z.array(SpawnPointSchema).min(1),
   spawnLayout: SpawnLayoutSchema.default("generated"),
+  spawnAnchor: SquadSpawnAnchorSchema.optional(),
   formation: SquadFormationSchema.default("wedge"),
   spacing: z.number().min(6).max(40).default(8),
   holdFormation: z.boolean().default(false),
@@ -266,7 +276,7 @@ export const ArenaStructureSchema = z.object({
 export const ArenaSchema = z.object({
   levelId: z.string().optional(),
   seed: z.number().int(),
-  size: z.number().positive(),
+  size: z.number().min(100).max(4000),
   obstacleDensity: z.number().min(0).max(1).default(0.3),
   playerSpawn: Vec2Schema,
   heading: z.number().optional(),

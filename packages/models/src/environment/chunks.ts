@@ -24,10 +24,24 @@ export function parseChunkKey(key: string): ChunkCoord {
 }
 
 export function chunksAround(
+  center: ChunkCoord,
+  renderRadius: number,
+): string[];
+export function chunksAround(
   centerX: number,
   centerZ: number,
   renderRadius: number,
+): string[];
+export function chunksAround(
+  centerOrX: ChunkCoord | number,
+  centerZOrRadius: number,
+  maybeRadius?: number,
 ): string[] {
+  const centerX = typeof centerOrX === "number" ? centerOrX : centerOrX.x;
+  const centerZ = typeof centerOrX === "number" ? centerZOrRadius : centerOrX.z;
+  const renderRadius =
+    typeof centerOrX === "number" ? (maybeRadius ?? 0) : centerZOrRadius;
+
   const chunks: string[] = [];
   for (let dx = -renderRadius; dx <= renderRadius; dx++) {
     for (let dz = -renderRadius; dz <= renderRadius; dz++) {
