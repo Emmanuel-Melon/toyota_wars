@@ -4,7 +4,6 @@ import { CylinderGeometry, MeshStandardMaterial } from "three";
 import type { BedMountProps, V3 } from "../../types";
 import { MuzzleAnchor } from "./muzzle-anchor";
 import { Pedestal } from "./pedestal";
-import { TurretShield } from "./turret-shield";
 
 const ROCKET_POD_ROTATION: V3 = [-0.18, 0, 0];
 
@@ -56,8 +55,6 @@ export function BedMount({
           material={ringMaterial}
           castShadow
         />
-
-        <TurretShield mount={mount} palette={palette} />
 
         <group ref={pitchRef} position={[0, 0.42, 0.15]}>
           <group ref={slideRef}>{weapon}</group>

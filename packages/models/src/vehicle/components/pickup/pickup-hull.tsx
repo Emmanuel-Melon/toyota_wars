@@ -13,10 +13,11 @@ export function PickupHullVisual({
   windows,
   hood,
   children,
+  cutaway = true,
 }: PickupHullVisualProps) {
   return (
     <>
-      <PickupCab materials={materials} doors={doors} windows={windows} />
+      <PickupCab materials={materials} doors={doors} windows={windows} cutaway={cutaway} />
       {hood ?? <HoodPanelVisual paintMat={materials.paint} />}
       <PickupShell materials={materials}>
         <PickupBed materials={materials} />

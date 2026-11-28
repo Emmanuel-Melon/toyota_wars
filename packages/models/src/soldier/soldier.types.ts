@@ -26,6 +26,7 @@ export interface SoldierPose {
 }
 
 export interface SoldierLoadout {
+  kadamol: boolean;
   helmet: boolean;
   goggles: boolean;
   headset: boolean;
@@ -34,6 +35,7 @@ export interface SoldierLoadout {
 }
 
 export const DEFAULT_LOADOUT: SoldierLoadout = {
+  kadamol: false,
   helmet: true,
   goggles: true,
   headset: true,

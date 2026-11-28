@@ -46,6 +46,7 @@ export type PickupCabProps = {
   doors?: ReactNode;
   windows?: ReactNode;
   extra?: ReactNode;
+  cutaway?: boolean;
 };
 
 export type PickupBedProps = {
@@ -62,6 +63,7 @@ export type PickupHullVisualProps = {
   doors?: ReactNode;
   windows?: ReactNode;
   hood?: ReactNode;
+  cutaway?: boolean;
   children?: ReactNode;
 };
 

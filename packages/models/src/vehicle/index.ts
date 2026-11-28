@@ -31,7 +31,6 @@ export * from "./components/radar/radar-dish";
 export * from "./components/gunner/crew-gunner";
 
 export * from "./components/mounts/pedestal";
-export * from "./components/mounts/turret-shield";
 export * from "./components/mounts/muzzle-anchor";
 export * from "./components/mounts/bed-mount";
 

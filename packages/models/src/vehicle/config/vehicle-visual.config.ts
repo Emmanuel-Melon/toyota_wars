@@ -108,3 +108,10 @@ export const MOUNT_PITCH_OFFSET = {
 } as const;
 
 export const BARREL_KICK = 0.22;
+
+export const PICKUP_CUTAWAY = {
+  cutY: 1.0, // door top (door centre 0.76 + half height 0.24)
+  frontZ: 0.78, // cowl / dash line
+  rearZ: -1.3, // cab back wall (rear window z)
+  driverX: -0.4, // flip to 0.4 if the wheel ends up on the wrong side
+} as const;
